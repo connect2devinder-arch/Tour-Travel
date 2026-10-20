@@ -17,6 +17,10 @@ Destination/package details, INR prices, and the newsletter are sample/demo cont
 
 Package cards show duration, itinerary summary, inclusions, and a "Starting from" price. "View details" opens a shareable route such as `/packages/shimla-escape` with a day-by-day plan, inclusions, hotel/transport details, photos, and FAQs. "Enquire about this trip" opens the contact form with that package preselected, and the enquiry stores the package ID/name in Firestore.
 
+## Destination images
+
+Each destination has 5 drone/aerial photos sourced from Unsplash and stored in Firebase Storage under `destinations/<place>/<n>.jpg` (bucket `tour-83b6c.firebasestorage.app`). The destination cards, destination galleries, and package detail galleries all load these images. Objects are public-read so the browser can load them directly.
+
 ## Playwright CLI
 
 The project includes `@playwright/cli` and an OpenCode skill at `.opencode/skills/playwright-cli/`.
