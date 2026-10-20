@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1640" viewBox="0 0 1600 1640" role="img" aria-labelledby="title description">
+  <title id="title">India travel website visual mockup</title>
+  <desc id="description">A desktop and mobile concept for an India-focused travel website, plus a destination details view.</desc>
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#183b37"/><stop offset="1" stop-color="#607d70"/></linearGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b8c5ae"/><stop offset="1" stop-color="#819888"/></linearGradient>
+    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d28a69"/><stop offset="1" stop-color="#ecd0a8"/></linearGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dbe4e1"/><stop offset="1" stop-color="#829998"/></linearGradient>
+    <clipPath id="desktop-clip"><rect x="73" y="145" width="940" height="1044" rx="14"/></clipPath>
+    <clipPath id="mobile-clip"><rect x="1103" y="166" width="374" height="1000" rx="29"/></clipPath>
+    <style>
+      .sans{font-family:Arial,Helvetica,sans-serif}.serif{font-family:Georgia,'Times New Roman',serif}.ink{fill:#183b37}.muted{fill:#66746e}.coral{fill:#d8785c}.white{fill:#fff}.small{font-size:9px;letter-spacing:1.4px;font-weight:700}.tiny{font-size:7px;letter-spacing:1px;font-weight:700}.body{font-size:10px}.title{font-size:33px}.section{font-size:23px}.label{font-size:8px;letter-spacing:1.2px;font-weight:700}
+    </style>
+  </defs>
+  <rect width="1600" height="1640" fill="#f3f1ea"/>
+  <text x="60" y="52" class="sans ink small">TOUR &amp; TRAVEL · EARLY VISUAL MOCKUP</text>
+  <text x="60" y="91" class="serif ink" font-size="31">A little more somewhere.</text>
+  <text x="60" y="115" class="sans muted" font-size="11">India-first travel discovery · sample content · desktop + mobile + destination details</text>
+  <text x="75" y="136" class="sans coral tiny">01 — HOMEPAGE / DESKTOP</text>
+  <text x="1110" y="136" class="sans coral tiny">02 — HOMEPAGE / MOBILE</text>
+
+  <!-- Desktop browser frame -->
+  <rect x="55" y="145" width="976" height="1058" rx="18" fill="#fff" stroke="#d9d8cf" stroke-width="1.5"/>
+  <g clip-path="url(#desktop-clip)">
+    <rect x="73" y="145" width="940" height="1044" fill="#f8f6f0"/>
+    <rect x="73" y="145" width="940" height="54" fill="#f8f6f0"/>
+    <circle cx="101" cy="172" r="12" fill="#183b37"/><text x="97" y="178" class="serif white" font-size="19" font-style="italic">e</text>
+    <text x="120" y="177" class="sans ink" font-size="14" font-weight="700">elsewhere<tspan class="coral">.</tspan></text>
+    <text x="484" y="176" class="sans muted" font-size="9">Destinations</text><text x="574" y="176" class="sans muted" font-size="9">Packages</text><text x="647" y="176" class="sans muted" font-size="9">Our way</text>
+    <rect x="860" y="157" width="128" height="30" rx="2" fill="#183b37"/><text x="877" y="176" class="sans white" font-size="9" font-weight="700">Plan your trip  ↗</text>
+
+    <rect x="73" y="199" width="940" height="247" fill="url(#hero)"/>
+    <path d="M73 393 L220 278 L312 350 L441 238 L580 375 L711 260 L840 376 L932 286 L1013 355 L1013 446 L73 446Z" fill="#92a69b" opacity=".72"/>
+    <path d="M73 414 L212 338 L330 382 L480 304 L610 412 L755 325 L870 398 L968 340 L1013 366 L1013 446 L73 446Z" fill="#58766b" opacity=".88"/>
+    <text x="117" y="245" class="sans white small">HIMACHAL PRADESH, INDIA</text>
+    <text x="117" y="291" class="serif white" font-size="37">Find your kind of</text><text x="117" y="331" class="serif" fill="#f0b39a" font-size="37" font-style="italic">mountain escape.</text>
+    <text x="117" y="357" class="sans white" font-size="10" opacity=".9">From Shimla’s pine walks to Spiti’s high roads.</text>
+    <rect x="117" y="374" width="128" height="34" fill="#f8f6f0"/><text x="132" y="396" class="sans ink" font-size="9" font-weight="700">Explore India  ↓</text>
+    <text x="881" y="429" class="sans white tiny">HIMACHAL · 31° N</text>
+
+    <rect x="155" y="423" width="775" height="66" fill="#fff" stroke="#e5e2d9"/>
+    <text x="178" y="448" class="sans coral" font-size="15">⌖</text><text x="201" y="445" class="sans muted tiny">WHERE TO?</text><text x="201" y="465" class="sans ink" font-size="9">Shimla, Manali, anywhere…</text>
+    <line x1="412" y1="437" x2="412" y2="475" stroke="#e5e2d9"/>
+    <text x="435" y="445" class="sans muted tiny">WHEN?</text><text x="435" y="465" class="sans ink" font-size="9">Choose travel dates</text>
+    <line x1="592" y1="437" x2="592" y2="475" stroke="#e5e2d9"/>
+    <text x="615" y="445" class="sans muted tiny">TRAVELLERS</text><text x="615" y="465" class="sans ink" font-size="9">2 travellers</text>
+    <rect x="760" y="435" width="151" height="42" fill="#183b37"/><text x="782" y="461" class="sans white" font-size="9" font-weight="700">Find a trip  ↗</text>
+
+    <text x="111" y="529" class="sans coral tiny">A LITTLE INSPIRATION</text><text x="111" y="557" class="serif ink section">Somewhere <tspan class="coral" font-style="italic">calling?</tspan></text>
+    <text x="865" y="553" class="sans ink tiny">SEE ALL PLACES  ↗</text>
+    <g>
+      <rect x="111" y="575" width="208" height="125" fill="url(#warm)"/><path d="M111 656 L164 603 L214 646 L254 596 L319 657 L319 700 L111 700Z" fill="#9f8f78"/><text x="126" y="674" class="sans white tiny">HIMACHAL PRADESH</text><text x="126" y="692" class="serif white" font-size="20">Shimla</text>
+      <rect x="331" y="575" width="208" height="125" fill="url(#snow)"/><path d="M331 655 L387 596 L429 638 L465 590 L539 660 L539 700 L331 700Z" fill="#718980"/><text x="346" y="674" class="sans white tiny">HIMACHAL PRADESH</text><text x="346" y="692" class="serif white" font-size="20">Manali</text>
+      <rect x="551" y="575" width="208" height="125" fill="#a8b6ad"/><path d="M551 654 L605 612 L649 638 L698 591 L759 657 L759 700 L551 700Z" fill="#6e8176"/><text x="566" y="674" class="sans white tiny">HIMACHAL PRADESH</text><text x="566" y="692" class="serif white" font-size="18">Lahaul &amp; Spiti</text>
+      <rect x="771" y="575" width="208" height="125" fill="#b9c6b3"/><path d="M771 654 L822 608 L875 644 L917 596 L979 653 L979 700 L771 700Z" fill="#758a7c"/><text x="786" y="674" class="sans white tiny">UTTARAKHAND</text><text x="786" y="692" class="serif white" font-size="20">Mussoorie</text>
+    </g>
+
+    <text x="111" y="738" class="sans coral tiny">THOUGHTFUL TRIPS, NO GUESSWORK</text><text x="111" y="765" class="serif ink section">A good place to <tspan class="coral" font-style="italic">begin.</tspan></text>
+    <g>
+      <rect x="111" y="784" width="276" height="120" fill="#fff" stroke="#e6e2d9"/><rect x="111" y="784" width="276" height="63" fill="#9cac9d"/><text x="125" y="803" class="sans white tiny">SHIMLA · 4 DAYS</text><text x="125" y="839" class="serif white" font-size="17">Shimla Hill Escape</text><text x="125" y="869" class="sans ink body" font-weight="700">From ₹15,999*</text><text x="337" y="870" class="sans coral body">↗</text>
+      <rect x="407" y="784" width="276" height="120" fill="#fff" stroke="#e6e2d9"/><rect x="407" y="784" width="276" height="63" fill="#778d83"/><text x="421" y="803" class="sans white tiny">MANALI · 5 DAYS</text><text x="421" y="839" class="serif white" font-size="17">Manali Valley Break</text><text x="421" y="869" class="sans ink body" font-weight="700">From ₹21,999*</text><text x="633" y="870" class="sans coral body">↗</text>
+      <rect x="703" y="784" width="276" height="120" fill="#fff" stroke="#e6e2d9"/><rect x="703" y="784" width="276" height="63" fill="#b28f78"/><text x="717" y="803" class="sans white tiny">LAHAUL &amp; SPITI · 8 DAYS</text><text x="717" y="839" class="serif white" font-size="17">Spiti Slow Road Trip</text><text x="717" y="869" class="sans ink body" font-weight="700">From ₹36,999*</text><text x="949" y="870" class="sans coral body">↗</text>
+    </g>
+
+    <rect x="73" y="927" width="940" height="118" fill="#e9e6dc"/>
+    <text x="111" y="958" class="sans coral tiny">GO FOR THE FEELING</text><text x="111" y="989" class="serif ink" font-size="24">Not just a change of scenery.</text>
+    <rect x="491" y="951" width="145" height="68" fill="#f8f6f0"/><text x="506" y="977" class="serif coral" font-size="21">⌁</text><text x="506" y="1003" class="sans ink body">Out there</text>
+    <rect x="647" y="951" width="145" height="68" fill="#f8f6f0"/><text x="662" y="977" class="serif coral" font-size="21">◒</text><text x="662" y="1003" class="sans ink body">At the table</text>
+    <rect x="803" y="951" width="176" height="68" fill="#f8f6f0"/><text x="818" y="977" class="serif coral" font-size="21">☼</text><text x="818" y="1003" class="sans ink body">Take it slow</text>
+    <rect x="73" y="1045" width="940" height="87" fill="#183b37"/><text x="111" y="1078" class="sans" fill="#f0b39a" font-size="8" letter-spacing="1.4" font-weight="700">A GOOD THING IN YOUR INBOX</text><text x="111" y="1107" class="serif white" font-size="22">Postcards from elsewhere.</text><rect x="687" y="1071" width="272" height="36" fill="none" stroke="#c5cec8"/><text x="703" y="1094" class="sans white" font-size="9" opacity=".8">Your email address</text><text x="887" y="1094" class="sans white" font-size="9">Count me in  ↗</text>
+    <rect x="73" y="1132" width="940" height="57" fill="#f8f6f0"/><text x="111" y="1165" class="sans ink" font-size="11" font-weight="700">elsewhere<tspan class="coral">.</tspan></text><text x="410" y="1165" class="sans muted" font-size="8">Take the long way around.</text><text x="830" y="1165" class="sans muted" font-size="8">© 2026 Elsewhere Travel</text>
+  </g>
+
+  <!-- Mobile browser frame -->
+  <rect x="1085" y="145" width="410" height="1058" rx="40" fill="#183b37"/>
+  <rect x="1103" y="166" width="374" height="1000" rx="29" fill="#f8f6f0"/>
+  <rect x="1235" y="151" width="110" height="20" rx="10" fill="#183b37"/>
+  <g clip-path="url(#mobile-clip)">
+    <rect x="1103" y="166" width="374" height="1000" fill="#f8f6f0"/>
+    <rect x="1103" y="166" width="374" height="48" fill="#f8f6f0"/><circle cx="1130" cy="190" r="10" fill="#183b37"/><text x="1127" y="195" class="serif white" font-size="15" font-style="italic">e</text><text x="1147" y="194" class="sans ink" font-size="12" font-weight="700">elsewhere<tspan class="coral">.</tspan></text><text x="1427" y="194" class="sans ink" font-size="16">☰</text>
+    <rect x="1103" y="214" width="374" height="205" fill="url(#hero)"/><path d="M1103 373 L1165 313 L1215 349 L1284 275 L1351 363 L1418 292 L1477 350 L1477 419 L1103 419Z" fill="#859a8c"/><path d="M1103 388 L1170 352 L1232 378 L1311 330 L1387 386 L1450 345 L1477 360 L1477 419 L1103 419Z" fill="#5b786d"/>
+    <text x="1126" y="250" class="sans white tiny">HIMACHAL PRADESH, INDIA</text><text x="1126" y="287" class="serif white" font-size="26">Find your kind of</text><text x="1126" y="316" class="serif" fill="#f0b39a" font-size="26" font-style="italic">mountain escape.</text><text x="1126" y="340" class="sans white" font-size="9">Hill escapes made for you.</text><rect x="1126" y="353" width="112" height="29" fill="#f8f6f0"/><text x="1138" y="372" class="sans ink" font-size="8" font-weight="700">Explore India ↓</text>
+    <rect x="1120" y="403" width="340" height="112" fill="#fff" stroke="#e5e2d9"/><text x="1137" y="428" class="sans coral" font-size="14">⌖</text><text x="1158" y="425" class="sans muted tiny">WHERE TO?</text><text x="1158" y="442" class="sans ink" font-size="8">Shimla, Manali, anywhere…</text><line x1="1137" y1="452" x2="1443" y2="452" stroke="#e5e2d9"/><text x="1137" y="473" class="sans muted tiny">WHEN?</text><text x="1204" y="473" class="sans ink" font-size="8">Choose dates</text><rect x="1137" y="482" width="306" height="23" fill="#183b37"/><text x="1241" y="498" class="sans white" font-size="8" font-weight="700">Find a trip  ↗</text>
+    <text x="1123" y="547" class="sans coral tiny">A LITTLE INSPIRATION</text><text x="1123" y="572" class="serif ink" font-size="22">Somewhere <tspan class="coral" font-style="italic">calling?</tspan></text>
+    <rect x="1123" y="587" width="159" height="126" fill="url(#warm)"/><path d="M1123 670 L1160 624 L1202 659 L1236 615 L1282 665 L1282 713 L1123 713Z" fill="#8d8d7d"/><text x="1135" y="681" class="sans white tiny">HIMACHAL</text><text x="1135" y="702" class="serif white" font-size="18">Shimla</text>
+    <rect x="1292" y="587" width="159" height="126" fill="url(#snow)"/><path d="M1292 669 L1331 617 L1362 651 L1401 610 L1451 663 L1451 713 L1292 713Z" fill="#718980"/><text x="1304" y="681" class="sans white tiny">HIMACHAL</text><text x="1304" y="702" class="serif white" font-size="18">Manali</text>
+    <rect x="1123" y="723" width="159" height="126" fill="#9daea2"/><path d="M1123 803 L1164 760 L1200 790 L1240 748 L1282 802 L1282 849 L1123 849Z" fill="#6e8176"/><text x="1135" y="815" class="sans white tiny">HIMACHAL</text><text x="1135" y="838" class="serif white" font-size="16">Lahaul &amp; Spiti</text>
+    <rect x="1292" y="723" width="159" height="126" fill="#b9c6b3"/><path d="M1292 803 L1330 757 L1367 790 L1402 751 L1451 804 L1451 849 L1292 849Z" fill="#758a7c"/><text x="1304" y="815" class="sans white tiny">UTTARAKHAND</text><text x="1304" y="838" class="serif white" font-size="17">Mussoorie</text>
+    <text x="1123" y="883" class="sans coral tiny">FEATURED TRIPS</text><text x="1123" y="907" class="serif ink" font-size="21">A good place to begin.</text>
+    <rect x="1123" y="920" width="328" height="83" fill="#fff" stroke="#e5e2d9"/><rect x="1123" y="920" width="98" height="83" fill="#87998e"/><text x="1234" y="944" class="sans coral tiny">SHIMLA · 4 DAYS</text><text x="1234" y="966" class="serif ink" font-size="15">Shimla Hill Escape</text><text x="1234" y="988" class="sans ink" font-size="9" font-weight="700">From ₹15,999*</text>
+    <rect x="1123" y="1012" width="328" height="83" fill="#fff" stroke="#e5e2d9"/><rect x="1123" y="1012" width="98" height="83" fill="#718980"/><text x="1234" y="1036" class="sans coral tiny">MANALI · 5 DAYS</text><text x="1234" y="1058" class="serif ink" font-size="15">Manali Valley Break</text><text x="1234" y="1080" class="sans ink" font-size="9" font-weight="700">From ₹21,999*</text>
+    <text x="1123" y="1125" class="sans muted tiny">SCROLL FOR PACKAGES, STORIES &amp; MORE ↓</text>
+  </g>
+  <text x="1105" y="1185" class="sans muted" font-size="8">Mobile stacks search, destinations, and packages vertically.</text>
+
+  <!-- Destination detail flow -->
+  <text x="60" y="1252" class="sans coral tiny">03 — AFTER A SEARCH RESULT IS SELECTED</text>
+  <rect x="55" y="1270" width="1440" height="300" rx="8" fill="#fff" stroke="#dedbd2"/>
+  <rect x="78" y="1294" width="390" height="252" fill="url(#mountain)"/>
+  <path d="M78 1486 L157 1387 L217 1445 L299 1350 L376 1441 L423 1377 L468 1431 L468 1546 L78 1546Z" fill="#71877a"/>
+  <path d="M146 1401 L157 1387 L174 1404 L163 1399Z M285 1367 L299 1350 L318 1370 L305 1364Z M410 1394 L423 1377 L439 1395 L426 1389Z" fill="#f4f2e9"/>
+  <text x="500" y="1320" class="sans coral tiny">DESTINATION DETAIL · SAMPLE</text>
+  <text x="500" y="1354" class="serif ink" font-size="30">A little more <tspan class="coral" font-style="italic">Manali.</tspan></text>
+  <text x="500" y="1382" class="sans muted" font-size="10">Photo gallery · short overview · top attractions</text>
+  <text x="500" y="1412" class="sans ink" font-size="10" font-weight="700">Worth the wander</text>
+  <text x="500" y="1433" class="sans muted" font-size="9">• Hadimba Temple     • Solang Valley     • Old Manali</text>
+  <line x1="500" y1="1451" x2="1465" y2="1451" stroke="#e5e2d9"/>
+  <text x="500" y="1472" class="sans coral tiny">SAMPLE PACKAGE · 5 DAYS</text>
+  <text x="500" y="1494" class="serif ink" font-size="17">Manali Valley Break</text>
+  <text x="500" y="1517" class="sans ink" font-size="10" font-weight="700">₹21,999*   ·   Day-by-day itinerary</text>
+  <rect x="1280" y="1480" width="185" height="42" fill="#183b37"/><text x="1315" y="1506" class="sans white" font-size="9" font-weight="700">Plan this trip  ↗</text>
+  <text x="500" y="1545" class="sans muted" font-size="8">*Sample price only · seasonal routes and final rates need confirmation.</text>
+
+  <text x="60" y="1608" class="sans muted" font-size="9">Concept only — sample copy, imagery, and prices. Tell me what to change and we’ll iterate.</text>
+</svg>

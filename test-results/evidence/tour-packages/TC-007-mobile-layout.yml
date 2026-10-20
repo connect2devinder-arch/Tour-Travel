@@ -1,0 +1,80 @@
+- main [ref=f7e24] [box=0,68,390,2198]:
+  - navigation "Breadcrumb" [ref=f7e25] [box=23,86,343,12]:
+    - link "Home" [ref=f7e26] [cursor=pointer] [box=23,86,25,12]:
+      - /url: /#top
+    - generic [aria-hidden] [ref=f7e27] [box=57,86,4,12]: /
+    - link "Tour packages" [ref=f7e28] [cursor=pointer] [box=70,86,60,12]:
+      - /url: /#packages
+    - generic [aria-hidden] [ref=f7e29] [box=139,86,4,12]: /
+    - generic [ref=f7e30] [box=151,86,75,12]: Shimla Hill Escape
+  - region [ref=f7e31] [box=23,116,343,2050]:
+    - generic [ref=f7e32] [box=23,126,343,307]:
+      - generic [ref=f7e33] [box=23,126,343,124]:
+        - paragraph [ref=f7e34] [box=23,126,343,12]: SHIMLA · HIMACHAL PRADESH, INDIA
+        - heading "Shimla Hill Escape" [level=1] [ref=f7e35] [box=23,150,343,45]
+        - paragraph [ref=f7e36] [box=23,207,343,43]: A relaxed hill-town stay with a heritage walk and a Kufri day trip.
+      - generic [ref=f7e37] [box=23,272,343,161]:
+        - generic [ref=f7e38] [box=43,291,303,12]: 4 days
+        - strong [ref=f7e39] [box=43,312,303,30]: Starting from ₹15,999*
+        - generic [ref=f7e40] [box=43,351,303,10]: "* Illustrative sample price"
+        - button "Enquire about this trip" [ref=f7e41] [cursor=pointer] [box=43,376,303,38]:
+          - text: Enquire about this trip
+          - generic [aria-hidden] [ref=f7e42] [box=324,385,10,19]: ↗
+    - generic [ref=f7e43] [box=23,457,343,843]:
+      - generic [ref=f7e44] [box=23,457,343,362]:
+        - img "Shimla hillside town surrounded by mountain slopes" [ref=f7e45] [box=23,457,343,280]
+        - generic "Shimla Hill Escape photos" [ref=f7e46] [box=23,747,343,72]:
+          - button "Show package photo 1" [pressed] [ref=f7e47] [cursor=pointer] [box=23,747,167,72]
+          - button "Show package photo 2" [ref=f7e48] [cursor=pointer] [box=200,747,167,72]
+      - generic [ref=f7e49] [box=23,837,343,463]:
+        - region [ref=f7e50] [box=23,837,343,186]:
+          - paragraph [ref=f7e51] [box=43,857,303,12]: WHAT’S INCLUDED · SAMPLE
+          - heading "The good bits." [level=2] [ref=f7e52] [box=43,879,303,37]
+          - list [ref=f7e53] [box=43,933,303,70]:
+            - listitem [ref=f7e54] [box=43,933,303,16]: ✓ 3 nights in a sample hill hotel
+            - listitem [ref=f7e55] [box=43,960,303,16]: ✓ Daily breakfast
+            - listitem [ref=f7e56] [box=43,987,303,16]: ✓ Local sightseeing transfers
+        - generic [ref=f7e57] [box=23,1041,343,259]:
+          - article [ref=f7e58] [box=23,1041,343,134]:
+            - paragraph [ref=f7e59] [box=42,1060,305,12]: YOUR STAY
+            - heading "Sample 3-star hill hotel" [level=3] [ref=f7e60] [box=42,1082,305,26]
+            - paragraph [ref=f7e61] [box=42,1115,305,12]: 3 nights
+            - text: Property name and availability are illustrative and need confirmation.
+          - article [ref=f7e62] [box=23,1187,343,113]:
+            - paragraph [ref=f7e63] [box=42,1206,305,12]: GETTING AROUND
+            - heading "Private AC cab (sample)" [level=3] [ref=f7e64] [box=42,1228,305,26]
+            - paragraph [ref=f7e65] [box=42,1261,305,12]: Local sightseeing transfers; pickup and drop details to be confirmed.
+    - region [ref=f7e66] [box=23,1300,343,512]:
+      - generic [ref=f7e67] [box=23,1355,343,83]:
+        - paragraph [ref=f7e68] [box=23,1355,343,12]: A SAMPLE PLAN
+        - heading [level=2] [ref=f7e69] [box=23,1379,343,37]:
+          - text: Day by
+          - emphasis [ref=f7e70] [box=134,1374,62,46]: day.
+        - paragraph [ref=f7e71] [box=23,1425,343,13]: Routes, timings, and access can change with season and local conditions.
+      - list [ref=f7e72] [box=23,1462,343,310]:
+        - listitem [ref=f7e73] [box=23,1462,343,70]:
+          - generic [ref=f7e74] [box=41,1478,48,13]: DAY 01
+          - generic [ref=f7e75] [box=105,1478,133,16]: Arrive in Shimla and check in
+        - listitem [ref=f7e76] [box=23,1542,343,70]:
+          - generic [ref=f7e77] [box=41,1558,48,13]: DAY 02
+          - generic [ref=f7e78] [box=105,1558,219,16]: Explore Mall Road, The Ridge, and Jakhu Temple
+        - listitem [ref=f7e79] [box=23,1622,343,70]:
+          - generic [ref=f7e80] [box=41,1638,48,13]: DAY 03
+          - generic [ref=f7e81] [box=105,1638,159,16]: Visit Kufri and enjoy a free evening
+        - listitem [ref=f7e82] [box=23,1702,343,70]:
+          - generic [ref=f7e83] [box=41,1718,48,13]: DAY 04
+          - generic [ref=f7e84] [box=105,1718,166,16]: Breakfast, check out, and departure
+    - region [ref=f7e85] [box=23,1812,343,309]:
+      - generic [ref=f7e86] [box=23,1832,343,61]:
+        - paragraph [ref=f7e87] [box=23,1832,343,12]: A FEW USEFUL THINGS
+        - heading [level=2] [ref=f7e88] [box=23,1856,343,37]:
+          - text: Good to
+          - emphasis [ref=f7e89] [box=152,1851,87,46]: know.
+      - generic [ref=f7e90] [box=23,1918,343,169]:
+        - group [ref=f7e91] [box=23,1919,343,56]:
+          - generic "Are these package details and prices final?" [ref=f7e92] [cursor=pointer] [box=23,1919,343,55]
+        - group [ref=f7e93] [box=23,1975,343,56]:
+          - generic "Can I ask about different travel dates?" [ref=f7e94] [cursor=pointer] [box=23,1975,343,55]
+        - group [ref=f7e95] [box=23,2031,343,56]:
+          - generic "Can the itinerary be changed?" [ref=f7e96] [cursor=pointer] [box=23,2031,343,55]
+    - paragraph [ref=f7e97] [box=23,2142,343,24]: Sample package content only. Confirm final price, availability, hotel, transport, and inclusions before booking.

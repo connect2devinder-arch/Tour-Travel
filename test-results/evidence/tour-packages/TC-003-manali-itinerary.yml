@@ -1,0 +1,23 @@
+- region [ref=f4e66]:
+  - generic [ref=f4e67]:
+    - paragraph [ref=f4e68]: A SAMPLE PLAN
+    - heading [level=2] [ref=f4e69]:
+      - text: Day by
+      - emphasis [ref=f4e70]: day.
+    - paragraph [ref=f4e71]: Routes, timings, and access can change with season and local conditions.
+  - list [ref=f4e72]:
+    - listitem [ref=f4e73]:
+      - generic [ref=f4e74]: DAY 01
+      - generic [ref=f4e75]: Arrive in Manali and check in
+    - listitem [ref=f4e76]:
+      - generic [ref=f4e77]: DAY 02
+      - generic [ref=f4e78]: Visit Hadimba Temple and explore Old Manali
+    - listitem [ref=f4e79]:
+      - generic [ref=f4e80]: DAY 03
+      - generic [ref=f4e81]: Day trip to Solang Valley
+    - listitem [ref=f4e82]:
+      - generic [ref=f4e83]: DAY 04
+      - generic [ref=f4e84]: Free day for the Beas riverside and local cafes
+    - listitem [ref=f4e85]:
+      - generic [ref=f4e86]: DAY 05
+      - generic [ref=f4e87]: Breakfast, check out, and departure

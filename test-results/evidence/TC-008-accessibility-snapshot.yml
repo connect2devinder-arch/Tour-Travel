@@ -1,0 +1,208 @@
+- main [ref=f15e16]:
+  - region [ref=f15e17]:
+    - img "A hill town surrounded by the Himalayan mountains" [ref=f15e18]
+    - generic [ref=f15e19]:
+      - paragraph [ref=f15e20]: FOR THE LOVE OF GETTING LOST
+      - heading [level=1] [ref=f15e22]:
+        - text: Find your kindof
+        - emphasis [ref=f15e23]: mountain escape.
+      - paragraph [ref=f15e24]: From Shimla’s pine-lined streets to Spiti’s high roads, find an Indian hill escape that feels like yours.
+      - link "Plan your trip" [ref=f15e25] [cursor=pointer]:
+        - /url: "#plan"
+        - text: Plan your trip
+        - generic [aria-hidden] [ref=f15e26]: ↓
+    - generic [ref=f15e27]:
+      - generic [ref=f15e28]: HIMACHAL PRADESH, INDIA
+      - generic [ref=f15e29]: 31° 06′ N 77° 10′ E
+  - region "Plan your trip" [ref=f15e30]:
+    - generic [ref=f15e31]:
+      - generic [ref=f15e32]:
+        - generic [aria-hidden] [ref=f15e33]: ⌖
+        - generic [ref=f15e34]:
+          - generic [ref=f15e35]: Where to?
+          - searchbox "Where to?" [ref=f15e36]
+      - generic [ref=f15e37]:
+        - generic [aria-hidden] [ref=f15e38]: ▦
+        - generic [ref=f15e39]:
+          - generic [ref=f15e40]: When?
+          - textbox "Travel date" [ref=f15e41]
+      - generic [ref=f15e42]:
+        - generic [aria-hidden] [ref=f15e43]: ♙
+        - generic [ref=f15e44]:
+          - generic [ref=f15e45]: Who’s going?
+          - combobox "Number of travelers" [ref=f15e46] [cursor=pointer]:
+            - option "Just me"
+            - option "2 travelers" [selected]
+            - option "3 travelers"
+            - option "4+ travelers"
+      - button "Find a trip" [ref=f15e47] [cursor=pointer]:
+        - generic [aria-hidden] [ref=f15e49]: ↗
+  - region [ref=f15e50]:
+    - generic [ref=f15e51]:
+      - generic [ref=f15e52]:
+        - paragraph [ref=f15e53]: A LITTLE INSPIRATION
+        - heading [level=2] [ref=f15e54]:
+          - text: Somewhere
+          - emphasis [ref=f15e55]: calling?
+      - link "See all places" [ref=f15e56] [cursor=pointer]:
+        - /url: "#packages"
+        - text: See all places
+        - generic [aria-hidden] [ref=f15e57]: ↗
+    - generic [ref=f15e58]:
+      - article [ref=f15e59]:
+        - img "Shimla hillside town surrounded by mountain slopes" [ref=f15e60]
+        - generic [ref=f15e62]:
+          - generic [ref=f15e63]: HIMACHAL PRADESH, INDIA
+          - button "Save Shimla" [ref=f15e64] [cursor=pointer]: ♡
+        - generic [ref=f15e65]:
+          - paragraph [ref=f15e66]: Pine walks & mountain mornings
+          - heading "Shimla" [level=3] [ref=f15e67]
+          - button "Explore" [ref=f15e68] [cursor=pointer]:
+            - text: Explore
+            - generic [aria-hidden] [ref=f15e69]: ↗
+      - article [ref=f15e70]:
+        - img "Snow-covered peaks above the Manali region" [ref=f15e71]
+        - generic [ref=f15e73]:
+          - generic [ref=f15e74]: HIMACHAL PRADESH, INDIA
+          - button "Save Manali" [ref=f15e75] [cursor=pointer]: ♡
+        - generic [ref=f15e76]:
+          - paragraph [ref=f15e77]: River air & mountain roads
+          - heading "Manali" [level=3] [ref=f15e78]
+          - button "Explore" [ref=f15e79] [cursor=pointer]:
+            - text: Explore
+            - generic [aria-hidden] [ref=f15e80]: ↗
+      - article [ref=f15e81]:
+        - img "A remote high-altitude Himalayan valley" [ref=f15e82]
+        - generic [ref=f15e84]:
+          - generic [ref=f15e85]: HIMACHAL PRADESH, INDIA
+          - button "Save Lahaul & Spiti" [ref=f15e86] [cursor=pointer]: ♡
+        - generic [ref=f15e87]:
+          - paragraph [ref=f15e88]: High passes & quiet monasteries
+          - heading "Lahaul & Spiti" [level=3] [ref=f15e89]
+          - button "Explore" [ref=f15e90] [cursor=pointer]:
+            - text: Explore
+            - generic [aria-hidden] [ref=f15e91]: ↗
+      - article [ref=f15e92]:
+        - img "A mountain lake and green hills" [ref=f15e93]
+        - generic [ref=f15e95]:
+          - generic [ref=f15e96]: UTTARAKHAND, INDIA
+          - button "Save Mussoorie" [ref=f15e97] [cursor=pointer]: ♡
+        - generic [ref=f15e98]:
+          - paragraph [ref=f15e99]: Cloud-kissed walks & chai stops
+          - heading "Mussoorie" [level=3] [ref=f15e100]
+          - button "Explore" [ref=f15e101] [cursor=pointer]:
+            - text: Explore
+            - generic [aria-hidden] [ref=f15e102]: ↗
+  - region [ref=f15e103]:
+    - generic [ref=f15e104]:
+      - generic [ref=f15e105]:
+        - paragraph [ref=f15e106]: THOUGHTFUL TRIPS, NO GUESSWORK
+        - heading [level=2] [ref=f15e107]:
+          - text: A good place to
+          - emphasis [ref=f15e108]: begin.
+      - paragraph [ref=f15e109]: Sample trips to get yourdaydream going.
+    - generic [ref=f15e110]:
+      - article [ref=f15e111]:
+        - button "See Shimla trip details" [ref=f15e112] [cursor=pointer]:
+          - img "Shimla hillside town surrounded by mountain slopes" [ref=f15e113]
+          - generic [ref=f15e114]: HIMACHAL PRADESH, INDIA
+        - generic [ref=f15e115]:
+          - paragraph [ref=f15e116]: Shimla · 4 days
+          - heading "Shimla Hill Escape" [level=3] [ref=f15e117]
+          - generic [ref=f15e118]:
+            - generic [ref=f15e119]:
+              - text: From ₹15,999*
+              - generic [ref=f15e120]: "* sample price"
+            - button "View trip" [ref=f15e121] [cursor=pointer]: View trip ↗
+      - article [ref=f15e122]:
+        - button "See Manali trip details" [ref=f15e123] [cursor=pointer]:
+          - img "Snow-covered peaks above the Manali region" [ref=f15e124]
+          - generic [ref=f15e125]: HIMACHAL PRADESH, INDIA
+        - generic [ref=f15e126]:
+          - paragraph [ref=f15e127]: Manali · 5 days
+          - heading "Manali Valley Break" [level=3] [ref=f15e128]
+          - generic [ref=f15e129]:
+            - generic [ref=f15e130]:
+              - text: From ₹21,999*
+              - generic [ref=f15e131]: "* sample price"
+            - button "View trip" [ref=f15e132] [cursor=pointer]: View trip ↗
+      - article [ref=f15e133]:
+        - button "See Lahaul & Spiti trip details" [ref=f15e134] [cursor=pointer]:
+          - img "A remote high-altitude Himalayan valley" [ref=f15e135]
+          - generic [ref=f15e136]: HIMACHAL PRADESH, INDIA
+        - generic [ref=f15e137]:
+          - paragraph [ref=f15e138]: Lahaul & Spiti · 8 days
+          - heading "Spiti Slow Road Trip" [level=3] [ref=f15e139]
+          - generic [ref=f15e140]:
+            - generic [ref=f15e141]:
+              - text: From ₹36,999*
+              - generic [ref=f15e142]: "* sample price"
+            - button "View trip" [ref=f15e143] [cursor=pointer]: View trip ↗
+      - article [ref=f15e144]:
+        - button "See Mussoorie trip details" [ref=f15e145] [cursor=pointer]:
+          - img "A mountain lake and green hills" [ref=f15e146]
+          - generic [ref=f15e147]: UTTARAKHAND, INDIA
+        - generic [ref=f15e148]:
+          - paragraph [ref=f15e149]: Mussoorie · 3 days
+          - heading "Mussoorie Weekend" [level=3] [ref=f15e150]
+          - generic [ref=f15e151]:
+            - generic [ref=f15e152]:
+              - text: From ₹12,999*
+              - generic [ref=f15e153]: "* sample price"
+            - button "View trip" [ref=f15e154] [cursor=pointer]: View trip ↗
+    - paragraph [ref=f15e155]: "*Illustrative sample prices in INR; not live quotes."
+  - generic [ref=f15e156]:
+    - img "Mountain peaks and forested slopes in the Himalayas" [ref=f15e157]
+    - generic [ref=f15e158]:
+      - paragraph [ref=f15e159]: TRAVEL, A LITTLE MORE HUMAN
+      - heading [level=2] [ref=f15e160]:
+        - text: Go beyondthe
+        - emphasis [ref=f15e161]: postcard.
+      - paragraph [ref=f15e162]: We believe the best trips aren’t about ticking places off a list. They’re about the long lunch that turns into dinner, the road you didn’t plan to take, and the people who make you feel at home.
+      - link "Get to know us" [ref=f15e163] [cursor=pointer]:
+        - /url: "#newsletter"
+        - text: Get to know us
+        - generic [aria-hidden] [ref=f15e164]: ↗
+    - generic [ref=f15e165]: TAKE THE SCENIC ROUTE
+  - region [ref=f15e166]:
+    - generic [ref=f15e167]:
+      - generic [ref=f15e168]:
+        - paragraph [ref=f15e169]: NOT JUST A CHANGE OF SCENERY
+        - heading [level=2] [ref=f15e170]:
+          - text: Go for the
+          - emphasis [ref=f15e171]: feeling.
+      - paragraph [ref=f15e172]: A few ways to make a placefeel like it was made for you.
+    - generic [ref=f15e173]:
+      - link "01 / OUT THERE Wild & wide open For the ones who find their quiet on the trail." [ref=f15e174] [cursor=pointer]:
+        - /url: "#plan"
+        - generic [ref=f15e175]: 01 / OUT THERE
+        - generic [aria-hidden] [ref=f15e176]: ⌁
+        - heading "Wild & wide open" [level=3] [ref=f15e177]
+        - paragraph [ref=f15e178]: For the ones who find their quiet on the trail.
+        - generic [aria-hidden] [ref=f15e179]: ↗
+      - link "02 / AT THE TABLE Come hungry Local kitchens, market mornings, one more bite." [ref=f15e180] [cursor=pointer]:
+        - /url: "#plan"
+        - generic [ref=f15e181]: 02 / AT THE TABLE
+        - generic [aria-hidden] [ref=f15e182]: ◒
+        - heading "Come hungry" [level=3] [ref=f15e183]
+        - paragraph [ref=f15e184]: Local kitchens, market mornings, one more bite.
+        - generic [aria-hidden] [ref=f15e185]: ↗
+      - link "03 / TAKE IT SLOW Time well spent Less itinerary. More see-where-the-day-goes." [ref=f15e186] [cursor=pointer]:
+        - /url: "#plan"
+        - generic [ref=f15e187]: 03 / TAKE IT SLOW
+        - generic [aria-hidden] [ref=f15e188]: ☼
+        - heading "Time well spent" [level=3] [ref=f15e189]
+        - paragraph [ref=f15e190]: Less itinerary. More see-where-the-day-goes.
+        - generic [aria-hidden] [ref=f15e191]: ↗
+  - generic [ref=f15e192]:
+    - generic [ref=f15e193]:
+      - paragraph [ref=f15e194]: A GOOD THING IN YOUR INBOX
+      - heading [level=2] [ref=f15e195]:
+        - text: Postcards from
+        - emphasis [ref=f15e196]: elsewhere.
+      - paragraph [ref=f15e197]: Fresh places, thoughtful stories, and a little nudge to use your vacation days.
+    - generic [ref=f15e198]:
+      - generic [ref=f15e199]: Your email address
+      - textbox "Your email address" [ref=f15e200]
+      - button "Subscribe to the newsletter" [ref=f15e201] [cursor=pointer]: Count me in ↗
+      - paragraph [ref=f15e202]: No spam. Just good places.

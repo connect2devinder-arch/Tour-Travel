@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /contactEnquiries/{enquiryId} {
+      allow create: if validEnquiry();
+      allow read, update, delete: if false;
+
+      function validEnquiry() {
+        let data = request.resource.data;
+        return data.keys().hasAll([
+            'name', 'email', 'phone', 'destination', 'packageId', 'packageName',
+            'travelDate', 'travelers', 'message', 'createdAt'
+          ])
+          && data.keys().hasOnly([
+            'name', 'email', 'phone', 'destination', 'packageId', 'packageName',
+            'travelDate', 'travelers', 'message', 'createdAt'
+          ])
+          && data.name is string
+          && data.name.size() >= 2
+          && data.name.size() <= 100
+          && data.email is string
+          && data.email.size() >= 5
+          && data.email.size() <= 254
+          && data.email.matches('^[^ @]+@[^ @]+[.][^ @]+$')
+          && data.phone is string
+          && data.phone.size() >= 7
+          && data.phone.size() <= 30
+          && data.phone.matches('^[+0-9() -]+$')
+          && data.destination in ['shimla', 'manali', 'lahaul-spiti', 'mussoorie', 'not-sure']
+          && data.packageId is string
+          && data.packageId.size() <= 100
+          && data.packageName is string
+          && data.packageName.size() <= 150
+          && (data.travelDate == null || (data.travelDate is string && data.travelDate.size() == 10))
+          && data.travelers in ['1', '2', '3', '4']
+          && data.message is string
+          && data.message.size() <= 1500
+          && data.createdAt is timestamp
+          && data.createdAt == request.time;
+      }
+    }
+  }
+}

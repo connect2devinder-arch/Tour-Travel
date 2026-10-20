@@ -1,0 +1,8 @@
+- generic [ref=f12e89]:
+  - group [ref=f12e90]:
+    - generic "Are these package details and prices final?" [active] [ref=f12e91] [cursor=pointer]
+    - paragraph [ref=f12e104]: No. This is illustrative sample content; confirm final rates, availability, and inclusions before booking.
+  - group [ref=f12e92]:
+    - generic "Can I ask about different travel dates?" [ref=f12e93] [cursor=pointer]
+  - group [ref=f12e94]:
+    - generic "Can the itinerary be changed?" [ref=f12e95] [cursor=pointer]
