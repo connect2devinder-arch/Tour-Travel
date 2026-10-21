@@ -695,6 +695,7 @@ function Footer() {
       <span className="footer-address">{siteAddress}</span>
       <Link className="footer-about" to="/journal">Journal</Link>
       <Link className="footer-about" to="/#about">About</Link>
+      <Link className="footer-about" to="/admin">Admin</Link>
       <span>© {new Date().getFullYear()} {siteConfig.companyName}</span>
       <a className="back-top" href="/#top">Back to top ↑</a>
     </footer>
@@ -776,6 +777,7 @@ export default function App() {
           <Route path="/packages/:packageId" element={<PackageDetailPage />} />
           <Route path="/journal" element={<JournalPage />} />
           <Route path="/journal/:slug" element={<ArticlePage />} />
+          <Route path="/admin" element={<AdminJournal />} />
           <Route path="/admin/journal" element={<AdminJournal />} />
           <Route path="/admin/journal/new" element={<AdminPostEditor />} />
           <Route path="/admin/journal/:id" element={<AdminPostEditor />} />

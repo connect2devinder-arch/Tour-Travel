@@ -159,7 +159,7 @@ Verified live at `https://tour-83b6c.web.app` with the Playwright CLI. Firestore
 | TC-008 | PASS — `<script>` and `onerror` stripped, no script executed, 0 console errors | Sanitizer check output |
 | TC-009 | PARTIAL — meta title/description, OG image and JSON-LD `Article` verified; RSS deferred to Phase 2 | SEO check output |
 | TC-010 | PASS — related posts render under “Keep reading” | [article](../../test-results/evidence/journal/TC-002-article.png) |
-| TC-011 | PASS — anonymous write 403, anonymous draft read 403, admin write/read 200, admin-only editor route | [admin locked](../../test-results/evidence/journal/TC-011-admin-locked.png) |
+| TC-011 | PASS — anonymous write 403, anonymous draft read 403, admin write/read 200, admin-only editor route with a working sign-in button | [admin login](../../test-results/evidence/journal/TC-011-admin-login.png), [admin locked](../../test-results/evidence/journal/TC-011-admin-locked.png) |
 | TC-012 | PASS — 390px viewport: no horizontal overflow, no broken images | [mobile article](../../test-results/evidence/journal/TC-012-mobile-article.png) |
 
 RSS feed is intentionally out of Phase 1 scope: a dynamic feed requires a Cloud Function rather than an SPA route. The temporary posts used for the sanitizer and rules checks were deleted after verification.
