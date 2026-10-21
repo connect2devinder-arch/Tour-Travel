@@ -21,6 +21,8 @@ Package cards show duration, itinerary summary, inclusions, and a "Starting from
 
 Each destination has 5 drone/aerial photos sourced from Unsplash and stored in Firebase Storage under `destinations/<place>/<n>.jpg` (bucket `tour-83b6c.firebasestorage.app`). The destination cards, destination galleries, and package detail galleries all load these images. Objects are public-read so the browser can load them directly.
 
+All site imagery is self-hosted on Firebase Storage — the hero and manifesto backgrounds live under `site/hero.jpg` and `site/manifesto.jpg`. No runtime requests go to Unsplash.
+
 ## Destination place carousels
 
 Each destination detail section shows a carousel of its famous tourist places with back/forward arrows and dot indicators. Every slide shows the place name as a caption. Place photos are stored under `destinations/<place>/<name>.jpg` in Firebase Storage:
@@ -49,3 +51,7 @@ Google sign-in is enabled for the deployed Firebase project. The live flow has b
 ## Contact details
 
 Phone number and office address live in one place: `src/siteConfig.js`. Change them there and the contact section and footer both update.
+
+## About section
+
+The company story and values live in `src/aboutContent.js` — edit the copy there and the About section updates. It sits between the manifesto and experiences sections and is reachable from the header and footer.

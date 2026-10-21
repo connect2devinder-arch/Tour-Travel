@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { destinations, experiences } from "./mockData.js";
+import { aboutContent } from "./aboutContent.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -74,6 +75,7 @@ function Header() {
           <a href={sectionHref("destinations")} onClick={closeMenu}>Destinations</a>
           <a href={sectionHref("packages")} onClick={closeMenu}>Packages</a>
           <a href={sectionHref("experiences")} onClick={closeMenu}>Experiences</a>
+          <a href={sectionHref("about")} onClick={closeMenu}>About</a>
           <a href={sectionHref("contact")} onClick={closeMenu}>Contact</a>
           <a href={sectionHref("our-way")} onClick={closeMenu}>Our way</a>
         </nav>
@@ -412,6 +414,34 @@ function PackageDetailPage() {
   );
 }
 
+function AboutSection() {
+  return (
+    <section className="about-section" id="about" aria-labelledby="about-title">
+      <div className="about-grid">
+        <figure className="about-media">
+          <img src={aboutContent.image.src} alt={aboutContent.image.alt} loading="lazy" />
+          <figcaption>{aboutContent.image.note}</figcaption>
+        </figure>
+        <div className="about-copy">
+          <p className="eyebrow">{aboutContent.eyebrow}</p>
+          <h2 id="about-title">{aboutContent.headingLead} <em>{aboutContent.headingHighlight}</em></h2>
+          {aboutContent.paragraphs.map((paragraph) => <p key={paragraph.slice(0, 24)}>{paragraph}</p>)}
+          <p className="about-closing">{aboutContent.closing}</p>
+        </div>
+      </div>
+      <div className="about-values">
+        {aboutContent.values.map((value, index) => (
+          <article className="about-value" key={value.title}>
+            <span className="about-value-number">{String(index + 1).padStart(2, "0")}</span>
+            <h3>{value.title}</h3>
+            <p>{value.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Experiences() {
   return (
     <section className="experiences section-shell" id="experiences" aria-labelledby="experiences-title">
@@ -584,6 +614,7 @@ function Footer() {
       <p>Take the long way around.</p>
       <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
       <span className="footer-address">{siteAddress}</span>
+      <a className="footer-about" href="/#about">About</a>
       <span>© {new Date().getFullYear()} {siteConfig.companyName}</span>
       <a className="back-top" href="/#top">Back to top ↑</a>
     </footer>
@@ -646,6 +677,7 @@ function HomePage() {
         <div className="manifesto-copy"><p className="eyebrow">TRAVEL, A LITTLE MORE HUMAN</p><h2>Go beyond<br />the <em>postcard.</em></h2><p>We believe the best trips aren’t about ticking places off a list. They’re about the long lunch that turns into dinner, the road you didn’t plan to take, and the people who make you feel at home.</p><a className="text-link" href="#newsletter">Get to know us <span aria-hidden="true">↗</span></a></div>
         <span className="manifesto-note">TAKE THE SCENIC ROUTE</span>
       </section>
+      <AboutSection />
       <Experiences />
       <ContactForm />
       <Newsletter />

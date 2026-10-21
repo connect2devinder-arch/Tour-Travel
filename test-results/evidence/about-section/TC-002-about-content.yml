@@ -1,0 +1,26 @@
+- region [ref=f1e194]:
+  - generic [ref=f1e195]:
+    - figure "Shimla, Himachal Pradesh · where it started" [ref=f1e196]:
+      - img "Aerial drone view of the colourful hill town of Shimla, where Elsewhere Travel began" [ref=f1e197]
+    - generic [ref=f1e199]:
+      - paragraph [ref=f1e200]: ABOUT ELSEWHERE
+      - heading [level=2] [ref=f1e201]:
+        - text: We started with a
+        - emphasis [ref=f1e202]: taxi and a map.
+      - paragraph [ref=f1e203]: Elsewhere began in Shimla with a borrowed Innova, a hand-marked map, and a hunch that the best holidays in the Himalaya are the ones nobody planned. We wanted the opposite of a package holiday — a trip that bends around the weather, the road, and whoever you happen to meet along the way.
+      - paragraph [ref=f1e204]: Today we’re a small team of Himachali and Uttarakhandi people who drive these roads for a living. We pick the stays we’d send our own family to, the trails we’d walk on a free day, and the tea stalls worth the stop. If a pass is shut because of a landslide, we’ll tell you — and we’ll show you something better on the way there.
+      - paragraph [ref=f1e205]: No coaches. No five-a.m. starts. No twenty-stop itineraries. Just small groups, honest prices, and enough time to actually be somewhere.
+      - paragraph [ref=f1e206]: Come for the mountains. Stay for the people you meet on the way.
+  - generic [ref=f1e207]:
+    - article [ref=f1e208]:
+      - text: "01"
+      - heading "Local knowledge" [level=3] [ref=f1e209]
+      - paragraph [ref=f1e210]: Routes, stays and shortcuts we know from the road — not from a brochure.
+    - article [ref=f1e211]:
+      - text: "02"
+      - heading "Slow by design" [level=3] [ref=f1e212]
+      - paragraph [ref=f1e213]: Fewer places, longer days, and room for the weather to change the plan.
+    - article [ref=f1e214]:
+      - text: "03"
+      - heading "Honest by default" [level=3] [ref=f1e215]
+      - paragraph [ref=f1e216]: What we quote is what you pay. No hidden charges, no fine print surprises.
