@@ -6,6 +6,7 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email is string
+        && exists(/databases/$(database)/documents/config/admins)
         && request.auth.token.email in get(/databases/$(database)/documents/config/admins).data.emails;
     }
 
@@ -19,6 +20,119 @@ service cloud.firestore {
       // Public list queries must filter on status == 'published'.
       allow read: if resource.data.status == 'published' || isAdmin();
       allow create, update, delete: if isAdmin();
+    }
+
+    // Tour packages managed from the admin panel. Published packages are public;
+    // public list queries must filter on status == 'published'.
+    match /packages/{packageId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Bookings made through the online booking flow. A booking can be read by
+    // the guest whose email it was made with, or by an admin.
+    match /bookings/{bookingId} {
+      allow create: if validBooking();
+      allow read: if (request.auth != null && request.auth.token.email == resource.data.email) || isAdmin();
+      allow update: if isAdmin() || guestPaymentUpdate();
+      allow delete: if isAdmin();
+
+      function validBooking() {
+        let data = request.resource.data;
+        return bookingId.matches('^ELW-[A-Z0-9]{6}$')
+          && data.keys().hasAll([
+              'reference', 'packageId', 'packageName', 'destinationId', 'destinationName',
+              'guestName', 'email', 'phone', 'travelDate', 'travelers', 'notes',
+              'amount', 'currency', 'status', 'payment', 'history', 'createdAt', 'updatedAt'
+            ])
+          && data.keys().hasOnly([
+              'reference', 'packageId', 'packageName', 'destinationId', 'destinationName',
+              'guestName', 'email', 'phone', 'travelDate', 'travelers', 'notes',
+              'amount', 'currency', 'status', 'payment', 'history', 'createdAt', 'updatedAt'
+            ])
+          && data.reference == bookingId
+          && data.packageId is string
+          && data.packageName is string
+          && data.destinationId is string
+          && data.destinationName is string
+          && data.guestName is string
+          && data.guestName.size() >= 2
+          && data.guestName.size() <= 100
+          && data.email is string
+          && data.email.size() >= 5
+          && data.email.size() <= 254
+          && data.email.matches('^[^ @]+@[^ @]+[.][^ @]+$')
+          && data.phone is string
+          && data.phone.size() >= 7
+          && data.phone.size() <= 30
+          && data.phone.matches('^[+0-9() -]+$')
+          && data.travelDate is string
+          && data.travelDate.size() == 10
+          && data.travelers is int
+          && data.travelers >= 1
+          && data.travelers <= 20
+          && data.notes is string
+          && data.notes.size() <= 1500
+          && data.amount is number
+          && data.amount >= 1
+          && data.currency == 'INR'
+          && data.status == 'pending_payment'
+          && data.payment.status == 'pending'
+          && data.history is list
+          && data.history.size() == 1
+          && data.history[0].status == 'pending_payment'
+          && data.createdAt == request.time
+          && data.updatedAt == request.time;
+      }
+
+      // The guest may only move a booking from pending_payment to confirmed and
+      // attach the simulated payment details. Everything else stays untouched.
+      function guestPaymentUpdate() {
+        let before = resource.data;
+        let after = request.resource.data;
+        return before.status == 'pending_payment'
+          && after.status == 'confirmed'
+          && after.payment.status == 'paid'
+          && after.amount == before.amount
+          && after.currency == before.currency
+          && after.email == before.email
+          && after.reference == before.reference
+          && after.history is list
+          && after.history.size() == before.history.size() + 1
+          && after.diff(before).affectedKeys().hasOnly(['status', 'payment', 'updatedAt', 'history']);
+      }
+    }
+
+    // Email and SMS notifications generated for booking events. Delivery is
+    // simulated in this POC, so only admins read or update them.
+    match /notifications/{notificationId} {
+      allow create: if validNotification();
+      allow read, update, delete: if isAdmin();
+
+      function validNotification() {
+        let data = request.resource.data;
+        return data.keys().hasAll([
+              'bookingId', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt'
+            ])
+          && data.keys().hasOnly([
+              'bookingId', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt', 'sentAt'
+            ])
+          && data.bookingId is string
+          && data.bookingId.size() > 0
+          && data.channel in ['email', 'sms']
+          && data.recipient is string
+          && data.recipient.size() > 0
+          && data.recipient.size() <= 254
+          && data.subject is string
+          && data.subject.size() <= 200
+          && data.body is string
+          && data.body.size() > 0
+          && data.body.size() <= 1500
+          && data.trigger in ['booking_created', 'payment_received', 'status_changed']
+          && data.status == 'queued'
+          && data.createdAt == request.time
+          && exists(/databases/$(database)/documents/bookings/$(data.bookingId));
+      }
     }
 
     match /contactEnquiries/{enquiryId} {

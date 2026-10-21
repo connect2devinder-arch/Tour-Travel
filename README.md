@@ -11,7 +11,7 @@ npm run dev
 
 Open the local URL printed by Vite. Use `npm run build` to create a production build.
 
-Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection; email notifications/admin dashboard, bookings, live availability, and newsletter delivery are not configured.
+Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection; email notifications/admin dashboard, live availability, and newsletter delivery are not configured. Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
 
 ## Tour packages
 
@@ -70,3 +70,29 @@ Public reading lives at `/journal` and `/journal/:slug`. Posts are stored in the
 - **Markdown** bodies are sanitized before rendering, so raw HTML and scripts cannot run.
 
 Content code lives in `src/blog.js` (data layer), `src/JournalPage.jsx` (public), `src/AdminJournal.jsx` (editor), and `src/aboutContent.js` / `src/siteConfig.js` (editable copy and contact details).
+
+## Package management
+
+Tour packages can be created, edited, published and deleted from the admin panel at `/admin/packages` (the **Packages** tab in the admin nav).
+
+- **Storage:** Firestore `packages` collection — name, slug, destination, price label, numeric price amount, duration, summary, itinerary, inclusions, hotel and transport details, FAQs, status and position.
+- **Public site:** published packages replace the sample packages for their destination (`src/mockData.js` is the fallback). If a destination has no published package, or Firebase is unavailable, the sample package stays visible — the public site never renders an empty catalogue.
+- **Destinations:** still come from the bundled sample data. Admin-managed destinations are a separate requirement.
+- Data layer: `src/packages.js`. Public state: `src/PackagesContext.jsx`.
+
+## Online booking and booking status
+
+A package detail page has a **Book this trip** action that opens `/book/:packageId`:
+
+1. **Details** — name, email, phone, travel date (today or later) and 1–20 travellers. The amount is `price amount × travellers` in INR.
+2. **Payment** — a simulated gateway. No money moves and no gateway keys are configured. Use card `4000 0000 0000 0001` to succeed or `4000 0000 0000 0002` to see a decline; a UPI id containing `fail` declines too.
+3. **Confirmation** — booking reference (`ELW-XXXXXX`), amount paid, payment reference and status.
+
+Bookings live in the Firestore `bookings` collection with a status history (`pending_payment` → `confirmed` → `cancelled`/`completed`).
+
+- **Your bookings:** `/bookings` lists the bookings made with the signed-in email; `/bookings/:reference` shows one booking and its history.
+- **Admin:** `/admin/bookings` lists every booking with status filters and search, and lets the operator change a booking status.
+- **Notifications:** booking created, payment received and status changed each queue an **email** and an **SMS** notification in the `notifications` collection, shown in the admin **Notifications** tab. Delivery is simulated — an admin can mark a notification as sent, but no provider is connected.
+- **Rules:** `firestore.rules` gates the new collections. A booking is readable by the guest whose email it was made with (Google sign-in) or by an admin; a guest may only move their own booking from `pending_payment` to `confirmed`.
+
+What is still missing for production: a real payment gateway (and server-side amount verification), a real email/SMS provider (Cloud Functions), cancellation/refund policy, deposit rules and booking expiry. These are tracked as open questions in `rfp/package-management-and-booking/requirement.md`.

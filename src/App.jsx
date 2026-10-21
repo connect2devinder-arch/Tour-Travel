@@ -1,17 +1,24 @@
 import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { destinations, experiences } from "./mockData.js";
+import { experiences } from "./mockData.js";
 import { aboutContent } from "./aboutContent.js";
 import { heroAutoplay, heroSlides } from "./heroSlides.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
 import { useAuth } from "./AuthContext.jsx";
+import { usePackages } from "./PackagesContext.jsx";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const JournalPage = lazy(() => import("./JournalPage.jsx").then((module) => ({ default: module.JournalPage })));
 const ArticlePage = lazy(() => import("./JournalPage.jsx").then((module) => ({ default: module.ArticlePage })));
 const AdminJournal = lazy(() => import("./AdminJournal.jsx").then((module) => ({ default: module.AdminJournal })));
 const AdminPostEditor = lazy(() => import("./AdminJournal.jsx").then((module) => ({ default: module.AdminPostEditor })));
+const AdminPackages = lazy(() => import("./AdminPackages.jsx").then((module) => ({ default: module.AdminPackages })));
+const AdminPackageEditor = lazy(() => import("./AdminPackages.jsx").then((module) => ({ default: module.AdminPackageEditor })));
+const AdminBookings = lazy(() => import("./AdminBookings.jsx").then((module) => ({ default: module.AdminBookings })));
+const BookingPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingPage })));
+const MyBookingsPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.MyBookingsPage })));
+const BookingStatusPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingStatusPage })));
 
 function Brand({ footer = false }) {
   return (
@@ -350,6 +357,7 @@ function DestinationDetails({ destination, onClose }) {
 }
 
 function FeaturedPackages() {
+  const { destinations } = usePackages();
   const packages = destinations.flatMap((destination) =>
     destination.packages.slice(0, 1).map((trip) => ({ ...trip, destination })),
   );
@@ -385,6 +393,7 @@ function FeaturedPackages() {
 function PackageDetailPage() {
   const { packageId } = useParams();
   const navigate = useNavigate();
+  const { destinations } = usePackages();
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const packageData = destinations.flatMap((destination) =>
     destination.packages.map((trip) => ({ ...trip, destination })),
@@ -420,6 +429,7 @@ function PackageDetailPage() {
             <span>{trip.duration}</span>
             <strong>Starting from {trip.price}</strong>
             <small>* Illustrative sample price</small>
+            <Link className="package-book-link" to={`/book/${trip.id}`}>Book this trip <span aria-hidden="true">↗</span></Link>
             <button type="button" onClick={() => navigate(enquiryUrl)}>Enquire about this trip <span aria-hidden="true">↗</span></button>
           </div>
         </header>
@@ -540,6 +550,7 @@ function Experiences() {
 function ContactForm() {
   const [submissionStatus, setSubmissionStatus] = useState("idle");
   const [searchParams] = useSearchParams();
+  const { destinations } = usePackages();
   const packageIdFromUrl = searchParams.get("package") || "";
   const [selectedPackageId, setSelectedPackageId] = useState(packageIdFromUrl);
   const packageOptions = destinations.flatMap((destination) =>
@@ -706,6 +717,7 @@ function HomePage() {
   const [search, setSearch] = useState(null);
   const [selectedDestination, setSelectedDestination] = useState(null);
   const [savedIds, setSavedIds] = useState([]);
+  const { destinations } = usePackages();
   const resultsRef = useRef(null);
   const detailRef = useRef(null);
 
@@ -714,7 +726,7 @@ function HomePage() {
     const query = search.query.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     if (!query) return destinations;
     return destinations.filter((destination) => `${destination.name} ${destination.country} ${destination.tags}`.toLowerCase().replace(/[^a-z0-9]+/g, " ").includes(query));
-  }, [search]);
+  }, [search, destinations]);
 
   function handleSearch(criteria) {
     setSearch(criteria);
@@ -775,12 +787,19 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/packages/:packageId" element={<PackageDetailPage />} />
+          <Route path="/book/:packageId" element={<BookingPage />} />
+          <Route path="/bookings" element={<MyBookingsPage />} />
+          <Route path="/bookings/:id" element={<BookingStatusPage />} />
           <Route path="/journal" element={<JournalPage />} />
           <Route path="/journal/:slug" element={<ArticlePage />} />
           <Route path="/admin" element={<AdminJournal />} />
           <Route path="/admin/journal" element={<AdminJournal />} />
           <Route path="/admin/journal/new" element={<AdminPostEditor />} />
           <Route path="/admin/journal/:id" element={<AdminPostEditor />} />
+          <Route path="/admin/packages" element={<AdminPackages />} />
+          <Route path="/admin/packages/new" element={<AdminPackageEditor />} />
+          <Route path="/admin/packages/:id" element={<AdminPackageEditor />} />
+          <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="*" element={<PackageDetailPage />} />
         </Routes>
       </Suspense>
