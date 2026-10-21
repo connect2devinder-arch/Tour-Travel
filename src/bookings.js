@@ -1,8 +1,10 @@
 import { firebaseApp } from "./firebase.js";
+import { siteConfig } from "./siteConfig.js";
 
 export const BOOKING_STATUSES = ["pending_payment", "confirmed", "cancelled", "completed"];
 export const NOTIFICATION_CHANNELS = ["email", "sms"];
-export const NOTIFICATION_TRIGGERS = ["booking_created", "payment_received", "status_changed"];
+export const NOTIFICATION_TRIGGERS = ["booking_created", "payment_received", "status_changed", "enquiry_received"];
+export const NOTIFICATION_TARGETS = ["booking", "enquiry"];
 
 export const BOOKING_STATUS_LABELS = {
   pending_payment: "Awaiting payment",
@@ -58,7 +60,8 @@ function normaliseBooking(booking, id) {
 function normaliseNotification(notification, id) {
   return {
     id: id ?? "",
-    bookingId: notification.bookingId ?? "",
+    targetId: notification.targetId ?? notification.bookingId ?? "",
+    targetType: notification.targetType ?? "booking",
     reference: notification.reference ?? "",
     channel: notification.channel ?? "email",
     recipient: notification.recipient ?? "",
@@ -204,13 +207,14 @@ export async function updateBookingStatus(id, status, note = "") {
 }
 
 /** Writes a notification record. Delivery itself is simulated in this POC. */
-export async function createNotification({ bookingId, reference, channel, recipient, subject, body, trigger }) {
+export async function createNotification({ targetId, targetType = "booking", reference, channel, recipient, subject, body, trigger }) {
   if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
   const db = await firestore();
   const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
 
   const payload = {
-    bookingId,
+    targetId: targetId ?? "",
+    targetType,
     reference: reference ?? "",
     channel,
     recipient: recipient ?? "",
@@ -297,7 +301,8 @@ export async function recordBookingNotifications(booking, trigger, extraNote = "
   for (const template of templates) {
     try {
       await createNotification({
-        bookingId: booking.id ?? booking.reference,
+        targetId: booking.id ?? booking.reference,
+        targetType: "booking",
         reference: booking.reference,
         trigger,
         ...template,
@@ -309,4 +314,49 @@ export async function recordBookingNotifications(booking, trigger, extraNote = "
     }
   }
   return results;
+}
+
+/**
+ * Queues the email that carries a contact-form enquiry to the team.
+ * The enquiry itself stays in the `contactEnquiries` collection; this is the
+ * notification record the admin panel picks up.
+ */
+export async function queueEnquiryNotification(enquiry) {
+  const destinationName = enquiry.destinationName || enquiry.destination || "a destination";
+  const packageName = enquiry.packageName || "no package chosen";
+  const message = String(enquiry.message ?? "").trim();
+  const notes = message ? message.slice(0, 600) : "No extra message.";
+
+  const body = [
+    `New trip enquiry from ${enquiry.name}.`,
+    "",
+    `Email: ${enquiry.email}`,
+    `Phone: ${enquiry.phone}`,
+    `Destination: ${destinationName}`,
+    `Tour package: ${packageName}`,
+    `Preferred travel date: ${enquiry.travelDate || "not given"}`,
+    `Travellers: ${enquiry.travelers}`,
+    "",
+    "Message:",
+    notes,
+    "",
+    `— ${siteConfig.companyName}`,
+  ].join("\n");
+
+  try {
+    await createNotification({
+      targetId: enquiry.id,
+      targetType: "enquiry",
+      reference: enquiry.id,
+      trigger: "enquiry_received",
+      channel: "email",
+      recipient: siteConfig.email.address,
+      subject: `New trip enquiry — ${enquiry.name} (${destinationName})`,
+      body,
+    });
+    return { ok: true };
+  } catch (error) {
+    console.warn("Enquiry notification could not be queued:", error?.message || error);
+    return { ok: false, error: error?.message || String(error) };
+  }
 }

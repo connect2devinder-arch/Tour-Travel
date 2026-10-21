@@ -11,7 +11,7 @@ npm run dev
 
 Open the local URL printed by Vite. Use `npm run build` to create a production build.
 
-Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection; email notifications/admin dashboard, live availability, and newsletter delivery are not configured. Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
+Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection and queue an email notification for the team; actual email delivery, live availability, and newsletter delivery are not configured. Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
 
 ## Tour packages
 
@@ -60,7 +60,9 @@ Google sign-in is enabled for the deployed Firebase project. The live flow has b
 
 ## Contact details
 
-Phone number and office address live in one place: `src/siteConfig.js`. Change them there and the contact section and footer both update.
+Phone number, enquiry email and office address live in one place: `src/siteConfig.js`. Change them there and the contact section and footer both update.
+
+Trip enquiries are addressed to **connect2devinder@gmail.com**. When a guest submits the contact form, the enquiry is saved in the `contactEnquiries` Firestore collection and an email notification is queued for that address with trigger `enquiry_received` — it shows up in the admin **Notifications** tab (`/admin/bookings`). Real email delivery still needs a provider and Cloud Functions; in this POC the notification is stored and can be marked as sent by hand.
 
 ## About section
 
@@ -98,7 +100,7 @@ Bookings live in the Firestore `bookings` collection with a status history (`pen
 
 - **Your bookings:** `/bookings` lists the bookings made with the signed-in email; `/bookings/:reference` shows one booking and its history.
 - **Admin:** `/admin/bookings` lists every booking with status filters and search, and lets the operator change a booking status.
-- **Notifications:** booking created, payment received and status changed each queue an **email** and an **SMS** notification in the `notifications` collection, shown in the admin **Notifications** tab. Delivery is simulated — an admin can mark a notification as sent, but no provider is connected.
+- **Notifications:** booking created, payment received, status changed and enquiry received each queue an **email** (and, for bookings, an **SMS**) notification in the `notifications` collection, shown in the admin **Notifications** tab. Delivery is simulated - an admin can mark a notification as sent, but no provider is connected.
 - **Rules:** `firestore.rules` gates the new collections. A booking is readable by the guest whose email it was made with (Google sign-in) or by an admin; a guest may only move their own booking from `pending_payment` to `confirmed`.
 
 What is still missing for production: a real payment gateway (and server-side amount verification), a real email/SMS provider (Cloud Functions), cancellation/refund policy, deposit rules and booking expiry. These are tracked as open questions in `rfp/package-management-and-booking/requirement.md`.

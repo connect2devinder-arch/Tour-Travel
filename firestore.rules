@@ -103,8 +103,8 @@ service cloud.firestore {
       }
     }
 
-    // Email and SMS notifications generated for booking events. Delivery is
-    // simulated in this POC, so only admins read or update them.
+    // Email and SMS notifications generated for booking and enquiry events.
+    // Delivery is simulated in this POC, so only admins read or update them.
     match /notifications/{notificationId} {
       allow create: if validNotification();
       allow read, update, delete: if isAdmin();
@@ -112,13 +112,14 @@ service cloud.firestore {
       function validNotification() {
         let data = request.resource.data;
         return data.keys().hasAll([
-              'bookingId', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt'
+              'targetId', 'targetType', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt'
             ])
           && data.keys().hasOnly([
-              'bookingId', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt', 'sentAt'
+              'targetId', 'targetType', 'reference', 'channel', 'recipient', 'subject', 'body', 'trigger', 'status', 'createdAt', 'sentAt'
             ])
-          && data.bookingId is string
-          && data.bookingId.size() > 0
+          && data.targetId is string
+          && data.targetId.size() > 0
+          && data.targetType in ['booking', 'enquiry']
           && data.channel in ['email', 'sms']
           && data.recipient is string
           && data.recipient.size() > 0
@@ -128,10 +129,15 @@ service cloud.firestore {
           && data.body is string
           && data.body.size() > 0
           && data.body.size() <= 1500
-          && data.trigger in ['booking_created', 'payment_received', 'status_changed']
+          && data.trigger in ['booking_created', 'payment_received', 'status_changed', 'enquiry_received']
           && data.status == 'queued'
           && data.createdAt == request.time
-          && exists(/databases/$(database)/documents/bookings/$(data.bookingId));
+          && (
+            (data.targetType == 'booking'
+              && exists(/databases/$(database)/documents/bookings/$(data.targetId)))
+            || (data.targetType == 'enquiry'
+              && exists(/databases/$(database)/documents/contactEnquiries/$(data.targetId)))
+          );
       }
     }
 

@@ -5,6 +5,7 @@ import { aboutContent } from "./aboutContent.js";
 import { heroAutoplay, heroSlides } from "./heroSlides.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
+import { queueEnquiryNotification } from "./bookings.js";
 import { useAuth } from "./AuthContext.jsx";
 import { usePackages } from "./PackagesContext.jsx";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -595,7 +596,7 @@ function ContactForm() {
     setSubmissionStatus("saving");
 
     try {
-      await saveContactEnquiry({
+      const enquiry = {
         name: String(formData.get("name")).trim(),
         email: String(formData.get("email")).trim(),
         phone: String(formData.get("phone")).trim(),
@@ -605,7 +606,12 @@ function ContactForm() {
         travelDate: formData.get("travelDate") || null,
         travelers: String(formData.get("travelers")),
         message: String(formData.get("message") || "").trim(),
-      });
+      };
+
+      const enquiryId = await saveContactEnquiry(enquiry);
+      const destinationName = destinations.find((destination) => destination.id === enquiry.destination)?.name ?? enquiry.destination;
+      await queueEnquiryNotification({ ...enquiry, id: enquiryId, destinationName });
+
       form.reset();
       setSelectedPackageId("");
       setSubmissionStatus("success");
@@ -617,7 +623,7 @@ function ContactForm() {
   const statusMessages = {
     idle: "Your details will only be used to respond to this trip enquiry.",
     saving: "Saving your enquiry…",
-    success: "Thanks! Your enquiry has been saved.",
+    success: `Thanks! Your enquiry has been sent to ${siteConfig.email.display}.`,
     error: "We couldn’t save your enquiry. Please try again.",
     "error-config": "Firestore is not configured for this build.",
   };
@@ -684,6 +690,7 @@ function ContactForm() {
       </form>
       <div className="contact-details">
         <a className="contact-detail" href={`tel:${siteConfig.phone.dial}`}><span>Call us</span><strong>{siteConfig.phone.display}</strong></a>
+        <a className="contact-detail" href={`mailto:${siteConfig.email.address}`}><span>Email us</span><strong>{siteConfig.email.display}</strong></a>
         <div className="contact-detail"><span>Visit us</span><address>{siteAddress}</address></div>
       </div>
     </section>
@@ -719,6 +726,7 @@ function Footer() {
       <Brand footer />
       <p>Take the long way around.</p>
       <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
+      <a className="footer-contact" href={`mailto:${siteConfig.email.address}`}>{siteConfig.email.display}</a>
       <span className="footer-address">{siteAddress}</span>
       <Link className="footer-about" to="/journal">Journal</Link>
       <Link className="footer-about" to="/#about">About</Link>

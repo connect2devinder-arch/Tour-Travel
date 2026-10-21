@@ -17,6 +17,7 @@ const TRIGGER_LABELS = {
   booking_created: "Booking created",
   payment_received: "Payment received",
   status_changed: "Status changed",
+  enquiry_received: "Enquiry received",
 };
 
 export function AdminBookings() {
@@ -222,7 +223,9 @@ export function AdminBookings() {
                   <span className="notification-channel">{notification.channel.toUpperCase()}</span>
                   <span>{notification.recipient}</span>
                   <span>{TRIGGER_LABELS[notification.trigger] ?? notification.trigger}</span>
-                  <span>{notification.reference}</span>
+                  {notification.targetType === "enquiry"
+                    ? <span>Contact form</span>
+                    : <span>{notification.reference}</span>}
                 </div>
                 <p className="admin-notification-body">{notification.body}</p>
                 <div className="admin-notification-actions">

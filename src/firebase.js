@@ -22,8 +22,9 @@ export async function saveContactEnquiry(enquiry) {
 
   const { addDoc, collection, getFirestore, serverTimestamp } = await import("firebase/firestore");
   const db = getFirestore(firebaseApp);
-  return addDoc(collection(db, "contactEnquiries"), {
+  const created = await addDoc(collection(db, "contactEnquiries"), {
     ...enquiry,
     createdAt: serverTimestamp(),
   });
+  return created.id;
 }

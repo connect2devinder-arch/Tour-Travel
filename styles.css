@@ -357,7 +357,7 @@ h1 em, h2 em { font-weight: 500; }
 .contact-submit-row { margin-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .contact-demo-note { max-width: 270px; margin: 0; color: var(--ink-soft); font-size: 9px; line-height: 1.6; }
 .contact-demo-note.is-error { color: #a33f2d; }
-.contact-details { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.contact-details { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
 .contact-detail { padding: 18px 20px; display: flex; flex-direction: column; gap: 7px; border: 1px solid var(--line); background: var(--paper); }
 .contact-detail > span { color: var(--coral); font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 .contact-detail strong, .contact-detail address { margin: 0; color: var(--ink); font-size: 13px; font-style: normal; font-weight: 600; line-height: 1.5; }
