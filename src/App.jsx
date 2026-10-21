@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { destinations, experiences } from "./mockData.js";
+import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
@@ -545,6 +546,10 @@ function ContactForm() {
           <button className="contact-submit" type="submit" disabled={submissionStatus === "saving" || !firebaseConfigured}>{submissionStatus === "saving" ? "Saving…" : "Send trip enquiry"} <span aria-hidden="true">↗</span></button>
         </div>
       </form>
+      <div className="contact-details">
+        <a className="contact-detail" href={`tel:${siteConfig.phone.dial}`}><span>Call us</span><strong>{siteConfig.phone.display}</strong></a>
+        <div className="contact-detail"><span>Visit us</span><address>{siteAddress}</address></div>
+      </div>
     </section>
   );
 }
@@ -577,7 +582,9 @@ function Footer() {
     <footer className="site-footer">
       <Brand footer />
       <p>Take the long way around.</p>
-      <span>© {new Date().getFullYear()} Elsewhere Travel Co.</span>
+      <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
+      <span className="footer-address">{siteAddress}</span>
+      <span>© {new Date().getFullYear()} {siteConfig.companyName}</span>
       <a className="back-top" href="/#top">Back to top ↑</a>
     </footer>
   );

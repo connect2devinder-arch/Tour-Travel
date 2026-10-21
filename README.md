@@ -45,3 +45,7 @@ CLI snapshots and logs are written to `.playwright-cli/` (git-ignored).
 This app uses the Firebase Web SDK. Local Firebase web configuration is kept in ignored `.env.local`; copy `.env.example` and supply the Firebase Web App values when setting up another checkout.
 
 Google sign-in is enabled for the deployed Firebase project. The live flow has been verified to open Google's account sign-in page. For local testing, ensure `localhost` is listed under Firebase Console → Authentication → Settings → Authorized domains.
+
+## Contact details
+
+Phone number and office address live in one place: `src/siteConfig.js`. Change them there and the contact section and footer both update.
