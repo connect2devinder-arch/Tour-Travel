@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { destinations, experiences } from "./mockData.js";
 import { aboutContent } from "./aboutContent.js";
+import { heroAutoplay, heroSlides } from "./heroSlides.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -112,9 +113,71 @@ function GoogleMark() {
 }
 
 function Hero() {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const sectionRef = useRef(null);
+  const resumeTimerRef = useRef(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    syncPreference();
+    mediaQuery.addEventListener("change", syncPreference);
+    return () => mediaQuery.removeEventListener("change", syncPreference);
+  }, []);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return undefined;
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), { threshold: 0.25 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || prefersReducedMotion || !isVisible) return undefined;
+    const timer = setInterval(() => {
+      setSlideIndex((current) => (current + 1) % heroSlides.length);
+    }, heroAutoplay.intervalMs);
+    return () => clearInterval(timer);
+  }, [isPaused, prefersReducedMotion, isVisible]);
+
+  useEffect(() => () => window.clearTimeout(resumeTimerRef.current), []);
+
+  function handleUserActivity() {
+    setIsPaused(true);
+    window.clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = window.setTimeout(() => setIsPaused(false), heroAutoplay.resumeDelayMs);
+  }
+
+  function goToSlide(index) {
+    setSlideIndex(index);
+    handleUserActivity();
+  }
+
+  const currentSlide = heroSlides[slideIndex];
+
   return (
-    <section className="hero" id="top" aria-labelledby="hero-title">
-      <div className="hero-image" role="img" aria-label="A hill town surrounded by the Himalayan mountains"></div>
+    <section
+      className="hero"
+      id="top"
+      aria-labelledby="hero-title"
+      ref={sectionRef}
+      onPointerEnter={handleUserActivity}
+      onPointerLeave={handleUserActivity}
+      onFocus={handleUserActivity}
+      onBlur={handleUserActivity}
+      onKeyDown={handleUserActivity}
+      onPointerDown={handleUserActivity}
+    >
+      <div className="hero-slides" role="img" aria-label={currentSlide.alt}>
+        {heroSlides.map((slide, index) => (
+          <div className={`hero-slide${index === slideIndex ? " is-active" : ""}`} key={slide.src} style={{ backgroundImage: `url("${slide.src}")` }}></div>
+        ))}
+      </div>
+      <div className="hero-overlay"></div>
       <div className="hero-content">
         <p className="eyebrow hero-eyebrow"><span></span> FOR THE LOVE OF GETTING LOST</p>
         <h1 id="hero-title">Find your kind<br />of <em>mountain escape.</em></h1>
@@ -122,7 +185,23 @@ function Hero() {
         <a className="text-link hero-link" href="#plan">Plan your trip <span aria-hidden="true">↓</span></a>
       </div>
         <div className="hero-caption"><span>HIMACHAL PRADESH, INDIA</span><span>31° 06′ N &nbsp; 77° 10′ E</span></div>
-      <div className="hero-counter"><span>01</span><span className="counter-line"></span><span>04</span></div>
+      <div className="hero-counter">
+        <span>{String(slideIndex + 1).padStart(2, "0")}</span>
+        <span className="counter-line"></span>
+        <span>{String(heroSlides.length).padStart(2, "0")}</span>
+      </div>
+      <div className="hero-dots" role="group" aria-label="Hero slide navigation">
+        {heroSlides.map((slide, index) => (
+          <button
+            key={slide.src}
+            type="button"
+            className={`hero-dot${index === slideIndex ? " is-active" : ""}`}
+            aria-label={`Show ${slide.label}`}
+            aria-current={index === slideIndex ? "true" : undefined}
+            onClick={() => goToSlide(index)}
+          ></button>
+        ))}
+      </div>
     </section>
   );
 }
