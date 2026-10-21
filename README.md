@@ -55,3 +55,14 @@ Phone number and office address live in one place: `src/siteConfig.js`. Change t
 ## About section
 
 The company story and values live in `src/aboutContent.js` — edit the copy there and the About section updates. It sits between the manifesto and experiences sections and is reachable from the header and footer.
+
+## The Journal (blog)
+
+Public reading lives at `/journal` and `/journal/:slug`. Posts are stored in the Firestore `posts` collection and can be written in the browser at `/admin/journal`.
+
+- **Admin access:** sign in with Google, then the account must be in the Firestore `config/admins` document (`emails` array). The header shows a **Write** link for admins.
+- **Bilingual posts:** each language version is its own document linked by `translationGroup`. Use **Create Hindi/English version** in the editor to make the sibling.
+- **Security:** `firestore.rules` and `storage.rules` gate writes to admins. Published posts are public; drafts are not.
+- **Markdown** bodies are sanitized before rendering, so raw HTML and scripts cannot run.
+
+Content code lives in `src/blog.js` (data layer), `src/JournalPage.jsx` (public), `src/AdminJournal.jsx` (editor), and `src/aboutContent.js` / `src/siteConfig.js` (editable copy and contact details).

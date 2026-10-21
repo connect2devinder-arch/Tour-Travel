@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email in firestore.get(/databases/(default)/documents/config/admins).data.emails;
+    }
+
+    // Blog cover images: public read, admin-only write.
+    match /journal/covers/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Destination, place and site imagery is uploaded by tooling, not the browser.
+    match /destinations/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /site/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

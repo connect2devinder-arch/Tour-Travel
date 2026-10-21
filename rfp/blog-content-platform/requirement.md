@@ -24,7 +24,7 @@ Organic search traffic aur content authority badhana, aur website par ek aisi ja
 - **REQ-006 — Admin editor:** `/admin/journal` par post list (status, languages, last edited) ho, aur `/admin/journal/new` + `/admin/journal/:id` par editor — title, slug, excerpt, markdown body with live preview, cover image upload, tags, linked destination/package, aur publish toggle.
 - **REQ-007 — Cover images:** Cover image Firebase Storage mein upload ho (`journal/covers/...`) aur post mein render ho.
 - **REQ-008 — Markdown rendering:** Body markdown se render ho (tables, lists, headings, links, code supported) aur output sanitize hua ho — raw HTML/script execute na ho.
-- **REQ-009 — SEO:** Per-post meta title, meta description, Open Graph image, JSON-LD `Article` schema, `sitemap.xml` aur RSS feed.
+- **REQ-009 — SEO:** Per-post meta title, meta description, Open Graph image, aur JSON-LD `Article` schema. **RSS feed Phase 2 mein defer hui hai** — dynamic feed ke liye server endpoint (Cloud Function) chahiye, static SPA route se nahi ban sakta.
 - **REQ-010 — Related content:** Article page par same destination ya shared tags wale posts "related" ke roop mein dikhaye jayen.
 - **REQ-011 — Access control:** Admin routes sirf admin users ko dikhein; Firestore aur Storage rules se writes enforce karein (UI hiding ke bajaye).
 - **REQ-012 — Responsive and accessible:** Blog pages mobile par responsive hon, images meaningful alt text rakhein, aur keyboard navigation kaam kare.
@@ -39,7 +39,7 @@ Organic search traffic aur content authority badhana, aur website par ek aisi ja
 - **AC-006 (REQ-006):** Given admin signed in hai, when woh naya post banata hai aur publish karta hai, then post `/admin/journal` list mein dikhe aur public `/journal` par bhi aa jaye.
 - **AC-007 (REQ-007):** Given cover image choose ki gayi hai, when admin save karta hai, then image Firebase Storage mein upload ho aur post page par render ho.
 - **AC-008 (REQ-008):** Given post body mein raw HTML/script hai, when article render hota hai, then script execute na ho aur output sanitized markup ho.
-- **AC-009 (REQ-009):** Given post published hai, when uska URL kholte hain, then unique meta title/description, OG image aur JSON-LD `Article` markup page head mein hon; `/journal/rss.xml` published posts list kare.
+- **AC-009 (REQ-009):** Given post published hai, when uska URL kholte hain, then unique meta title/description, OG image aur JSON-LD `Article` markup page head mein hon.
 - **AC-010 (REQ-010):** Given article page khula hai, when visitor neeche dekhta hai, then same destination ya shared tags wale related posts dikhein.
 - **AC-011 (REQ-011):** Given non-admin user signed in hai, when woh `/admin/journal` kholta hai ya post likhne ki koshish karta hai, then editor access mile na aur Firestore/Storage rules write reject karein.
 - **AC-012 (REQ-012):** Given mobile viewport, when journal list aur article render hote hain, then content single-column stack ho, koi horizontal overflow na ho, aur images/controls keyboard-accessible hon.
@@ -98,8 +98,8 @@ config/admins
 
 ## Phasing
 
-- **Phase 1 (this requirement):** Reading experience + admin editor — listing, article page, bilingual posts, markdown with sanitization, editor, Storage cover upload, rules, SEO meta, RSS.
-- **Phase 2 (later):** search, featured scheduling, view counts, newsletter integration of the feed, sitemap automation, related-content tuning.
+- **Phase 1 (this requirement):** Reading experience + admin editor — listing, article page, bilingual posts, markdown with sanitization, editor, Storage cover upload, rules, SEO meta.
+- **Phase 2 (later):** RSS feed (Cloud Function), sitemap, search, featured scheduling, view counts, newsletter integration of the feed, related-content tuning.
 
 ## Dependencies and constraints
 

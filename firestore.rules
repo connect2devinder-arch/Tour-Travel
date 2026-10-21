@@ -2,6 +2,25 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email in get(/databases/$(database)/documents/config/admins).data.emails;
+    }
+
+    match /config/admins {
+      allow read: if isAdmin();
+      allow write: if false; // seeded via tooling; edit the list in the Firebase console
+    }
+
+    match /posts/{postId} {
+      // Published posts are public. Drafts are visible to admins only.
+      // Public list queries must filter on status == 'published'.
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
     match /contactEnquiries/{enquiryId} {
       allow create: if validEnquiry();
       allow read, update, delete: if false;

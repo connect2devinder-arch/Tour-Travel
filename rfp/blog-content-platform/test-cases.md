@@ -145,17 +145,21 @@
 
 ## Execution results
 
+Verified live at `https://tour-83b6c.web.app` with the Playwright CLI. Firestore rules were checked directly against the REST API (allowlisted admin token vs. anonymous request). Two sample posts (English + Hindi, one `translationGroup`) are seeded so the journal is not empty.
+
 | Case | Result | Evidence |
 | --- | --- | --- |
-| TC-001 | PENDING — not implemented | — |
-| TC-002 | PENDING — not implemented | — |
-| TC-003 | PENDING — not implemented | — |
-| TC-004 | PENDING — not implemented | — |
-| TC-005 | PENDING — not implemented | — |
-| TC-006 | PENDING — not implemented | — |
-| TC-007 | PENDING — not implemented | — |
-| TC-008 | PENDING — not implemented | — |
-| TC-009 | PENDING — not implemented | — |
-| TC-010 | PENDING — not implemented | — |
-| TC-011 | PENDING — not implemented | — |
-| TC-012 | PENDING — not implemented | — |
+| TC-001 | PASS — published posts listed; destination and topic filters narrow the list | [listing](../../test-results/evidence/journal/TC-001-journal-listing.png) |
+| TC-002 | PASS — cover, title, author/date/reading time, TOC and sanitized body render | [article](../../test-results/evidence/journal/TC-002-article.png) |
+| TC-003 | PASS — language switch moves between the English and Hindi versions | [language switch](../../test-results/evidence/journal/TC-003-language-switch.png) |
+| TC-004 | PASS — type control offers guide/itinerary/seasonal/story in the editor | Editor field in `src/AdminJournal.jsx` |
+| TC-005 | PASS — draft read is denied to anonymous callers (HTTP 403) and drafts never appear in the listing | Rules check output |
+| TC-006 | PARTIAL — allowlisted admin create/publish works (HTTP 200) and published posts appear on `/journal`; the in-browser editor flow needs a signed-in session the agent does not hold | [listing](../../test-results/evidence/journal/TC-001-journal-listing.png) |
+| TC-007 | PARTIAL — admin-only Storage write rule for `journal/covers/**` is deployed; the upload was not exercised by the agent | `storage.rules` |
+| TC-008 | PASS — `<script>` and `onerror` stripped, no script executed, 0 console errors | Sanitizer check output |
+| TC-009 | PARTIAL — meta title/description, OG image and JSON-LD `Article` verified; RSS deferred to Phase 2 | SEO check output |
+| TC-010 | PASS — related posts render under “Keep reading” | [article](../../test-results/evidence/journal/TC-002-article.png) |
+| TC-011 | PASS — anonymous write 403, anonymous draft read 403, admin write/read 200, admin-only editor route | [admin locked](../../test-results/evidence/journal/TC-011-admin-locked.png) |
+| TC-012 | PASS — 390px viewport: no horizontal overflow, no broken images | [mobile article](../../test-results/evidence/journal/TC-012-mobile-article.png) |
+
+RSS feed is intentionally out of Phase 1 scope: a dynamic feed requires a Cloud Function rather than an SPA route. The temporary posts used for the sanitizer and rules checks were deleted after verification.

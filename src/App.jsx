@@ -1,11 +1,17 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
+import { signInWithPopup } from "firebase/auth";
 import { destinations, experiences } from "./mockData.js";
 import { aboutContent } from "./aboutContent.js";
 import { heroAutoplay, heroSlides } from "./heroSlides.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
+import { useAuth } from "./AuthContext.jsx";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+
+const JournalPage = lazy(() => import("./JournalPage.jsx").then((module) => ({ default: module.JournalPage })));
+const ArticlePage = lazy(() => import("./JournalPage.jsx").then((module) => ({ default: module.ArticlePage })));
+const AdminJournal = lazy(() => import("./AdminJournal.jsx").then((module) => ({ default: module.AdminJournal })));
+const AdminPostEditor = lazy(() => import("./AdminJournal.jsx").then((module) => ({ default: module.AdminPostEditor })));
 
 function Brand({ footer = false }) {
   return (
@@ -17,20 +23,12 @@ function Brand({ footer = false }) {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, signOut, isAdmin } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
   const location = useLocation();
   const closeMenu = () => setMenuOpen(false);
   const sectionHref = (id) => location.pathname === "/" ? `#${id}` : `/#${id}`;
-
-  useEffect(() => {
-    if (!firebaseAuth) return undefined;
-    return onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser);
-      setAuthMessage("");
-    });
-  }, []);
 
   async function handleAuthAction() {
     if (!firebaseAuth) {
@@ -76,11 +74,13 @@ function Header() {
           <a href={sectionHref("destinations")} onClick={closeMenu}>Destinations</a>
           <a href={sectionHref("packages")} onClick={closeMenu}>Packages</a>
           <a href={sectionHref("experiences")} onClick={closeMenu}>Experiences</a>
+          <Link to="/journal" onClick={closeMenu}>Journal</Link>
           <a href={sectionHref("about")} onClick={closeMenu}>About</a>
           <a href={sectionHref("contact")} onClick={closeMenu}>Contact</a>
           <a href={sectionHref("our-way")} onClick={closeMenu}>Our way</a>
         </nav>
         <div className="header-actions">
+          {isAdmin && <Link className="auth-button" to="/admin/journal" onClick={closeMenu}>Write</Link>}
           {user ? (
             <div className="signed-in-user">
               <span className="signed-in-name" title={user.email || user.displayName}>{user.displayName || user.email}</span>
@@ -693,7 +693,8 @@ function Footer() {
       <p>Take the long way around.</p>
       <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
       <span className="footer-address">{siteAddress}</span>
-      <a className="footer-about" href="/#about">About</a>
+      <Link className="footer-about" to="/journal">Journal</Link>
+      <Link className="footer-about" to="/#about">About</Link>
       <span>© {new Date().getFullYear()} {siteConfig.companyName}</span>
       <a className="back-top" href="/#top">Back to top ↑</a>
     </footer>
@@ -769,11 +770,18 @@ export default function App() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <Header />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/packages/:packageId" element={<PackageDetailPage />} />
-        <Route path="*" element={<PackageDetailPage />} />
-      </Routes>
+      <Suspense fallback={<main id="main" className="journal-page"><p className="journal-status section-shell">Loading…</p></main>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/packages/:packageId" element={<PackageDetailPage />} />
+          <Route path="/journal" element={<JournalPage />} />
+          <Route path="/journal/:slug" element={<ArticlePage />} />
+          <Route path="/admin/journal" element={<AdminJournal />} />
+          <Route path="/admin/journal/new" element={<AdminPostEditor />} />
+          <Route path="/admin/journal/:id" element={<AdminPostEditor />} />
+          <Route path="*" element={<PackageDetailPage />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </>
   );

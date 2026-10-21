@@ -9,9 +9,10 @@ const firebaseConfig = {
 };
 
 const isConfigured = Object.values(firebaseConfig).every((value) => typeof value === "string" && value.length > 0);
-const firebaseApp = isConfigured ? (getApps().length ? getApp() : initializeApp(firebaseConfig)) : null;
+const firebaseAppInstance = isConfigured ? (getApps().length ? getApp() : initializeApp(firebaseConfig)) : null;
 
 export const firebaseConfigured = isConfigured;
+export const firebaseApp = firebaseAppInstance;
 export const firebaseAuth = firebaseApp ? getAuth(firebaseApp) : null;
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
