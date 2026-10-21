@@ -209,7 +209,13 @@ function SearchResults({ query, results, onExplore, savedIds, onToggleSave, sect
 }
 
 function DestinationDetails({ destination, onClose }) {
-  const [cover, setCover] = useState(destination.photos[0]);
+  const places = destination.places;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activePlace = places[activeIndex];
+
+  function goToPlace(index) {
+    setActiveIndex((index + places.length) % places.length);
+  }
 
   return (
     <section className="destination-detail section-shell" aria-labelledby="detail-title">
@@ -218,13 +224,19 @@ function DestinationDetails({ destination, onClose }) {
         <button className="detail-close" type="button" onClick={onClose}>Back to places <span aria-hidden="true">↑</span></button>
       </div>
       <div className="detail-layout">
-        <div className="detail-gallery">
-          <img className="detail-main-image" src={cover.src} alt={cover.alt} />
-          <div className="detail-thumbnails" aria-label={`${destination.name} photo gallery`}>
-            {destination.photos.map((photo, index) => (
-              <button className={`detail-thumbnail${cover.src === photo.src ? " is-active" : ""}`} type="button" key={photo.src} onClick={() => setCover(photo)} aria-label={`Show ${destination.name} photo ${index + 1}`} aria-pressed={cover.src === photo.src}>
-                <img src={photo.src} alt="" loading="lazy" />
-              </button>
+        <div className="place-carousel" aria-label={`${destination.name} tourist places`}>
+          <div className="place-carousel-stage">
+            <img className="place-carousel-image" src={activePlace.image} alt={activePlace.alt} />
+            <button className="carousel-arrow carousel-prev" type="button" aria-label="Previous place" onClick={() => goToPlace(activeIndex - 1)}>←</button>
+            <button className="carousel-arrow carousel-next" type="button" aria-label="Next place" onClick={() => goToPlace(activeIndex + 1)}>→</button>
+          </div>
+          <div className="place-carousel-caption">
+            <h3>{activePlace.name}</h3>
+            <span>{activeIndex + 1} of {places.length} · {destination.name}</span>
+          </div>
+          <div className="carousel-dots" role="tablist" aria-label="Place navigation">
+            {places.map((place, index) => (
+              <button key={place.slug} type="button" role="tab" aria-selected={index === activeIndex} aria-label={`Show ${place.name}`} className={`carousel-dot${index === activeIndex ? " is-active" : ""}`} onClick={() => goToPlace(index)} />
             ))}
           </div>
         </div>

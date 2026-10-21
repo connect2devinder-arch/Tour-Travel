@@ -21,6 +21,14 @@ Package cards show duration, itinerary summary, inclusions, and a "Starting from
 
 Each destination has 5 drone/aerial photos sourced from Unsplash and stored in Firebase Storage under `destinations/<place>/<n>.jpg` (bucket `tour-83b6c.firebasestorage.app`). The destination cards, destination galleries, and package detail galleries all load these images. Objects are public-read so the browser can load them directly.
 
+## Destination place carousels
+
+Each destination detail section shows a carousel of its famous tourist places with back/forward arrows and dot indicators. Every slide shows the place name as a caption. Place photos are stored under `destinations/<place>/<name>.jpg` in Firebase Storage:
+- Shimla: Mall Road, The Ridge, Jakhu Temple, Naldehra, Kufri
+- Manali: Mall Road, Hadimba Temple, Solang Valley, Old Manali, Vashisht Hot Springs
+- Lahaul & Spiti: Key Monastery, Dhankar Monastery, Chandratal Lake, Kibber Village, Tabo Monastery
+- Mussoorie: Mall Road, Gun Hill, Kempty Falls, Lal Tibba, Company Garden
+
 ## Playwright CLI
 
 The project includes `@playwright/cli` and an OpenCode skill at `.opencode/skills/playwright-cli/`.

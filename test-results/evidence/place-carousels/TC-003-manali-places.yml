@@ -1,0 +1,6 @@
+- tablist "Place navigation" [ref=e353]:
+  - tab "Show Mall Road" [selected] [ref=e354] [cursor=pointer]
+  - tab "Show Hadimba Temple" [ref=e355] [cursor=pointer]
+  - tab "Show Solang Valley" [ref=e356] [cursor=pointer]
+  - tab "Show Old Manali" [ref=e357] [cursor=pointer]
+  - tab "Show Vashisht Hot Springs" [ref=e358] [cursor=pointer]

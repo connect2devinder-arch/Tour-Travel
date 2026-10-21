@@ -1,0 +1,6 @@
+- tablist "Place navigation" [ref=e477]:
+  - tab "Show Mall Road" [selected] [ref=e478] [cursor=pointer]
+  - tab "Show Gun Hill" [ref=e479] [cursor=pointer]
+  - tab "Show Kempty Falls" [ref=e480] [cursor=pointer]
+  - tab "Show Lal Tibba" [ref=e481] [cursor=pointer]
+  - tab "Show Company Garden" [ref=e482] [cursor=pointer]

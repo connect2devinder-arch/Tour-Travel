@@ -1,0 +1,6 @@
+- tablist "Place navigation" [ref=e412]:
+  - tab "Show Key Monastery" [selected] [ref=e413] [cursor=pointer]
+  - tab "Show Dhankar Monastery" [ref=e414] [cursor=pointer]
+  - tab "Show Chandratal Lake" [ref=e415] [cursor=pointer]
+  - tab "Show Kibber Village" [ref=e416] [cursor=pointer]
+  - tab "Show Tabo Monastery" [ref=e417] [cursor=pointer]

@@ -1,5 +1,8 @@
-const storageUrl = (dest, n) =>
-  `https://firebasestorage.googleapis.com/v0/b/tour-83b6c.firebasestorage.app/o/destinations%2F${dest}%2F${n}.jpg?alt=media`;
+const storageUrl = (path) =>
+  `https://firebasestorage.googleapis.com/v0/b/tour-83b6c.firebasestorage.app/o/${encodeURIComponent(path)}?alt=media`;
+
+const galleryImage = (dest, n) => storageUrl(`destinations/${dest}/${n}.jpg`);
+const placeImage = (dest, slug) => storageUrl(`destinations/${dest}/${slug}.jpg`);
 
 const samplePackageFaqs = [
   {
@@ -25,14 +28,21 @@ export const destinations = [
     tags: "shimla simla himachal india",
     tagline: "Pine walks & mountain mornings",
     description: "Take in Mall Road, old hill-town charm, and quiet views over the Himalayan slopes.",
-    image: storageUrl("shimla", 1),
+    image: galleryImage("shimla", 1),
     imageAlt: "Aerial drone view of Shimla hill town with Jakhu Temple on the hilltop",
     photos: [
-      { src: storageUrl("shimla", 1), alt: "Aerial drone view of Shimla hill town with Jakhu Temple on the hilltop" },
-      { src: storageUrl("shimla", 2), alt: "Aerial view of Shimla city during the daytime" },
-      { src: storageUrl("shimla", 3), alt: "Aerial view of a small hill town on a mountain" },
-      { src: storageUrl("shimla", 4), alt: "White houses on a forested hill slope" },
-      { src: storageUrl("shimla", 5), alt: "A small village on a hill in the Himalayas" },
+      { src: galleryImage("shimla", 1), alt: "Aerial drone view of Shimla hill town with Jakhu Temple on the hilltop" },
+      { src: galleryImage("shimla", 2), alt: "Aerial view of Shimla city during the daytime" },
+      { src: galleryImage("shimla", 3), alt: "Aerial view of a small hill town on a mountain" },
+      { src: galleryImage("shimla", 4), alt: "White houses on a forested hill slope" },
+      { src: galleryImage("shimla", 5), alt: "A small village on a hill in the Himalayas" },
+    ],
+    places: [
+      { name: "Mall Road", slug: "mall-road", image: placeImage("shimla", "mall-road"), alt: "Shimla Mall Road with the Indian flag and crowds at The Ridge" },
+      { name: "The Ridge", slug: "the-ridge", image: placeImage("shimla", "the-ridge"), alt: "The Ridge in Shimla with colonial buildings and people" },
+      { name: "Jakhu Temple", slug: "jakhu-temple", image: placeImage("shimla", "jakhu-temple"), alt: "Jakhu Temple on Jakhu Hill above Shimla" },
+      { name: "Naldehra", slug: "naldehra", image: placeImage("shimla", "naldehra"), alt: "Naldehra golf course and deodar forest near Shimla" },
+      { name: "Kufri", slug: "kufri", image: placeImage("shimla", "kufri"), alt: "Snow-covered hills and trails at Kufri near Shimla" },
     ],
     attractions: ["Mall Road", "Jakhu Temple", "Kufri"],
     packages: [{
@@ -60,14 +70,21 @@ export const destinations = [
     tags: "manali kullu himachal india",
     tagline: "River air & mountain roads",
     description: "Mix riverside downtime and cedar forests with a day out in Solang Valley.",
-    image: storageUrl("manali", 1),
+    image: galleryImage("manali", 1),
     imageAlt: "Aerial view of Manali town with green-roofed buildings below snow-covered mountains",
     photos: [
-      { src: storageUrl("manali", 1), alt: "Aerial view of Manali town with green-roofed buildings below snow-covered mountains" },
-      { src: storageUrl("manali", 2), alt: "Aerial view of a town near snow-covered mountains during the daytime" },
-      { src: storageUrl("manali", 3), alt: "Scenic view of a mountain town with a river running through it" },
-      { src: storageUrl("manali", 4), alt: "Houses sitting on the side of a mountain" },
-      { src: storageUrl("manali", 5), alt: "Scenic view of a town in the Himalayan mountains" },
+      { src: galleryImage("manali", 1), alt: "Aerial view of Manali town with green-roofed buildings below snow-covered mountains" },
+      { src: galleryImage("manali", 2), alt: "Aerial view of a town near snow-covered mountains during the daytime" },
+      { src: galleryImage("manali", 3), alt: "Scenic view of a mountain town with a river running through it" },
+      { src: galleryImage("manali", 4), alt: "Houses sitting on the side of a mountain" },
+      { src: galleryImage("manali", 5), alt: "Scenic view of a town in the Himalayan mountains" },
+    ],
+    places: [
+      { name: "Mall Road", slug: "mall-road", image: placeImage("manali", "mall-road"), alt: "Manali Mall Road with shops and visitors" },
+      { name: "Hadimba Temple", slug: "hadimba-temple", image: placeImage("manali", "hadimba-temple"), alt: "Hadimba Devi Temple in the cedar forests of Manali" },
+      { name: "Solang Valley", slug: "solang-valley", image: placeImage("manali", "solang-valley"), alt: "Solang Valley with snow-covered slopes near Manali" },
+      { name: "Old Manali", slug: "old-manali", image: placeImage("manali", "old-manali"), alt: "Old Manali with traditional houses and the Beas river" },
+      { name: "Vashisht Hot Springs", slug: "vashisht-hot-springs", image: placeImage("manali", "vashisht-hot-springs"), alt: "Vashisht Hot Springs temple near Manali" },
     ],
     attractions: ["Hadimba Temple", "Solang Valley", "Old Manali"],
     packages: [{
@@ -96,14 +113,21 @@ export const destinations = [
     tags: "lahaul spiti kaza himachal india",
     tagline: "High passes & quiet monasteries",
     description: "Discover high-altitude villages and monasteries at an unhurried pace. Mountain routes are seasonal.",
-    image: storageUrl("spiti", 3),
+    image: galleryImage("spiti", 3),
     imageAlt: "Wide Spiti valley with a river surrounded by snow-capped mountains",
     photos: [
-      { src: storageUrl("spiti", 1), alt: "Brown and green mountains under white clouds" },
-      { src: storageUrl("spiti", 2), alt: "A river running through a rocky canyon" },
-      { src: storageUrl("spiti", 3), alt: "Wide Spiti valley with a river surrounded by snow-capped mountains" },
-      { src: storageUrl("spiti", 4), alt: "A village nestled at the foot of snow-capped mountains" },
-      { src: storageUrl("spiti", 5), alt: "Buildings of a mountain village on a rugged slope" },
+      { src: galleryImage("spiti", 1), alt: "Brown and green mountains under white clouds" },
+      { src: galleryImage("spiti", 2), alt: "A river running through a rocky canyon" },
+      { src: galleryImage("spiti", 3), alt: "Wide Spiti valley with a river surrounded by snow-capped mountains" },
+      { src: galleryImage("spiti", 4), alt: "A village nestled at the foot of snow-capped mountains" },
+      { src: galleryImage("spiti", 5), alt: "Buildings of a mountain village on a rugged slope" },
+    ],
+    places: [
+      { name: "Key Monastery", slug: "key-monastery", image: placeImage("spiti", "key-monastery"), alt: "Key Monastery on a hillside above the Spiti valley" },
+      { name: "Dhankar Monastery", slug: "dhankar-monastery", image: placeImage("spiti", "dhankar-monastery"), alt: "Dhankar Monastery perched on a cliff in Spiti" },
+      { name: "Chandratal Lake", slug: "chandratal-lake", image: placeImage("spiti", "chandratal-lake"), alt: "Chandratal Lake surrounded by mountains in Spiti" },
+      { name: "Kibber Village", slug: "kibber-village", image: placeImage("spiti", "kibber-village"), alt: "Kibber village houses on a mountain slope in Spiti" },
+      { name: "Tabo Monastery", slug: "tabo-monastery", image: placeImage("spiti", "tabo-monastery"), alt: "Tabo Monastery in the Spiti valley" },
     ],
     attractions: ["Key Monastery", "Dhankar Monastery", "Chandratal Lake (seasonal)"],
     packages: [{
@@ -135,14 +159,21 @@ export const destinations = [
     tags: "mussoorie masuri uttarakhand india",
     tagline: "Cloud-kissed walks & chai stops",
     description: "Take hillside walks, look out over the Doon Valley, and leave room for a slow café stop.",
-    image: storageUrl("mussoorie", 1),
+    image: galleryImage("mussoorie", 1),
     imageAlt: "Aerial drone view of Mussoorie town surrounded by mountains",
     photos: [
-      { src: storageUrl("mussoorie", 1), alt: "Aerial drone view of Mussoorie town surrounded by mountains" },
-      { src: storageUrl("mussoorie", 2), alt: "A village on a hill with a mountain in the background" },
-      { src: storageUrl("mussoorie", 3), alt: "A view of a small town with mountains in the background" },
-      { src: storageUrl("mussoorie", 4), alt: "A scenic view of a valley and mountains under a cloudy sky" },
-      { src: storageUrl("mussoorie", 5), alt: "Aerial view of a city on a mountain during the daytime" },
+      { src: galleryImage("mussoorie", 1), alt: "Aerial drone view of Mussoorie town surrounded by mountains" },
+      { src: galleryImage("mussoorie", 2), alt: "A village on a hill with a mountain in the background" },
+      { src: galleryImage("mussoorie", 3), alt: "A view of a small town with mountains in the background" },
+      { src: galleryImage("mussoorie", 4), alt: "A scenic view of a valley and mountains under a cloudy sky" },
+      { src: galleryImage("mussoorie", 5), alt: "Aerial view of a city on a mountain during the daytime" },
+    ],
+    places: [
+      { name: "Mall Road", slug: "mall-road", image: placeImage("mussoorie", "mall-road"), alt: "Mussoorie Mall Road with cycle rickshaws and shops" },
+      { name: "Gun Hill", slug: "gun-hill", image: placeImage("mussoorie", "gun-hill"), alt: "Gun Hill viewpoint above Mussoorie" },
+      { name: "Kempty Falls", slug: "kempty-falls", image: placeImage("mussoorie", "kempty-falls"), alt: "Kempty Falls cascading near Mussoorie" },
+      { name: "Lal Tibba", slug: "lal-tibba", image: placeImage("mussoorie", "lal-tibba"), alt: "Lal Tibba viewpoint over the Doon Valley near Mussoorie" },
+      { name: "Company Garden", slug: "company-garden", image: placeImage("mussoorie", "company-garden"), alt: "Company Garden and greenery in Mussoorie" },
     ],
     attractions: ["Mall Road", "Lal Tibba", "Kempty Falls"],
     packages: [{
