@@ -31,6 +31,12 @@ Each destination detail section shows a carousel of its famous tourist places wi
 - Lahaul & Spiti: Key Monastery, Dhankar Monastery, Chandratal Lake, Kibber Village, Tabo Monastery
 - Mussoorie: Mall Road, Gun Hill, Kempty Falls, Lal Tibba, Company Garden
 
+## Destination cards open the package
+
+A destination card in the **Destinations** section (image and the "Explore" action) links straight to that destination's tour package page, so a guest goes from "somewhere calling?" to the bookable trip in one click. The heart button still only saves the destination — it does not navigate.
+
+The place carousel stays reachable from the package page: **See the places in {destination}** opens the homepage with that destination's detail section, using `/?destination=<id>#destinations`. A destination with no package keeps the old behaviour and opens its detail section inline.
+
 ## Hero auto-slideshow
 
 The hero background rotates through 5 slides with a cross-fade. It pauses while the visitor interacts with the hero and resumes after an idle delay. Slides, interval, and resume delay live in `src/heroSlides.js`. `prefers-reduced-motion` disables autoplay.

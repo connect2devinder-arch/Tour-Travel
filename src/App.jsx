@@ -248,9 +248,18 @@ function TripSearch({ onSearch }) {
 
 function DestinationCard({ destination, index, onExplore, saved, onToggleSave }) {
   const large = index === 0;
+  const firstPackage = destination.packages?.[0];
+  const packagePath = firstPackage ? `/packages/${firstPackage.id}` : "";
+
   return (
     <article className={`destination-card${large ? " destination-large" : ""}`}>
-      <img src={destination.image} alt={destination.imageAlt} loading="lazy" />
+      {packagePath ? (
+        <Link className="destination-card-media" to={packagePath} aria-label={`Open the ${firstPackage.name} package`}>
+          <img src={destination.image} alt={destination.imageAlt} loading="lazy" />
+        </Link>
+      ) : (
+        <img src={destination.image} alt={destination.imageAlt} loading="lazy" />
+      )}
       <div className="card-shade"></div>
       <div className="card-topline">
         <span>{destination.country.toUpperCase()}</span>
@@ -259,7 +268,11 @@ function DestinationCard({ destination, index, onExplore, saved, onToggleSave })
       <div className="destination-info">
         <p>{destination.tagline}</p>
         <h3>{destination.name}</h3>
-        <button className="card-explore" type="button" onClick={() => onExplore(destination)}>Explore <span aria-hidden="true">↗</span></button>
+        {packagePath ? (
+          <Link className="card-explore" to={packagePath}>Explore <span aria-hidden="true">↗</span></Link>
+        ) : (
+          <button className="card-explore" type="button" onClick={() => onExplore(destination)}>Explore <span aria-hidden="true">↗</span></button>
+        )}
       </div>
     </article>
   );
@@ -464,6 +477,9 @@ function PackageDetailPage() {
                 <p>{trip.transport.details}</p>
               </article>
             </div>
+            <Link className="text-link package-places-link" to={`/?destination=${destination.id}#destinations`}>
+              See the places in {destination.name} <span aria-hidden="true">↗</span>
+            </Link>
           </div>
         </div>
 
@@ -718,8 +734,19 @@ function HomePage() {
   const [selectedDestination, setSelectedDestination] = useState(null);
   const [savedIds, setSavedIds] = useState([]);
   const { destinations } = usePackages();
+  const [searchParams] = useSearchParams();
+  const requestedDestinationId = searchParams.get("destination");
   const resultsRef = useRef(null);
   const detailRef = useRef(null);
+
+  // "?destination=shimla" opens the place carousel for that destination.
+  useEffect(() => {
+    if (!requestedDestinationId) return;
+    const match = destinations.find((destination) => destination.id === requestedDestinationId);
+    if (!match) return;
+    setSelectedDestination(match);
+    requestAnimationFrame(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }, [requestedDestinationId, destinations]);
 
   const searchResults = useMemo(() => {
     if (!search) return [];
