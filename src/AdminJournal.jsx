@@ -14,6 +14,7 @@ import {
   getPostById,
   listAllPostsForAdmin,
   savePost,
+  setPostStatus,
   slugify,
   uploadCoverImage,
 } from "./blog.js";
@@ -41,6 +42,9 @@ export function AdminJournal() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [busyId, setBusyId] = useState("");
+  const [noteFor, setNoteFor] = useState("");
+  const [reviewNote, setReviewNote] = useState("");
 
   useSeo({ title: "Journal admin", url: `${window.location.origin}/admin/journal` });
 
@@ -64,6 +68,26 @@ export function AdminJournal() {
     return [...map.values()];
   }, [posts]);
 
+  const reviewQueue = useMemo(
+    () => posts.filter((post) => post.status === "pending" || post.status === "rejected"),
+    [posts],
+  );
+
+  async function handleModeration(post, nextStatus) {
+    setBusyId(post.id);
+    setError("");
+    try {
+      await setPostStatus(post.id, nextStatus, nextStatus === "rejected" ? reviewNote.trim() : "");
+      setNoteFor("");
+      setReviewNote("");
+      load();
+    } catch (err) {
+      setError(err?.message || "Couldn’t update that post.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
   return (
     <AdminGate>
       <main id="main" className="admin-page">
@@ -76,6 +100,57 @@ export function AdminJournal() {
         </header>
 
         <AdminNav active="Journal" />
+
+        {reviewQueue.length > 0 && (
+          <section className="section-shell admin-list" aria-live="polite">
+            <div className="section-heading">
+              <div><p className="eyebrow">REVIEW QUEUE</p><h2>{reviewQueue.length} post{reviewQueue.length === 1 ? "" : "s"} waiting on you</h2></div>
+            </div>
+            {reviewQueue.map((post) => (
+              <article className="admin-group admin-review-post" key={post.id}>
+                <div className="admin-group-head">
+                  <h2>{post.title || "Untitled post"}</h2>
+                  <span className={`admin-status-pill ${post.status === "pending" ? "is-draft" : "is-published"}`}>
+                    {post.status === "pending" ? "In review" : "Changes requested"}
+                  </span>
+                </div>
+                <div className="admin-package-meta">
+                  <span>by {post.authorName || "Community writer"}</span>
+                  <span>{post.type}</span>
+                  <span>{post.lang === "hi" ? "हिन्दी" : "English"}</span>
+                  <span>{post.readingMinutes} min read</span>
+                </div>
+                {post.excerpt && <p className="admin-notification-body">{post.excerpt}</p>}
+                {post.reviewNote && <p className="admin-notification-body">Last note: {post.reviewNote}</p>}
+
+                {noteFor === post.id ? (
+                  <div className="admin-review-actions">
+                    <label className="admin-field">
+                      <span>What should change?</span>
+                      <textarea rows="2" value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder="Tighten the intro, add a photo, fix the dates…" />
+                    </label>
+                    <div className="admin-buttons">
+                      <button className="journal-filter-button" type="button" onClick={() => { setNoteFor(""); setReviewNote(""); }}>Cancel</button>
+                      <button className="admin-save-button is-primary" type="button" disabled={busyId === post.id} onClick={() => handleModeration(post, "rejected")}>
+                        {busyId === post.id ? "Sending…" : "Request changes"}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="admin-review-actions">
+                    <button className="admin-save-button is-primary" type="button" disabled={busyId === post.id} onClick={() => handleModeration(post, "published")}>
+                      {busyId === post.id ? "Working…" : "Approve & publish"}
+                    </button>
+                    <button className="journal-filter-button" type="button" disabled={busyId === post.id} onClick={() => { setNoteFor(post.id); setReviewNote(""); }}>
+                      Request changes
+                    </button>
+                    <Link className="journal-filter-button" to={`/admin/journal/${post.id}`}>Open in editor</Link>
+                  </div>
+                )}
+              </article>
+            ))}
+          </section>
+        )}
 
         <section className="section-shell admin-list" aria-live="polite">
           {loading && <p className="journal-status">Loading your posts…</p>}
@@ -90,6 +165,9 @@ export function AdminJournal() {
                 <span className={`admin-status-pill ${group.some((post) => post.status === "published") ? "is-published" : "is-draft"}`}>
                   {group.some((post) => post.status === "published") ? "Published" : "Draft"}
                 </span>
+              </div>
+              <div className="admin-package-meta">
+                <span>by {group[0].authorName || "Elsewhere Travel Co."}</span>
               </div>
               <div className="admin-langs">
                 {group.map((post) => (
@@ -155,7 +233,13 @@ export function AdminPostEditor() {
     setStatus("");
     try {
       const payload = { ...post, status: nextStatus, authorName: post.authorName || user?.displayName || "Elsewhere Travel Co." };
-      const savedId = await savePost(payload, { id });
+      const savedId = await savePost(payload, {
+        id,
+        actorUid: user?.uid,
+        actorName: payload.authorName || user?.displayName || "Elsewhere Travel Co.",
+        actorPhoto: user?.photoURL || "",
+        canPublish: true,
+      });
       setStatus(nextStatus === "published" ? "Published." : "Draft saved.");
       if (!id) navigate(`/admin/journal/${savedId}`, { replace: true });
       else setPost((current) => ({ ...current, id: savedId, status: nextStatus }));
@@ -180,7 +264,13 @@ export function AdminPostEditor() {
   async function createTranslation() {
     const siblingLang = post.lang === "en" ? "hi" : "en";
     try {
-      const newId = await savePost({ ...post, lang: siblingLang, title: "", slug: "", status: "draft" }, { id: undefined });
+      const newId = await savePost({ ...post, lang: siblingLang, title: "", slug: "", status: "draft" }, {
+        id: undefined,
+        actorUid: user?.uid,
+        actorName: post.authorName || user?.displayName || "Elsewhere Travel Co.",
+        actorPhoto: user?.photoURL || "",
+        canPublish: true,
+      });
       navigate(`/admin/journal/${newId}`);
     } catch {
       setError("Couldn’t create the translated version.");

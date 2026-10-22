@@ -4,6 +4,13 @@ import { siteConfig } from "./siteConfig.js";
 export const POST_TYPES = ["guide", "itinerary", "seasonal", "story"];
 export const POST_LANGS = ["en", "hi"];
 
+// draft   → author ka apna WIP
+// pending → review ke liye bheja gaya (admin approve karega)
+// published → live on the journal
+// rejected → admin ne changes maange (author note ke saath edit kar sakta hai)
+export const POST_STATUSES = ["draft", "pending", "published", "rejected"];
+export const AUTHOR_STATUSES = ["draft", "pending", "rejected"];
+
 const ADMIN_DOC = "config/admins";
 
 async function firestore() {
@@ -52,8 +59,11 @@ function normalise(post, id) {
     tags: Array.isArray(post.tags) ? post.tags : [],
     destinationId: post.destinationId ?? null,
     packageId: post.packageId ?? null,
-    status: post.status ?? "draft",
+    status: POST_STATUSES.includes(post.status) ? post.status : "draft",
+    authorUid: post.authorUid ?? "",
     authorName: post.authorName ?? "",
+    authorPhoto: post.authorPhoto ?? "",
+    reviewNote: post.reviewNote ?? "",
     publishedAt: post.publishedAt ?? null,
     updatedAt: post.updatedAt ?? null,
     readingMinutes: post.readingMinutes ?? estimateReadingMinutes(body),
@@ -128,32 +138,43 @@ export async function getPostById(id) {
   return normalise(snapshot.data(), snapshot.id);
 }
 
-export async function savePost(post, { id, actorEmail } = {}) {
+export async function savePost(post, { id, actorUid = "", actorName = "", actorPhoto = "", canPublish = true } = {}) {
   if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
   const db = await firestore();
-  const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+  const { addDoc, collection, doc, serverTimestamp, setDoc } = await import("firebase/firestore");
 
-  const slug = slugify(post.slug || post.title);
+  const title = String(post.title ?? "").trim();
+  if (!title) throw new Error("A title is required.");
+  const slug = slugify(post.slug || title);
   if (!slug) throw new Error("A title or slug is required.");
+
+  // Admins publish directly; community authors may only draft or submit for review.
+  const requestedStatus = POST_STATUSES.includes(post.status) ? post.status : "draft";
+  const status = canPublish
+    ? requestedStatus
+    : (["pending", "rejected"].includes(requestedStatus) ? requestedStatus : "draft");
 
   const payload = {
     translationGroup: post.translationGroup || id || slug,
     lang: POST_LANGS.includes(post.lang) ? post.lang : "en",
     type: POST_TYPES.includes(post.type) ? post.type : "guide",
-    title: post.title.trim(),
+    title,
     slug,
-    excerpt: post.excerpt.trim(),
-    body: post.body,
+    excerpt: String(post.excerpt ?? "").trim(),
+    body: post.body ?? "",
     coverImage: post.coverImage || "",
-    coverAlt: post.coverAlt || post.title,
-    tags: post.tags,
+    coverAlt: post.coverAlt || title,
+    tags: Array.isArray(post.tags) ? post.tags : [],
     destinationId: post.destinationId || null,
     packageId: post.packageId || null,
-    status: post.status === "published" ? "published" : "draft",
-    authorName: post.authorName || "",
-    publishedAt: post.status === "published" ? post.publishedAt ?? null : null,
+    status,
+    authorUid: post.authorUid || actorUid || "",
+    authorName: post.authorName || actorName || "",
+    authorPhoto: post.authorPhoto || actorPhoto || "",
     readingMinutes: estimateReadingMinutes(post.body),
+    // These two are always written so the rules can compare them safely.
     featured: Boolean(post.featured),
+    publishedAt: status === "published" ? post.publishedAt ?? null : null,
     seo: {
       metaTitle: post.seo?.metaTitle || "",
       metaDescription: post.seo?.metaDescription || "",
@@ -165,8 +186,41 @@ export async function savePost(post, { id, actorEmail } = {}) {
     await setDoc(doc(db, "posts", id), payload, { merge: true });
     return id;
   }
-  const created = await setDoc(doc(collection(db, "posts")), payload);
+  const created = await addDoc(collection(db, "posts"), { ...payload, createdAt: serverTimestamp() });
   return created.id;
+}
+
+/** Posts written by one author — used by the "My posts" area. */
+export async function listPostsByAuthor(authorUid) {
+  if (!firebaseApp || !authorUid) return [];
+  const db = await firestore();
+  const { collection, getDocs, query, where } = await import("firebase/firestore");
+  try {
+    const snapshot = await getDocs(query(collection(db, "posts"), where("authorUid", "==", authorUid)));
+    return snapshot.docs
+      .map((doc) => normalise(doc.data(), doc.id))
+      .sort((a, b) => (b.updatedAt?.seconds ?? 0) - (a.updatedAt?.seconds ?? 0));
+  } catch {
+    return [];
+  }
+}
+
+/** Admin moderation: approve a post or send it back for changes. */
+export async function setPostStatus(id, status, note = "") {
+  if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
+  if (!POST_STATUSES.includes(status)) throw new Error("Unknown post status.");
+  const db = await firestore();
+  const { doc, serverTimestamp, updateDoc } = await import("firebase/firestore");
+
+  const patch = {
+    status,
+    reviewNote: note || "",
+    updatedAt: serverTimestamp(),
+  };
+  if (status === "published") patch.publishedAt = serverTimestamp();
+
+  await updateDoc(doc(db, "posts", id), patch);
+  return id;
 }
 
 export async function deletePost(id) {

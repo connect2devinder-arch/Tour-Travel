@@ -689,6 +689,10 @@ h1 em, h2 em { font-weight: 500; }
 .admin-subscriber-list { margin: 14px 0 0; padding: 0; display: grid; gap: 8px; list-style: none; }
 .admin-subscriber-list li { display: grid; grid-template-columns: minmax(0, 1fr) 90px 120px; gap: 12px; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; }
 .admin-subscriber-list li span:first-child { color: var(--ink); font-weight: 600; }
+.admin-review-post { border-left: 3px solid var(--coral); }
+.admin-review-actions { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.admin-review-actions .admin-field { min-width: 260px; flex: 1 1 320px; }
+.admin-review-actions .admin-buttons { margin-left: 0; }
 
 @media (max-width: 900px) {
   .admin-booking-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }

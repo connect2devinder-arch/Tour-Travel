@@ -18,6 +18,8 @@ const AdminPostEditor = lazy(() => import("./AdminJournal.jsx").then((module) =>
 const AdminPackages = lazy(() => import("./AdminPackages.jsx").then((module) => ({ default: module.AdminPackages })));
 const AdminPackageEditor = lazy(() => import("./AdminPackages.jsx").then((module) => ({ default: module.AdminPackageEditor })));
 const AdminBookings = lazy(() => import("./AdminBookings.jsx").then((module) => ({ default: module.AdminBookings })));
+const WriteHome = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteHome })));
+const WriteEditor = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteEditor })));
 const BookingPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingPage })));
 const MyBookingsPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.MyBookingsPage })));
 const BookingStatusPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingStatusPage })));
@@ -88,6 +90,7 @@ function Header() {
         </nav>
         <div className="header-actions">
           {isAdmin && <Link className="auth-button" to="/admin/journal" onClick={closeMenu}>Write</Link>}
+          {!isAdmin && user && <Link className="auth-button" to="/write" onClick={closeMenu}>Write</Link>}
           {user ? (
             <div className="signed-in-user">
               <span className="signed-in-name" title={user.email || user.displayName}>{user.displayName || user.email}</span>
@@ -827,7 +830,8 @@ function Footer() {
         <a href={sectionHref("about")}>About</a>
         <a href={sectionHref("our-way")}>Our way</a>
         <a href={sectionHref("contact")}>Contact</a>
-        {isAdmin ? <Link to="/admin/journal">Write</Link> : <Link to="/admin">Admin</Link>}
+        <Link to="/write">Write</Link>
+        {isAdmin && <Link to="/admin">Admin</Link>}
       </nav>
 
       <div className="footer-column footer-contact-block">
@@ -942,6 +946,9 @@ export default function App() {
           <Route path="/admin/packages/new" element={<AdminPackageEditor />} />
           <Route path="/admin/packages/:id" element={<AdminPackageEditor />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
+          <Route path="/write" element={<WriteHome />} />
+          <Route path="/write/new" element={<WriteEditor />} />
+          <Route path="/write/:id" element={<WriteEditor />} />
           <Route path="*" element={<PackageDetailPage />} />
         </Routes>
       </Suspense>

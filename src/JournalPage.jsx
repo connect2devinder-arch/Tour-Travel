@@ -35,6 +35,7 @@ export function PostCard({ post, featured = false }) {
         <p className="journal-card-meta">
           <span>{post.type}</span>
           <span>{post.lang === "hi" ? "हिन्दी" : "English"}</span>
+          {post.authorName && <span>by {post.authorName}</span>}
           <span>{post.readingMinutes} min read</span>
         </p>
         <h3><Link to={`/journal/${post.slug}`}>{post.title}</Link></h3>

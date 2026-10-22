@@ -86,10 +86,19 @@ Public reading lives at `/journal` and `/journal/:slug`. Posts are stored in the
 
 - **Admin login:** open `/admin` (also linked in the footer) and use the "Sign in with Google" button on that page, or the header button. The account must be in the Firestore `config/admins` document (`emails` array). After signing in, the header shows a **Write** link. The admin account is `connect2devinder@gmail.com` — it is also kept in `src/siteConfig.js` (`adminEmail`) as the client-side fallback, so the admin area still unlocks if the allowlist document cannot be read. Keep the two in sync. The footer shows a **Write** link for admins and **Admin** for everyone else.
 - **Bilingual posts:** each language version is its own document linked by `translationGroup`. Use **Create Hindi/English version** in the editor to make the sibling.
-- **Security:** `firestore.rules` and `storage.rules` gate writes to admins. Published posts are public; drafts are not.
 - **Markdown** bodies are sanitized before rendering, so raw HTML and scripts cannot run.
 
-Content code lives in `src/blog.js` (data layer), `src/JournalPage.jsx` (public), `src/AdminJournal.jsx` (editor), and `src/aboutContent.js` / `src/siteConfig.js` (editable copy and contact details).
+Content code lives in `src/blog.js` (data layer), `src/JournalPage.jsx` (public), `src/AdminJournal.jsx` (admin editor + review queue), `src/WriteArea.jsx` (community writer area), and `src/aboutContent.js` / `src/siteConfig.js` (editable copy and contact details).
+
+## Community blogging (any signed-in user)
+
+Any visitor who signs in with Google can write for the journal from **`/write`** — their own posts, a simple editor, drafts, and a **Submit for review** button. A community post is never public until an admin approves it.
+
+- **Statuses:** `draft` (author only) → `pending` (in the admin review queue) → `published` (live) or `rejected` (sent back with an admin note the author sees).
+- **Ownership:** every post stores the author's `authorUid`; the rules let an author read, edit and delete only their own posts, and editing a live post sends it back to review.
+- **Admin moderation:** `/admin/journal` shows a **Review queue** with *Approve & publish* and *Request changes*.
+- **Public listing:** approved posts appear in the journal with the author's name.
+- **Still admin-only:** packages, bookings, enquiries and notifications.
 
 ## Package management
 

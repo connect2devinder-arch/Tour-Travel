@@ -15,11 +15,34 @@ service cloud.firestore {
       allow write: if false; // seeded via tooling; edit the list in the Firebase console
     }
 
+    // Journal posts. Published posts are public; drafts, pending and rejected
+    // posts are visible to their author and to admins.
     match /posts/{postId} {
-      // Published posts are public. Drafts are visible to admins only.
-      // Public list queries must filter on status == 'published'.
-      allow read: if resource.data.status == 'published' || isAdmin();
-      allow create, update, delete: if isAdmin();
+      // Authors may write for themselves, but only as a draft or submitted for
+      // review. Publishing is an admin action.
+      allow create: if isAdmin()
+        || (request.auth != null
+            && request.resource.data.authorUid == request.auth.uid
+            && request.resource.data.status in ['draft', 'pending']);
+
+      // Authors may edit their own posts. Editing a live post sends it back
+      // for review, and they cannot change ownership or admin-only fields.
+      allow update: if isAdmin()
+        || (request.auth != null
+            && resource.data.authorUid == request.auth.uid
+            && request.resource.data.authorUid == request.auth.uid
+            && request.resource.data.status in ['draft', 'pending', 'rejected']
+            && (resource.data.status != 'published' || request.resource.data.status == 'pending')
+            && request.resource.data.featured == resource.data.featured
+            && (request.resource.data.publishedAt == resource.data.publishedAt
+                || request.resource.data.publishedAt == null));
+
+      allow delete: if isAdmin()
+        || (request.auth != null && resource.data.authorUid == request.auth.uid);
+
+      allow read: if resource.data.status == 'published'
+        || isAdmin()
+        || (request.auth != null && resource.data.authorUid == request.auth.uid);
     }
 
     // Tour packages managed from the admin panel. Published packages are public;
