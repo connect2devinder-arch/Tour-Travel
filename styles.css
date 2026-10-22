@@ -656,6 +656,15 @@ h1 em, h2 em { font-weight: 500; }
 .admin-faq-row { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); background: var(--paper); }
 .admin-faq-row input, .admin-faq-row textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 12px; font-weight: 400; }
 .admin-faq-row .journal-filter-button { justify-self: start; }
+.admin-photo-list { display: grid; gap: 8px; }
+.admin-photo-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--line); background: var(--paper); }
+.admin-photo-row img { width: 74px; height: 54px; object-fit: cover; display: block; }
+.admin-photo-row input { width: 100%; padding: 9px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 12px; font-weight: 400; }
+.admin-photo-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.admin-photo-option { padding: 0; overflow: hidden; border: 2px solid transparent; background: var(--paper-deep); cursor: pointer; }
+.admin-photo-option img { width: 100%; height: 64px; display: block; object-fit: cover; }
+.admin-photo-option.is-selected { border-color: var(--coral); }
+.admin-photo-option:hover { border-color: var(--ink); }
 .admin-demo-note { margin: 0; color: var(--ink-soft); font-size: 9px; line-height: 1.6; }
 .admin-booking { padding: 0; }
 .admin-booking-head { width: 100%; padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }

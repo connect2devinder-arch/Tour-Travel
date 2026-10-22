@@ -20,6 +20,13 @@ function toStringList(value) {
   return value.map((item) => String(item ?? "").trim()).filter(Boolean);
 }
 
+function toPhotoList(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((photo) => photo && photo.src)
+    .map((photo) => ({ src: String(photo.src), alt: String(photo.alt ?? "").trim() }));
+}
+
 function normalise(pkg, id) {
   const priceLabel = pkg.priceLabel ?? pkg.price ?? "";
   const priceAmount = Number(pkg.priceAmount ?? parsePrice(priceLabel));
@@ -49,6 +56,7 @@ function normalise(pkg, id) {
         .filter((faq) => faq && (faq.question || faq.answer))
         .map((faq) => ({ question: faq.question ?? "", answer: faq.answer ?? "" }))
       : [],
+    photos: toPhotoList(pkg.photos),
     status: pkg.status === "published" ? "published" : "draft",
     featured: Boolean(pkg.featured),
     position: Number(pkg.position ?? 0) || 0,
@@ -155,6 +163,7 @@ export async function savePackage(pkg, { id } = {}) {
         .filter((faq) => faq && (faq.question || faq.answer))
         .map((faq) => ({ question: String(faq.question ?? "").trim(), answer: String(faq.answer ?? "").trim() }))
       : [],
+    photos: toPhotoList(pkg.photos),
     status: pkg.status === "published" ? "published" : "draft",
     featured: Boolean(pkg.featured),
     position: Number(pkg.position) || 0,
@@ -174,4 +183,15 @@ export async function deletePackage(id) {
   const db = await firestore();
   const { doc, deleteDoc } = await import("firebase/firestore");
   await deleteDoc(doc(db, "packages", id));
+}
+
+/** Uploads a package photo to Firebase Storage and returns its public URL. */
+export async function uploadPackageImage(file, packageId) {
+  if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
+  const { getStorage, ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+  const storage = getStorage(firebaseApp);
+  const safeName = String(file.name).replace(/[^a-zA-Z0-9._-]/g, "-");
+  const objectRef = ref(storage, `packages/${packageId || "new"}/${Date.now()}-${safeName}`);
+  await uploadBytes(objectRef, file, { contentType: file.type });
+  return getDownloadURL(objectRef);
 }

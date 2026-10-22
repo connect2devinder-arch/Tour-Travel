@@ -14,6 +14,12 @@ service firebase.storage {
       allow write: if isAdmin();
     }
 
+    // Package photos uploaded from the admin panel: public read, admin-only write.
+    match /packages/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Destination, place and site imagery is uploaded by tooling, not the browser.
     match /destinations/{allPaths=**} {
       allow read: if true;

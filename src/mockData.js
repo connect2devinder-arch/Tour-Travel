@@ -19,6 +19,43 @@ const samplePackageFaqs = [
   },
 ];
 
+// Famous places per destination. Used by the place carousel and, for some
+// packages, as that package's own photo set.
+const shimlaPlaces = [
+  { name: "Mall Road", slug: "mall-road", image: placeImage("shimla", "mall-road"), alt: "Shimla Mall Road with the Indian flag and crowds at The Ridge" },
+  { name: "The Ridge", slug: "the-ridge", image: placeImage("shimla", "the-ridge"), alt: "The Ridge in Shimla with colonial buildings and people" },
+  { name: "Jakhu Temple", slug: "jakhu-temple", image: placeImage("shimla", "jakhu-temple"), alt: "Jakhu Temple on Jakhu Hill above Shimla" },
+  { name: "Naldehra", slug: "naldehra", image: placeImage("shimla", "naldehra"), alt: "Naldehra golf course and deodar forest near Shimla" },
+  { name: "Kufri", slug: "kufri", image: placeImage("shimla", "kufri"), alt: "Snow-covered hills and trails at Kufri near Shimla" },
+];
+
+const manaliPlaces = [
+  { name: "Mall Road", slug: "mall-road", image: placeImage("manali", "mall-road"), alt: "Manali Mall Road with shops and visitors" },
+  { name: "Hadimba Temple", slug: "hadimba-temple", image: placeImage("manali", "hadimba-temple"), alt: "Hadimba Devi Temple in the cedar forests of Manali" },
+  { name: "Solang Valley", slug: "solang-valley", image: placeImage("manali", "solang-valley"), alt: "Solang Valley with snow-covered slopes near Manali" },
+  { name: "Old Manali", slug: "old-manali", image: placeImage("manali", "old-manali"), alt: "Old Manali with traditional houses and the Beas river" },
+  { name: "Vashisht Hot Springs", slug: "vashisht-hot-springs", image: placeImage("manali", "vashisht-hot-springs"), alt: "Vashisht Hot Springs temple near Manali" },
+];
+
+const spitiPlaces = [
+  { name: "Key Monastery", slug: "key-monastery", image: placeImage("spiti", "key-monastery"), alt: "Key Monastery on a hillside above the Spiti valley" },
+  { name: "Dhankar Monastery", slug: "dhankar-monastery", image: placeImage("spiti", "dhankar-monastery"), alt: "Dhankar Monastery perched on a cliff in Spiti" },
+  { name: "Chandratal Lake", slug: "chandratal-lake", image: placeImage("spiti", "chandratal-lake"), alt: "Chandratal Lake surrounded by mountains in Spiti" },
+  { name: "Kibber Village", slug: "kibber-village", image: placeImage("spiti", "kibber-village"), alt: "Kibber village houses on a mountain slope in Spiti" },
+  { name: "Tabo Monastery", slug: "tabo-monastery", image: placeImage("spiti", "tabo-monastery"), alt: "Tabo Monastery in the Spiti valley" },
+];
+
+const mussooriePlaces = [
+  { name: "Mall Road", slug: "mall-road", image: placeImage("mussoorie", "mall-road"), alt: "Mussoorie Mall Road with cycle rickshaws and shops" },
+  { name: "Gun Hill", slug: "gun-hill", image: placeImage("mussoorie", "gun-hill"), alt: "Gun Hill viewpoint above Mussoorie" },
+  { name: "Kempty Falls", slug: "kempty-falls", image: placeImage("mussoorie", "kempty-falls"), alt: "Kempty Falls cascading near Mussoorie" },
+  { name: "Lal Tibba", slug: "lal-tibba", image: placeImage("mussoorie", "lal-tibba"), alt: "Lal Tibba viewpoint over the Doon Valley near Mussoorie" },
+  { name: "Company Garden", slug: "company-garden", image: placeImage("mussoorie", "company-garden"), alt: "Company Garden and greenery in Mussoorie" },
+];
+
+/** Turns a place list into a package photo set. */
+const toPhotos = (places) => places.map((place) => ({ src: place.image, alt: place.alt }));
+
 // Temporary front-end fixtures. Replace or expand these as requirements evolve.
 export const destinations = [
   {
@@ -37,13 +74,7 @@ export const destinations = [
       { src: galleryImage("shimla", 4), alt: "White houses on a forested hill slope" },
       { src: galleryImage("shimla", 5), alt: "A small village on a hill in the Himalayas" },
     ],
-    places: [
-      { name: "Mall Road", slug: "mall-road", image: placeImage("shimla", "mall-road"), alt: "Shimla Mall Road with the Indian flag and crowds at The Ridge" },
-      { name: "The Ridge", slug: "the-ridge", image: placeImage("shimla", "the-ridge"), alt: "The Ridge in Shimla with colonial buildings and people" },
-      { name: "Jakhu Temple", slug: "jakhu-temple", image: placeImage("shimla", "jakhu-temple"), alt: "Jakhu Temple on Jakhu Hill above Shimla" },
-      { name: "Naldehra", slug: "naldehra", image: placeImage("shimla", "naldehra"), alt: "Naldehra golf course and deodar forest near Shimla" },
-      { name: "Kufri", slug: "kufri", image: placeImage("shimla", "kufri"), alt: "Snow-covered hills and trails at Kufri near Shimla" },
-    ],
+    places: shimlaPlaces,
     attractions: ["Mall Road", "Jakhu Temple", "Kufri"],
     packages: [{
       id: "shimla-escape",
@@ -79,13 +110,7 @@ export const destinations = [
       { src: galleryImage("manali", 4), alt: "Houses sitting on the side of a mountain" },
       { src: galleryImage("manali", 5), alt: "Scenic view of a town in the Himalayan mountains" },
     ],
-    places: [
-      { name: "Mall Road", slug: "mall-road", image: placeImage("manali", "mall-road"), alt: "Manali Mall Road with shops and visitors" },
-      { name: "Hadimba Temple", slug: "hadimba-temple", image: placeImage("manali", "hadimba-temple"), alt: "Hadimba Devi Temple in the cedar forests of Manali" },
-      { name: "Solang Valley", slug: "solang-valley", image: placeImage("manali", "solang-valley"), alt: "Solang Valley with snow-covered slopes near Manali" },
-      { name: "Old Manali", slug: "old-manali", image: placeImage("manali", "old-manali"), alt: "Old Manali with traditional houses and the Beas river" },
-      { name: "Vashisht Hot Springs", slug: "vashisht-hot-springs", image: placeImage("manali", "vashisht-hot-springs"), alt: "Vashisht Hot Springs temple near Manali" },
-    ],
+    places: manaliPlaces,
     attractions: ["Hadimba Temple", "Solang Valley", "Old Manali"],
     packages: [{
       id: "manali-valley",
@@ -104,6 +129,7 @@ export const destinations = [
       hotel: { category: "Sample 3-star valley hotel", nights: "4 nights", details: "Sample accommodation only; exact property and availability to be confirmed." },
       transport: { mode: "Private AC cab (sample)", details: "Manali local transfers and Solang excursion; routes depend on conditions." },
       faqs: samplePackageFaqs,
+      photos: toPhotos(manaliPlaces),
     }],
   },
   {
@@ -122,13 +148,7 @@ export const destinations = [
       { src: galleryImage("spiti", 4), alt: "A village nestled at the foot of snow-capped mountains" },
       { src: galleryImage("spiti", 5), alt: "Buildings of a mountain village on a rugged slope" },
     ],
-    places: [
-      { name: "Key Monastery", slug: "key-monastery", image: placeImage("spiti", "key-monastery"), alt: "Key Monastery on a hillside above the Spiti valley" },
-      { name: "Dhankar Monastery", slug: "dhankar-monastery", image: placeImage("spiti", "dhankar-monastery"), alt: "Dhankar Monastery perched on a cliff in Spiti" },
-      { name: "Chandratal Lake", slug: "chandratal-lake", image: placeImage("spiti", "chandratal-lake"), alt: "Chandratal Lake surrounded by mountains in Spiti" },
-      { name: "Kibber Village", slug: "kibber-village", image: placeImage("spiti", "kibber-village"), alt: "Kibber village houses on a mountain slope in Spiti" },
-      { name: "Tabo Monastery", slug: "tabo-monastery", image: placeImage("spiti", "tabo-monastery"), alt: "Tabo Monastery in the Spiti valley" },
-    ],
+    places: spitiPlaces,
     attractions: ["Key Monastery", "Dhankar Monastery", "Chandratal Lake (seasonal)"],
     packages: [{
       id: "spiti-road-trip",
@@ -150,6 +170,7 @@ export const destinations = [
       hotel: { category: "Sample guesthouses and homestays", nights: "7 nights", details: "Illustrative stays only; exact properties depend on seasonal availability." },
       transport: { mode: "High-clearance vehicle (sample)", details: "Route and pickup points are subject to season, road, and weather conditions." },
       faqs: samplePackageFaqs,
+      photos: toPhotos(spitiPlaces),
     }],
   },
   {
@@ -168,13 +189,7 @@ export const destinations = [
       { src: galleryImage("mussoorie", 4), alt: "A scenic view of a valley and mountains under a cloudy sky" },
       { src: galleryImage("mussoorie", 5), alt: "Aerial view of a city on a mountain during the daytime" },
     ],
-    places: [
-      { name: "Mall Road", slug: "mall-road", image: placeImage("mussoorie", "mall-road"), alt: "Mussoorie Mall Road with cycle rickshaws and shops" },
-      { name: "Gun Hill", slug: "gun-hill", image: placeImage("mussoorie", "gun-hill"), alt: "Gun Hill viewpoint above Mussoorie" },
-      { name: "Kempty Falls", slug: "kempty-falls", image: placeImage("mussoorie", "kempty-falls"), alt: "Kempty Falls cascading near Mussoorie" },
-      { name: "Lal Tibba", slug: "lal-tibba", image: placeImage("mussoorie", "lal-tibba"), alt: "Lal Tibba viewpoint over the Doon Valley near Mussoorie" },
-      { name: "Company Garden", slug: "company-garden", image: placeImage("mussoorie", "company-garden"), alt: "Company Garden and greenery in Mussoorie" },
-    ],
+    places: mussooriePlaces,
     attractions: ["Mall Road", "Lal Tibba", "Kempty Falls"],
     packages: [{
       id: "mussoorie-weekend",
@@ -191,6 +206,7 @@ export const destinations = [
       hotel: { category: "Sample 3-star hillside hotel", nights: "2 nights", details: "Property and room category are illustrative; confirm before booking." },
       transport: { mode: "Local cab transfers (sample)", details: "Pickup and sightseeing route details to be confirmed." },
       faqs: samplePackageFaqs,
+      photos: toPhotos(mussooriePlaces),
     }],
   },
 ];

@@ -5,7 +5,7 @@ import { usePackages } from "./PackagesContext.jsx";
 import { useSeo } from "./seo.js";
 import { slugify } from "./blog.js";
 import { destinations as sampleDestinations } from "./mockData.js";
-import { deletePackage, getPackageById, listAllPackagesForAdmin, savePackage } from "./packages.js";
+import { deletePackage, getPackageById, listAllPackagesForAdmin, savePackage, uploadPackageImage } from "./packages.js";
 
 const EMPTY_PACKAGE = {
   name: "",
@@ -20,6 +20,7 @@ const EMPTY_PACKAGE = {
   hotel: { category: "", nights: "", details: "" },
   transport: { mode: "", details: "" },
   faqs: [],
+  photos: [],
   status: "draft",
   featured: false,
   position: 0,
@@ -79,6 +80,7 @@ export function AdminPackages() {
                 <span>{destinationName(pkg.destinationId)}</span>
                 <span>{pkg.priceLabel || "No price"}</span>
                 <span>{pkg.duration || "No duration"}</span>
+                <span>{pkg.photos.length} photo{pkg.photos.length === 1 ? "" : "s"}</span>
                 <Link className="admin-lang" to={`/admin/packages/${pkg.id}`}>Edit</Link>
               </div>
             </article>
@@ -97,6 +99,7 @@ export function AdminPackageEditor() {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
 
   useSeo({ title: id ? "Edit package" : "New package", url: `${window.location.origin}/admin/packages${id ? `/${id}` : "/new"}` });
 
@@ -110,8 +113,63 @@ export function AdminPackageEditor() {
   const itineraryText = useMemo(() => pkg.itinerary.join("\n"), [pkg.itinerary]);
   const inclusionsText = useMemo(() => pkg.inclusions.join("\n"), [pkg.inclusions]);
 
+  // Images that already exist for the selected destination — the picker lets an
+  // admin build a package photo set without uploading anything.
+  const destinationImages = useMemo(() => {
+    const destination = sampleDestinations.find((item) => item.id === pkg.destinationId);
+    if (!destination) return [];
+    return [
+      ...destination.photos.map((photo) => ({ src: photo.src, alt: photo.alt })),
+      ...destination.places.map((place) => ({ src: place.image, alt: place.alt })),
+    ];
+  }, [pkg.destinationId]);
+
   function update(field, value) {
     setPkg((current) => ({ ...current, [field]: value }));
+  }
+
+  function updatePhoto(index, value) {
+    setPkg((current) => ({
+      ...current,
+      photos: current.photos.map((photo, photoIndex) => (photoIndex === index ? { ...photo, alt: value } : photo)),
+    }));
+  }
+
+  function togglePhoto(image) {
+    setPkg((current) => {
+      const selected = current.photos.some((photo) => photo.src === image.src);
+      return {
+        ...current,
+        photos: selected
+          ? current.photos.filter((photo) => photo.src !== image.src)
+          : [...current.photos, { src: image.src, alt: image.alt }],
+      };
+    });
+  }
+
+  function removePhoto(index) {
+    setPkg((current) => ({ ...current, photos: current.photos.filter((_, photoIndex) => photoIndex !== index) }));
+  }
+
+  function addPhotoByUrl() {
+    const url = photoUrl.trim();
+    if (!url) return;
+    setPkg((current) => ({ ...current, photos: [...current.photos, { src: url, alt: "" }] }));
+    setPhotoUrl("");
+  }
+
+  async function handlePhotoUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setStatus("Uploading photo…");
+    setError("");
+    try {
+      const url = await uploadPackageImage(file, id || "new");
+      setPkg((current) => ({ ...current, photos: [...current.photos, { src: url, alt: current.name || "Package photo" }] }));
+      setStatus("Photo uploaded.");
+    } catch {
+      setError("Photo upload failed. Check that Storage rules allow admin writes under packages/.");
+    }
   }
 
   function updateNested(group, field, value) {
@@ -224,6 +282,59 @@ export function AdminPackageEditor() {
               <span>Inclusions (one per line)</span>
               <textarea rows="5" value={inclusionsText} onChange={(event) => update("inclusions", event.target.value.split("\n").map((line) => line.trim()).filter(Boolean))} placeholder={"3 nights in a sample hill hotel\nDaily breakfast"} />
             </label>
+
+            <div className="admin-field">
+              <span>Package photos</span>
+              <small>
+                Every package has its own photo set. Pick from the destination images below, upload a new photo, or paste a URL.
+                Without photos the package falls back to the destination gallery.
+              </small>
+
+              {pkg.photos.length > 0 && (
+                <div className="admin-photo-list">
+                  {pkg.photos.map((photo, index) => (
+                    <div className="admin-photo-row" key={photo.src}>
+                      <img src={photo.src} alt="" />
+                      <input value={photo.alt} onChange={(event) => updatePhoto(index, event.target.value)} placeholder="Alt text" />
+                      <button type="button" className="journal-filter-button" onClick={() => removePhoto(index)}>Remove</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {destinationImages.length > 0 && (
+                <div className="admin-photo-picker" role="group" aria-label="Destination images">
+                  {destinationImages.map((image) => {
+                    const selected = pkg.photos.some((photo) => photo.src === image.src);
+                    return (
+                      <button
+                        type="button"
+                        key={image.src}
+                        className={`admin-photo-option${selected ? " is-selected" : ""}`}
+                        aria-pressed={selected}
+                        title={image.alt}
+                        onClick={() => togglePhoto(image)}
+                      >
+                        <img src={image.src} alt="" loading="lazy" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <label className="admin-field">
+                <span>Upload a photo</span>
+                <input type="file" accept="image/*" onChange={handlePhotoUpload} />
+              </label>
+
+              <div className="admin-field-row">
+                <label className="admin-field">
+                  <span>Or paste an image URL</span>
+                  <input value={photoUrl} onChange={(event) => setPhotoUrl(event.target.value)} placeholder="https://…" />
+                </label>
+                <button type="button" className="journal-filter-button" onClick={addPhotoByUrl}>Add photo</button>
+              </div>
+            </div>
 
             <div className="admin-field">
               <span>FAQs</span>

@@ -17,6 +17,12 @@ Destination/package details, INR prices, and the newsletter are sample/demo cont
 
 Package cards show duration, itinerary summary, inclusions, and a "Starting from" price. "View details" opens a shareable route such as `/packages/shimla-escape` with a day-by-day plan, inclusions, hotel/transport details, photos, and FAQs. The gallery shows one large photo at a time — use the on-image arrows or the dots to move through the photos. "Enquire about this trip" opens the contact form with that package preselected, and the enquiry stores the package ID/name in Firestore.
 
+### Package photos
+
+Each package carries its own photo set (`photos: [{ src, alt }]` on the package). Manali, Lahaul & Spiti and Mussoorie show their famous places; a package without its own photos falls back to the destination gallery.
+
+Admins manage them in the package editor (`/admin/packages` → edit): pick from the destination's existing images, upload a new photo to Storage (`packages/<packageId>/…`), or paste an image URL — and edit the alt text of each photo.
+
 ## Destination images
 
 Each destination has 5 drone/aerial photos sourced from Unsplash and stored in Firebase Storage under `destinations/<place>/<n>.jpg` (bucket `tour-83b6c.firebasestorage.app`). The destination cards, destination galleries, and package detail galleries all load these images. Objects are public-read so the browser can load them directly.

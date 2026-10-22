@@ -424,9 +424,12 @@ function PackageDetailPage() {
   }
 
   const { destination, ...trip } = packageData;
-  const activePhoto = destination.photos[activePhotoIndex] || destination.photos[0];
+  // Each package can carry its own photo set; without one we fall back to the
+  // destination gallery.
+  const galleryPhotos = trip.photos?.length ? trip.photos : destination.photos;
+  const activePhoto = galleryPhotos[activePhotoIndex] || galleryPhotos[0];
   const goToPhoto = (index) => {
-    setActivePhotoIndex((index + destination.photos.length) % destination.photos.length);
+    setActivePhotoIndex((index + galleryPhotos.length) % galleryPhotos.length);
   };
   const enquiryUrl = `/?package=${encodeURIComponent(trip.id)}#contact`;
 
@@ -459,9 +462,9 @@ function PackageDetailPage() {
               <button className="carousel-arrow carousel-next" type="button" aria-label="Next photo" onClick={() => goToPhoto(activePhotoIndex + 1)}>→</button>
             </div>
             <div className="package-gallery-caption">
-              <span>{activePhotoIndex + 1} of {destination.photos.length} photos</span>
+              <span>{activePhotoIndex + 1} of {galleryPhotos.length} photos</span>
               <div className="carousel-dots" role="tablist" aria-label={`${trip.name} photos`}>
-                {destination.photos.map((photo, index) => (
+                {galleryPhotos.map((photo, index) => (
                   <button
                     key={photo.src}
                     type="button"
