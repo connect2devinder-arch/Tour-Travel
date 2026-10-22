@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "./AuthContext.jsx";
+import { siteConfig } from "./siteConfig.js";
 
 export function GoogleMark() {
   return (
@@ -45,9 +46,9 @@ export function AdminGate({ children }) {
     return (
       <main id="main" className="admin-page">
         <div className="section-shell admin-locked">
-          <p className="eyebrow">JOURNAL ADMIN</p>
-          <h1>Sign in to write.</h1>
-          <p>Only accounts on the admin allowlist can open the editor. Use the Google account that runs this site.</p>
+          <p className="eyebrow">ADMIN</p>
+          <h1>Sign in to manage the site.</h1>
+          <p>Only accounts on the admin allowlist can open the editor. Sign in with the Google account that runs this site — {siteConfig.adminEmail}.</p>
           <button
             className="admin-signin-button"
             type="button"
@@ -66,7 +67,7 @@ export function AdminGate({ children }) {
             <GoogleMark /> Sign in with Google
           </button>
           {signInError && <p className="admin-message is-error">{signInError}</p>}
-          <Link className="text-link" to="/journal">Back to the journal <span aria-hidden="true">↗</span></Link>
+          <Link className="text-link" to="/">Back to the site <span aria-hidden="true">↗</span></Link>
         </div>
       </main>
     );
@@ -76,9 +77,9 @@ export function AdminGate({ children }) {
     return (
       <main id="main" className="admin-page">
         <div className="section-shell admin-locked">
-          <p className="eyebrow">JOURNAL ADMIN</p>
+          <p className="eyebrow">ADMIN</p>
           <h1>You’re signed in, but not on the list.</h1>
-          <p>Your account ({user.email}) is signed in but isn’t an admin. Ask the site owner to add it to the admin allowlist.</p>
+          <p>Your account ({user.email}) is signed in but isn’t an admin. Admin access is limited to {siteConfig.adminEmail} — sign in with that account.</p>
           <button className="journal-filter-button" type="button" onClick={() => signOut()}>Sign out</button>
         </div>
       </main>

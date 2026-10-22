@@ -84,7 +84,7 @@ The company story and values live in `src/aboutContent.js` — edit the copy the
 
 Public reading lives at `/journal` and `/journal/:slug`. Posts are stored in the Firestore `posts` collection and can be written in the browser at `/admin/journal`.
 
-- **Admin login:** open `/admin` (also linked in the footer) and use the "Sign in with Google" button on that page, or the header button. The account must be in the Firestore `config/admins` document (`emails` array). After signing in, the header shows a **Write** link.
+- **Admin login:** open `/admin` (also linked in the footer) and use the "Sign in with Google" button on that page, or the header button. The account must be in the Firestore `config/admins` document (`emails` array). After signing in, the header shows a **Write** link. The admin account is `connect2devinder@gmail.com` — it is also kept in `src/siteConfig.js` (`adminEmail`) as the client-side fallback, so the admin area still unlocks if the allowlist document cannot be read. Keep the two in sync. The footer shows a **Write** link for admins and **Admin** for everyone else.
 - **Bilingual posts:** each language version is its own document linked by `translationGroup`. Use **Create Hindi/English version** in the editor to make the sibling.
 - **Security:** `firestore.rules` and `storage.rules` gate writes to admins. Published posts are public; drafts are not.
 - **Markdown** bodies are sanitized before rendering, so raw HTML and scripts cannot run.

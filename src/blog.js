@@ -1,4 +1,5 @@
 import { firebaseApp } from "./firebase.js";
+import { siteConfig } from "./siteConfig.js";
 
 export const POST_TYPES = ["guide", "itinerary", "seasonal", "story"];
 export const POST_LANGS = ["en", "hi"];
@@ -26,8 +27,13 @@ export async function getAdminEmails() {
 
 export async function isAdminUser(user) {
   if (!user?.email) return false;
+  const email = user.email.toLowerCase();
+  // The configured owner account is always an admin, even if the allowlist
+  // document cannot be read right now. The Firestore rules remain the source
+  // of truth for what an admin may write.
+  if (siteConfig.adminEmail && siteConfig.adminEmail.toLowerCase() === email) return true;
   const emails = await getAdminEmails();
-  return emails.some((email) => String(email).toLowerCase() === user.email.toLowerCase());
+  return emails.some((allowed) => String(allowed).toLowerCase() === email);
 }
 
 function normalise(post, id) {

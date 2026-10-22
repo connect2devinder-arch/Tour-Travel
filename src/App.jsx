@@ -759,6 +759,7 @@ function ContactForm() {
 
 function Footer() {
   const location = useLocation();
+  const { isAdmin } = useAuth();
   const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : `/#${id}`);
   const [email, setEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState("idle");
@@ -826,7 +827,7 @@ function Footer() {
         <a href={sectionHref("about")}>About</a>
         <a href={sectionHref("our-way")}>Our way</a>
         <a href={sectionHref("contact")}>Contact</a>
-        <Link to="/admin">Admin</Link>
+        {isAdmin ? <Link to="/admin/journal">Write</Link> : <Link to="/admin">Admin</Link>}
       </nav>
 
       <div className="footer-column footer-contact-block">

@@ -2,6 +2,9 @@
 // Change the phone number, email or address here and it updates everywhere on the site.
 export const siteConfig = {
   companyName: "Elsewhere Travel Co.",
+  // Account that can write in the admin panel. Kept in sync with the
+  // `config/admins` Firestore document (the allowlist used by the rules).
+  adminEmail: "connect2devinder@gmail.com",
   // Trip enquiries from the contact form are sent here.
   email: {
     display: "connect2devinder@gmail.com",
