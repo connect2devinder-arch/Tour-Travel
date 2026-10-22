@@ -11,7 +11,7 @@ npm run dev
 
 Open the local URL printed by Vite. Use `npm run build` to create a production build.
 
-Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection and queue an email notification for the team; actual email delivery, live availability, and newsletter delivery are not configured. Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
+Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection and queue an email notification for the team; actual email delivery, live availability, and newsletter delivery are not configured. Newsletter signups themselves are stored (see the footer). Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
 
 ## Tour packages
 
@@ -72,9 +72,9 @@ Trip enquiries are addressed to **connect2devinder@gmail.com**. When a guest sub
 
 ## Header and footer navigation
 
-The header carries the primary journey only: **Destinations · Packages · Journal · Contact**, plus the sign-in button and the "Plan your trip" call to action.
+The header carries the primary journey only: **Destinations · Packages · Journal · Contact**, plus the sign-in button and the "Plan your trip" call to action. The link for the section you are in is marked active — on the homepage it follows the scroll position, and `/journal` or `/packages/:id` light up their own link.
 
-The footer holds the full sitemap in three columns — **Explore** (Destinations, Packages, Experiences, Journal), **Company** (About, Our way, Contact, Admin) and **Get in touch** (phone, email, address) — with the brand, copyright and "Back to top" below. Homepage-section links resolve to `#anchor` on the homepage and `/#anchor` from any other page. The mobile menu scrolls instead of clipping, so no item can hide behind the fold.
+The footer holds a newsletter signup box (real sign-ups are stored in the `newsletter` Firestore collection and listed under **Subscribers** in the admin panel) plus the full sitemap in three columns — **Explore** (Destinations, Packages, Experiences, Journal), **Company** (About, Our way, Contact, Admin) and **Get in touch** (phone, email, address) — with the brand, copyright and "Back to top" below. Homepage-section links resolve to `#anchor` on the homepage and `/#anchor` from any other page. The mobile menu scrolls instead of clipping, so no item can hide behind the fold.
 
 ## About section
 

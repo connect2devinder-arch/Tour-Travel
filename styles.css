@@ -26,8 +26,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .brand-period { margin-left: -9px; color: var(--coral); }
 .primary-nav { display: flex; gap: 38px; margin-left: 60px; }
 .primary-nav a, .header-cta { font-size: 12px; font-weight: 600; }
-.primary-nav a { color: var(--ink-soft); transition: color .2s; }
+.primary-nav a { position: relative; color: var(--ink-soft); transition: color .2s; }
 .primary-nav a:hover, .text-link:hover { color: var(--coral); }
+.primary-nav a.is-active { color: var(--ink); }
+.primary-nav a.is-active::after { position: absolute; left: 0; right: 0; bottom: -8px; height: 1px; background: var(--coral); content: ""; }
 .header-cta { border-bottom: 1px solid var(--ink); padding: 7px 0; }
 .header-cta span { color: var(--coral); margin-left: 6px; }
 .header-actions { display: flex; align-items: center; gap: 20px; }
@@ -82,8 +84,8 @@ h1 em, h2 em { font-weight: 500; }
 .destinations { padding: 105px 0 112px; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 34px; }
 .section-heading .eyebrow { margin-bottom: 13px; color: var(--coral); }
-.section-heading h2, .manifesto h2, .newsletter h2 { margin: 0; font: 500 clamp(38px, 4.1vw, 54px)/1.08 var(--serif); letter-spacing: -1.5px; }
-.section-heading h2 em, .manifesto h2 em, .newsletter h2 em { color: var(--coral); }
+.section-heading h2, .manifesto h2 { margin: 0; font: 500 clamp(38px, 4.1vw, 54px)/1.08 var(--serif); letter-spacing: -1.5px; }
+.section-heading h2 em, .manifesto h2 em { color: var(--coral); }
 .section-link { margin-bottom: 8px; }
 .destination-grid { min-height: 435px; display: grid; grid-template-columns: 1.18fr 1fr 1fr; gap: 18px; }
 .destination-card { min-height: 410px; overflow: hidden; position: relative; color: white; background: #87948a; }
@@ -122,19 +124,19 @@ h1 em, h2 em { font-weight: 500; }
 .experience-card p { max-width: 235px; margin: 0; color: var(--ink-soft); font-size: 10px; line-height: 1.7; }
 .experience-arrow { position: absolute; right: 22px; bottom: 22px; color: var(--coral); font-size: 17px; }
 
-.newsletter { padding: 72px 8%; display: flex; align-items: center; justify-content: space-between; gap: 50px; background: var(--ink); color: white; }
-.newsletter .eyebrow { margin-bottom: 13px; color: #f2b69d; }
-.newsletter h2 { font-size: clamp(33px, 3.7vw, 47px); }
-.newsletter h2 em { color: #f2b69d; }
-.newsletter > div > p:last-child { margin: 13px 0 0; color: rgba(255,255,255,.7); font-size: 11px; }
-.newsletter-form { width: min(390px, 45%); display: grid; grid-template-columns: 1fr auto; border-bottom: 1px solid rgba(255,255,255,.56); }
-.newsletter-form input { min-width: 0; padding: 13px 0; border: 0; outline: 0; background: transparent; color: white; font-size: 11px; }
-.newsletter-form input::placeholder { color: rgba(255,255,255,.65); }
-.newsletter-form button { padding: 0 0 0 18px; border: 0; background: transparent; color: #fff; font-size: 10px; font-weight: 600; cursor: pointer; }
-.newsletter-form button span { margin-left: 10px; color: #f2b69d; font-size: 14px; }
-.newsletter-status { grid-column: 1 / -1; margin: 10px 0 0; color: rgba(255,255,255,.55); font-size: 9px; }
 
 .site-footer { padding: 54px 7.2% 26px; display: grid; grid-template-columns: 1.25fr .8fr .8fr 1fr; gap: 34px 30px; align-items: start; }
+.footer-newsletter { grid-column: 1 / -1; margin-bottom: 6px; padding-bottom: 28px; display: flex; align-items: end; justify-content: space-between; gap: 34px; border-bottom: 1px solid var(--line); }
+.footer-newsletter h3 { margin: 0 0 8px; font: 500 clamp(24px, 2.6vw, 34px)/1.1 var(--serif); letter-spacing: -.8px; }
+.footer-newsletter h3 em { color: var(--coral); }
+.footer-newsletter p { margin: 0; color: var(--ink-soft); font-size: 10px; line-height: 1.7; }
+.footer-newsletter-form { width: min(430px, 46%); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; border-bottom: 1px solid var(--ink); }
+.footer-newsletter-form input { min-width: 0; padding: 12px 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 11px; }
+.footer-newsletter-form input::placeholder { color: var(--ink); opacity: .55; }
+.footer-newsletter-form button { padding: 12px 0 12px 18px; border: 0; background: transparent; color: var(--ink); font-size: 10px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.footer-newsletter-form button span { margin-left: 9px; color: var(--coral); font-size: 14px; }
+.footer-newsletter-form button:disabled { opacity: .6; cursor: wait; }
+.footer-newsletter-status { grid-column: 1 / -1; margin: 9px 0 0; color: var(--ink-soft); font-size: 9px; }
 .footer-brand { font-size: 16px; }
 .footer-brand .brand-mark { width: 24px; height: 24px; font-size: 17px; }
 .footer-brand-block p { max-width: 230px; margin: 14px 0 0; color: var(--ink-soft); font-size: 10px; line-height: 1.7; }
@@ -163,7 +165,6 @@ h1 em, h2 em { font-weight: 500; }
   .destination-card { min-height: 330px; }
   .destination-large { min-height: 680px; }
   .manifesto-copy { padding-inline: 9%; }
-  .newsletter { padding-inline: 6%; }
 }
 @media (max-width: 650px) {
   html { scroll-padding-top: 70px; }
@@ -221,11 +222,10 @@ h1 em, h2 em { font-weight: 500; }
   .experience-grid { grid-template-columns: 1fr; gap: 10px; }
   .experience-card { min-height: 190px; }
   .experience-icon { margin-top: 15px; }
-  .newsletter { padding: 55px 7%; flex-direction: column; align-items: stretch; gap: 30px; }
-  .newsletter h2 { font-size: 38px; }
-  .newsletter-form { width: 100%; }
   .site-footer { padding: 42px 6% 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 20px; }
   .footer-brand-block { grid-column: 1 / -1; }
+  .footer-newsletter { flex-direction: column; align-items: stretch; gap: 18px; }
+  .footer-newsletter-form { width: 100%; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -686,6 +686,9 @@ h1 em, h2 em { font-weight: 500; }
 .notification-channel { padding: 3px 7px; background: var(--paper-deep); color: var(--ink); font-size: 8px; font-weight: 700; letter-spacing: 1px; }
 .admin-notification-body { margin: 14px 0 0; padding: 13px 15px; background: var(--paper); color: var(--ink-soft); font-size: 11px; line-height: 1.7; white-space: pre-wrap; }
 .admin-notification-actions { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.admin-subscriber-list { margin: 14px 0 0; padding: 0; display: grid; gap: 8px; list-style: none; }
+.admin-subscriber-list li { display: grid; grid-template-columns: minmax(0, 1fr) 90px 120px; gap: 12px; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; }
+.admin-subscriber-list li span:first-child { color: var(--ink); font-weight: 600; }
 
 @media (max-width: 900px) {
   .admin-booking-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }

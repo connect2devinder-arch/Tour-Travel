@@ -6,6 +6,7 @@ import { heroAutoplay, heroSlides } from "./heroSlides.js";
 import { siteAddress, siteConfig } from "./siteConfig.js";
 import { firebaseAuth, firebaseConfigured, googleProvider, saveContactEnquiry } from "./firebase.js";
 import { queueEnquiryNotification } from "./bookings.js";
+import { subscribeToNewsletter } from "./newsletter.js";
 import { useAuth } from "./AuthContext.jsx";
 import { usePackages } from "./PackagesContext.jsx";
 import { Link, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -35,6 +36,7 @@ function Header() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
   const location = useLocation();
+  const activeNav = useActiveNav();
   const closeMenu = () => setMenuOpen(false);
   const sectionHref = (id) => location.pathname === "/" ? `#${id}` : `/#${id}`;
 
@@ -79,10 +81,10 @@ function Header() {
           <span></span><span></span>
         </button>
         <nav className={`primary-nav${menuOpen ? " is-open" : ""}`} id="primary-nav" aria-label="Main navigation">
-          <a href={sectionHref("destinations")} onClick={closeMenu}>Destinations</a>
-          <a href={sectionHref("packages")} onClick={closeMenu}>Packages</a>
-          <Link to="/journal" onClick={closeMenu}>Journal</Link>
-          <a href={sectionHref("contact")} onClick={closeMenu}>Contact</a>
+          <a className={activeNav === "destinations" ? "is-active" : ""} href={sectionHref("destinations")} onClick={closeMenu}>Destinations</a>
+          <a className={activeNav === "packages" ? "is-active" : ""} href={sectionHref("packages")} onClick={closeMenu}>Packages</a>
+          <Link className={activeNav === "journal" ? "is-active" : ""} to="/journal" onClick={closeMenu}>Journal</Link>
+          <a className={activeNav === "contact" ? "is-active" : ""} href={sectionHref("contact")} onClick={closeMenu}>Contact</a>
         </nav>
         <div className="header-actions">
           {isAdmin && <Link className="auth-button" to="/admin/journal" onClick={closeMenu}>Write</Link>}
@@ -115,6 +117,53 @@ function GoogleMark() {
       <path fill="#EA4335" d="M24 12.1c3 0 5.6 1 7.7 3.1l5.8-5.8C34 5.9 29.5 4 24 4A20 20 0 0 0 5.9 15l6.9 5.3c1.6-4.7 6-8.2 11.2-8.2Z" />
     </svg>
   );
+}
+
+/**
+ * Tracks which primary section is in view so the header can mark it active.
+ * Journal and package routes light up their own link.
+ */
+function useActiveNav() {
+  const location = useLocation();
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    if (location.pathname === "/journal") {
+      setActive("journal");
+      return undefined;
+    }
+    if (location.pathname.startsWith("/packages")) {
+      setActive("packages");
+      return undefined;
+    }
+    if (location.pathname !== "/") {
+      setActive("");
+      return undefined;
+    }
+
+    const ids = ["destinations", "packages", "contact"];
+    const update = () => {
+      const marker = window.innerHeight * 0.35;
+      let current = "";
+      ids.forEach((id) => {
+        const section = document.getElementById(id);
+        if (section && section.getBoundingClientRect().top <= marker) current = id;
+      });
+      // In the hero (above every section) the next stop is the destinations.
+      if (!current && window.scrollY < 200) current = ids[0];
+      setActive(current);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [location.pathname]);
+
+  return active;
 }
 
 function Hero() {
@@ -708,35 +757,57 @@ function ContactForm() {
   );
 }
 
-function Newsletter() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setSubscribed(true);
-    setEmail("");
-  }
-
-  return (
-    <section className="newsletter" id="newsletter">
-      <div><p className="eyebrow">A GOOD THING IN YOUR INBOX</p><h2>Postcards from <em>elsewhere.</em></h2><p>Fresh places, thoughtful stories, and a little nudge to use your vacation days.</p></div>
-      <form className="newsletter-form" onSubmit={handleSubmit}>
-        <label className="visually-hidden" htmlFor="email-input">Your email address</label>
-        <input id="email-input" type="email" placeholder="Your email address" value={email} onChange={(event) => { setEmail(event.target.value); setSubscribed(false); }} required />
-        <button type="submit" aria-label="Subscribe to the newsletter">Count me in <span aria-hidden="true">↗</span></button>
-        <p className="newsletter-status" aria-live="polite">{subscribed ? "Thanks! Newsletter sign-up is a demo for now." : "No spam. Just good places."}</p>
-      </form>
-    </section>
-  );
-}
-
 function Footer() {
   const location = useLocation();
   const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : `/#${id}`);
+  const [email, setEmail] = useState("");
+  const [newsletterStatus, setNewsletterStatus] = useState("idle");
+
+  async function handleSubscribe(event) {
+    event.preventDefault();
+    if (!firebaseConfigured) {
+      setNewsletterStatus("error");
+      return;
+    }
+    setNewsletterStatus("saving");
+    try {
+      await subscribeToNewsletter(email, "footer");
+      setNewsletterStatus("done");
+      setEmail("");
+    } catch {
+      setNewsletterStatus("error");
+    }
+  }
 
   return (
     <footer className="site-footer">
+      <div className="footer-newsletter">
+        <div>
+          <h3>Postcards from <em>elsewhere.</em></h3>
+          <p>Fresh places, thoughtful stories, and a little nudge to use your vacation days.</p>
+        </div>
+        <form className="footer-newsletter-form" onSubmit={handleSubscribe}>
+          <label className="visually-hidden" htmlFor="footer-email">Your email address</label>
+          <input
+            id="footer-email"
+            type="email"
+            placeholder="Your email address"
+            value={email}
+            onChange={(event) => { setEmail(event.target.value); setNewsletterStatus("idle"); }}
+            required
+          />
+          <button type="submit" disabled={newsletterStatus === "saving"}>
+            {newsletterStatus === "done" ? "Subscribed ✓" : "Count me in"} <span aria-hidden="true">↗</span>
+          </button>
+          <p className="footer-newsletter-status" aria-live="polite">
+            {newsletterStatus === "done" && "You’re on the list — first postcard soon."}
+            {newsletterStatus === "error" && "We couldn’t save that just now. Please try again."}
+            {newsletterStatus === "saving" && "Saving…"}
+            {newsletterStatus === "idle" && "No spam. Just good places."}
+          </p>
+        </form>
+      </div>
+
       <div className="footer-brand-block">
         <Brand footer />
         <p>Take the long way around.</p>
@@ -838,13 +909,12 @@ function HomePage() {
       <FeaturedPackages />
       <section className="manifesto" id="our-way">
         <div className="manifesto-image" role="img" aria-label="Mountain peaks and forested slopes in the Himalayas"></div>
-        <div className="manifesto-copy"><p className="eyebrow">TRAVEL, A LITTLE MORE HUMAN</p><h2>Go beyond<br />the <em>postcard.</em></h2><p>We believe the best trips aren’t about ticking places off a list. They’re about the long lunch that turns into dinner, the road you didn’t plan to take, and the people who make you feel at home.</p><a className="text-link" href="#newsletter">Get to know us <span aria-hidden="true">↗</span></a></div>
+        <div className="manifesto-copy"><p className="eyebrow">TRAVEL, A LITTLE MORE HUMAN</p><h2>Go beyond<br />the <em>postcard.</em></h2><p>We believe the best trips aren’t about ticking places off a list. They’re about the long lunch that turns into dinner, the road you didn’t plan to take, and the people who make you feel at home.</p><a className="text-link" href="#footer-email">Get to know us <span aria-hidden="true">↗</span></a></div>
         <span className="manifesto-note">TAKE THE SCENIC ROUTE</span>
       </section>
       <AboutSection />
       <Experiences />
       <ContactForm />
-      <Newsletter />
     </main>
   );
 }

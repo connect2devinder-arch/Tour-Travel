@@ -12,6 +12,7 @@ import {
   recordBookingNotifications,
   updateBookingStatus,
 } from "./bookings.js";
+import { listSubscribers } from "./newsletter.js";
 
 const TRIGGER_LABELS = {
   booking_created: "Booking created",
@@ -24,6 +25,7 @@ export function AdminBookings() {
   const [tab, setTab] = useState("bookings");
   const [bookings, setBookings] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -44,9 +46,14 @@ export function AdminBookings() {
     setNotifications(result);
   }
 
+  async function loadSubscribers() {
+    const result = await listSubscribers();
+    setSubscribers(result);
+  }
+
   useEffect(() => {
     setLoading(true);
-    Promise.all([loadBookings(), loadNotifications()])
+    Promise.all([loadBookings(), loadNotifications(), loadSubscribers()])
       .catch(() => setError("Couldn’t load the bookings."))
       .finally(() => setLoading(false));
   }, []);
@@ -110,6 +117,9 @@ export function AdminBookings() {
           </button>
           <button type="button" role="tab" aria-selected={tab === "notifications"} className={`admin-tab${tab === "notifications" ? " is-active" : ""}`} onClick={() => setTab("notifications")}>
             Notifications ({notifications.length})
+          </button>
+          <button type="button" role="tab" aria-selected={tab === "subscribers"} className={`admin-tab${tab === "subscribers" ? " is-active" : ""}`} onClick={() => setTab("subscribers")}>
+            Subscribers ({subscribers.length})
           </button>
         </div>
 
@@ -241,6 +251,32 @@ export function AdminBookings() {
                 </div>
               </article>
             ))}
+          </section>
+        )}
+
+        {tab === "subscribers" && (
+          <section className="section-shell admin-list" aria-live="polite">
+            {loading && <p className="journal-status">Loading subscribers…</p>}
+            {!loading && subscribers.length === 0 && (
+              <p className="journal-status">No subscribers yet. Sign-ups from the footer and the newsletter band land here.</p>
+            )}
+
+            {subscribers.length > 0 && (
+              <article className="admin-group">
+                <div className="admin-group-head">
+                  <h2>{subscribers.length} subscriber{subscribers.length === 1 ? "" : "s"}</h2>
+                </div>
+                <ul className="admin-subscriber-list">
+                  {subscribers.map((subscriber) => (
+                    <li key={subscriber.id}>
+                      <span>{subscriber.email}</span>
+                      <span>{subscriber.source}</span>
+                      <span>{subscriber.createdAt ? formatDate(subscriber.createdAt) : ""}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            )}
           </section>
         )}
       </main>

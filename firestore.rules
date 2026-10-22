@@ -141,6 +141,27 @@ service cloud.firestore {
       }
     }
 
+    // Newsletter signups. Anyone can subscribe, only admins can read the list.
+    match /newsletter/{subscriberId} {
+      allow create: if validSubscriber();
+      allow read, update, delete: if isAdmin();
+
+      function validSubscriber() {
+        let data = request.resource.data;
+        return data.keys().hasOnly(['email', 'source', 'status', 'createdAt', 'updatedAt'])
+          && data.email is string
+          && data.email.size() >= 5
+          && data.email.size() <= 254
+          && data.email.matches('^[^ @]+@[^ @]+[.][^ @]+$')
+          && data.source is string
+          && data.source.size() > 0
+          && data.source.size() <= 60
+          && data.status == 'subscribed'
+          && data.createdAt == request.time
+          && data.updatedAt == request.time;
+      }
+    }
+
     match /contactEnquiries/{enquiryId} {
       allow create: if validEnquiry();
       allow read, update, delete: if false;
