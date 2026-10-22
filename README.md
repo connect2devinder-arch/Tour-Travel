@@ -60,7 +60,7 @@ Google sign-in is enabled for the deployed Firebase project. The live flow has b
 
 ## Contact details
 
-Phone number, enquiry email and office address live in one place: `src/siteConfig.js`. Change them there and the contact section and footer both update.
+Phone number, enquiry email and office address live in one place: `src/siteConfig.js`. They are shown **only in the footer** — the contact section on the page holds just the enquiry form, so nothing is duplicated.
 
 Trip enquiries are addressed to **connect2devinder@gmail.com**. When a guest submits the contact form, the enquiry is saved in the `contactEnquiries` Firestore collection and an email notification is queued for that address with trigger `enquiry_received` — it shows up in the admin **Notifications** tab (`/admin/bookings`). Real email delivery still needs a provider and Cloud Functions; in this POC the notification is stored and can be marked as sent by hand.
 

@@ -1,7 +1,7 @@
 # Enquiry Email and Enquiry Notification
 
 ## Overview
-Contact-form enquiries ab ek fixed email address par jaate hain — `connect2devinder@gmail.com`. Address `src/siteConfig.js` me ek jagah hai aur site par contact section + footer dono me dikhta hai, aur har enquiry ke liye ek email notification record queue hota hai jo admin panel me dikhta hai.
+Contact-form enquiries ab ek fixed email address par jaate hain — `connect2devinder@gmail.com`. Address `src/siteConfig.js` me ek jagah hai. Phone, email aur office address **sirf footer** me dikhte hain — page ke andar (contact section) contact details duplicate nahi hote — aur har enquiry ke liye ek email notification record queue hota hai jo admin panel me dikhta hai.
 
 ## Goal
 Travel team ko enquiry seedha mil rahi ho — guest ko bhi pata chale enquiry kis email par ja rahi hai.
@@ -13,20 +13,20 @@ Travel team ko enquiry seedha mil rahi ho — guest ko bhi pata chale enquiry ki
 
 ## Functional requirements
 - **REQ-001:** Enquiry ka recipient email `connect2devinder@gmail.com` hona chahiye.
-- **REQ-002:** Email address ek hi jagah define ho (`src/siteConfig.js`) aur contact section, footer aur notification record — sab me wahi value use ho.
-- **REQ-003:** Contact section me enquiry email "Email us" ke naam se dikhe, `mailto:` link ke saath.
-- **REQ-004:** Footer me bhi enquiry email dikhe (mailto link).
+- **REQ-002:** Email address ek hi jagah define ho (`src/siteConfig.js`) aur footer aur notification record — dono me wahi value use ho.
+- **REQ-003:** Phone, email aur office address **sirf footer** me dikhein. Contact section (aur page ka baaki hissa) me ye details repeat na hon.
+- **REQ-004:** Footer me enquiry email mailto link ke saath dikhe, aur phone tel: link ke saath.
 - **REQ-005:** Form submit hone par enquiry `contactEnquiries` collection me save ho aur saath me ek email notification record bane jiska recipient enquiry email ho, trigger `enquiry_received`.
 - **REQ-006:** Notification record me enquiry ka poora detail ho — naam, email, phone, destination, package, travel date, travellers aur message.
-- **REQ-007:** Form ka success message bataye ki enquiry kis email par bhej di gayi.
+- **REQ-007:** Form ka success message bataye ki enquiry save ho gayi hai — email id page par dobara repeat na ho (sirf footer me).
 - **REQ-008:** Notification record booking wale record se ek hi collection me rahe, sirf `targetType` (`booking` / `enquiry`) alag ho.
 
 ## Acceptance criteria
 - **AC-001 (REQ-001, REQ-005):** Given valid enquiry form, when guest submit karta hai, then `contactEnquiries` me enquiry save hoti hai aur `notifications` me `trigger: "enquiry_received"`, `channel: "email"`, `recipient: "connect2devinder@gmail.com"` wala record banta hai.
-- **AC-002 (REQ-003):** Given contact section, when guest dekhta hai, then "Email us" ke saath `connect2devinder@gmail.com` dikhta hai aur link `mailto:` se khulta hai.
-- **AC-003 (REQ-004):** Given footer, when guest dekhta hai, then enquiry email mailto link ke saath dikhta hai.
+- **AC-002 (REQ-003):** Given contact section, when guest dekhta hai, then wahan koi phone/email/address card nahi hota — sirf enquiry form hai.
+- **AC-003 (REQ-004):** Given footer, when guest dekhta hai, then phone (`tel:` link), enquiry email (`mailto:` link) aur office address ek hi block me dikhte hain.
 - **AC-004 (REQ-006):** Given enquiry notification, when admin notification kholta hai, then body me guest ka naam, email, phone, destination, package, travel date, travellers aur message sab hote hain.
-- **AC-005 (REQ-007):** Given successful submit, when guest success message dekhta hai, then message me `connect2devinder@gmail.com` hota hai.
+- **AC-005 (REQ-007):** Given successful submit, when guest success message dekhta hai, then message confirm karta hai ki enquiry bhej di gayi hai, aur usme email id dobara nahi likhi hoti.
 - **AC-006 (REQ-008):** Given booking notification, when admin uska record dekhta hai, then `targetType` "booking" rehta hai aur enquiry record ka `targetType` "enquiry" hota hai.
 
 ## Business rules and validation

@@ -623,7 +623,7 @@ function ContactForm() {
   const statusMessages = {
     idle: "Your details will only be used to respond to this trip enquiry.",
     saving: "Saving your enquiry…",
-    success: `Thanks! Your enquiry has been sent to ${siteConfig.email.display}.`,
+    success: "Thanks! Your enquiry has been sent — we’ll get back to you shortly.",
     error: "We couldn’t save your enquiry. Please try again.",
     "error-config": "Firestore is not configured for this build.",
   };
@@ -688,11 +688,6 @@ function ContactForm() {
           <button className="contact-submit" type="submit" disabled={submissionStatus === "saving" || !firebaseConfigured}>{submissionStatus === "saving" ? "Saving…" : "Send trip enquiry"} <span aria-hidden="true">↗</span></button>
         </div>
       </form>
-      <div className="contact-details">
-        <a className="contact-detail" href={`tel:${siteConfig.phone.dial}`}><span>Call us</span><strong>{siteConfig.phone.display}</strong></a>
-        <a className="contact-detail" href={`mailto:${siteConfig.email.address}`}><span>Email us</span><strong>{siteConfig.email.display}</strong></a>
-        <div className="contact-detail"><span>Visit us</span><address>{siteAddress}</address></div>
-      </div>
     </section>
   );
 }
@@ -725,13 +720,17 @@ function Footer() {
     <footer className="site-footer">
       <Brand footer />
       <p>Take the long way around.</p>
-      <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
-      <a className="footer-contact" href={`mailto:${siteConfig.email.address}`}>{siteConfig.email.display}</a>
-      <span className="footer-address">{siteAddress}</span>
-      <Link className="footer-about" to="/journal">Journal</Link>
-      <Link className="footer-about" to="/#about">About</Link>
-      <Link className="footer-about" to="/admin">Admin</Link>
-      <span>© {new Date().getFullYear()} {siteConfig.companyName}</span>
+      <div className="footer-contact-block">
+        <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
+        <a className="footer-contact" href={`mailto:${siteConfig.email.address}`}>{siteConfig.email.display}</a>
+        <span className="footer-address">{siteAddress}</span>
+      </div>
+      <nav className="footer-nav" aria-label="Footer">
+        <Link className="footer-about" to="/journal">Journal</Link>
+        <Link className="footer-about" to="/#about">About</Link>
+        <Link className="footer-about" to="/admin">Admin</Link>
+      </nav>
+      <span className="footer-copy">© {new Date().getFullYear()} {siteConfig.companyName}</span>
       <a className="back-top" href="/#top">Back to top ↑</a>
     </footer>
   );
