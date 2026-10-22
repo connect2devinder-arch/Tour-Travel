@@ -70,6 +70,12 @@ Phone number, enquiry email and office address live in one place: `src/siteConfi
 
 Trip enquiries are addressed to **connect2devinder@gmail.com**. When a guest submits the contact form, the enquiry is saved in the `contactEnquiries` Firestore collection and an email notification is queued for that address with trigger `enquiry_received` — it shows up in the admin **Notifications** tab (`/admin/bookings`). Real email delivery still needs a provider and Cloud Functions; in this POC the notification is stored and can be marked as sent by hand.
 
+## Header and footer navigation
+
+The header carries the primary journey only: **Destinations · Packages · Journal · Contact**, plus the sign-in button and the "Plan your trip" call to action.
+
+The footer holds the full sitemap in three columns — **Explore** (Destinations, Packages, Experiences, Journal), **Company** (About, Our way, Contact, Admin) and **Get in touch** (phone, email, address) — with the brand, copyright and "Back to top" below. Homepage-section links resolve to `#anchor` on the homepage and `/#anchor` from any other page. The mobile menu scrolls instead of clipping, so no item can hide behind the fold.
+
 ## About section
 
 The company story and values live in `src/aboutContent.js` — edit the copy there and the About section updates. It sits between the manifesto and experiences sections and is reachable from the header and footer.

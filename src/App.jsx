@@ -81,11 +81,8 @@ function Header() {
         <nav className={`primary-nav${menuOpen ? " is-open" : ""}`} id="primary-nav" aria-label="Main navigation">
           <a href={sectionHref("destinations")} onClick={closeMenu}>Destinations</a>
           <a href={sectionHref("packages")} onClick={closeMenu}>Packages</a>
-          <a href={sectionHref("experiences")} onClick={closeMenu}>Experiences</a>
           <Link to="/journal" onClick={closeMenu}>Journal</Link>
-          <a href={sectionHref("about")} onClick={closeMenu}>About</a>
           <a href={sectionHref("contact")} onClick={closeMenu}>Contact</a>
-          <a href={sectionHref("our-way")} onClick={closeMenu}>Our way</a>
         </nav>
         <div className="header-actions">
           {isAdmin && <Link className="auth-button" to="/admin/journal" onClick={closeMenu}>Write</Link>}
@@ -735,22 +732,43 @@ function Newsletter() {
 }
 
 function Footer() {
+  const location = useLocation();
+  const sectionHref = (id) => (location.pathname === "/" ? `#${id}` : `/#${id}`);
+
   return (
     <footer className="site-footer">
-      <Brand footer />
-      <p>Take the long way around.</p>
-      <div className="footer-contact-block">
+      <div className="footer-brand-block">
+        <Brand footer />
+        <p>Take the long way around.</p>
+      </div>
+
+      <nav className="footer-column" aria-label="Explore">
+        <h3>Explore</h3>
+        <a href={sectionHref("destinations")}>Destinations</a>
+        <a href={sectionHref("packages")}>Packages</a>
+        <a href={sectionHref("experiences")}>Experiences</a>
+        <Link to="/journal">Journal</Link>
+      </nav>
+
+      <nav className="footer-column" aria-label="Company">
+        <h3>Company</h3>
+        <a href={sectionHref("about")}>About</a>
+        <a href={sectionHref("our-way")}>Our way</a>
+        <a href={sectionHref("contact")}>Contact</a>
+        <Link to="/admin">Admin</Link>
+      </nav>
+
+      <div className="footer-column footer-contact-block">
+        <h3>Get in touch</h3>
         <a className="footer-contact" href={`tel:${siteConfig.phone.dial}`}>{siteConfig.phone.display}</a>
         <a className="footer-contact" href={`mailto:${siteConfig.email.address}`}>{siteConfig.email.display}</a>
         <span className="footer-address">{siteAddress}</span>
       </div>
-      <nav className="footer-nav" aria-label="Footer">
-        <Link className="footer-about" to="/journal">Journal</Link>
-        <Link className="footer-about" to="/#about">About</Link>
-        <Link className="footer-about" to="/admin">Admin</Link>
-      </nav>
-      <span className="footer-copy">© {new Date().getFullYear()} {siteConfig.companyName}</span>
-      <a className="back-top" href="/#top">Back to top ↑</a>
+
+      <div className="footer-bottom">
+        <span className="footer-copy">© {new Date().getFullYear()} {siteConfig.companyName}</span>
+        <a className="back-top" href="/#top">Back to top ↑</a>
+      </div>
     </footer>
   );
 }
