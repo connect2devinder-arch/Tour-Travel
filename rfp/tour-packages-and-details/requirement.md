@@ -18,7 +18,7 @@ Visitors ko package choose karne ke liye essential trip information dena aur sel
 - **REQ-002 — Separate package detail page:** “View details” select karne par us package ka shareable URL/page khule, e.g. `/packages/shimla-escape`.
 - **REQ-003 — Day-wise plan:** Detail page par itinerary day-by-day order mein dikhayi jaye.
 - **REQ-004 — Package information:** Detail page par package inclusions, hotel/stay details, aur transport details sections hon.
-- **REQ-005 — Photos and FAQs:** Detail page par package destination photos aur readable FAQs dikhaye jayen.
+- **REQ-005 - Photos and FAQs:** Detail page par package destination photos ek time par ek hi badi image ke roop me dikhayi jayen, jise aage/peeche arrows aur dots se badla jaye, aur readable FAQs dikhein.
 - **REQ-006 — Enquiry handoff:** “Enquire about this trip” visitor ko existing contact form par le jaye aur selected package preselect kare. Contact submission Firestore document mein package ID aur package name bhi store kare.
 - **REQ-007 — Responsive and accessible page:** Package cards aur details mobile/desktop par usable hon; navigation, gallery, FAQs, aur enquiry controls keyboard-accessible hon.
 
@@ -28,7 +28,7 @@ Visitors ko package choose karne ke liye essential trip information dena aur sel
 - **AC-002 (REQ-002):** Given package card visible hai, when visitor “View details” activate karta hai, then us package ka unique detail URL khulta hai aur correct package title dikhata hai.
 - **AC-003 (REQ-003):** Given detail page khuli hai, when visitor itinerary dekhta hai, then trip plan Day 1 se duration ke aakhri din tak sahi order mein dikhai deta hai.
 - **AC-004 (REQ-004):** Given detail page khuli hai, when visitor package information dekhta hai, then inclusions, hotel/stay, aur transport details alag sections mein visible hote hain.
-- **AC-005 (REQ-005):** Given detail page khuli hai, when visitor photos aur FAQs dekhta hai, then destination photos accessible alt text ke saath aur FAQ questions/answers readable form mein dikhte hain.
+- **AC-005 (REQ-005):** Given detail page khuli hai, when visitor photos aur FAQs dekhta hai, then ek hi badi photo dikhti hai (thumbnail grid nahi), arrows/dots se photo badalti hai aur usmein alt text hota hai, aur FAQ questions/answers readable form mein dikhte hain.
 - **AC-006 (REQ-006):** Given visitor package detail page par hai, when woh enquiry action activate karta hai, then contact form par wahi package selected hota hai; valid submission Firestore `contactEnquiries` document mein package ID/name ke saath save hoti hai.
 - **AC-007 (REQ-007):** Given visitor mobile ya desktop use karta hai, when package list/detail render hota hai, then content viewport mein reflow hota hai aur main controls keyboard se operate kiye ja sakte hain.
 

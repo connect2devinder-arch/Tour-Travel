@@ -15,7 +15,7 @@ Destination/package details, INR prices, and the newsletter are sample/demo cont
 
 ## Tour packages
 
-Package cards show duration, itinerary summary, inclusions, and a "Starting from" price. "View details" opens a shareable route such as `/packages/shimla-escape` with a day-by-day plan, inclusions, hotel/transport details, photos, and FAQs. "Enquire about this trip" opens the contact form with that package preselected, and the enquiry stores the package ID/name in Firestore.
+Package cards show duration, itinerary summary, inclusions, and a "Starting from" price. "View details" opens a shareable route such as `/packages/shimla-escape` with a day-by-day plan, inclusions, hotel/transport details, photos, and FAQs. The gallery shows one large photo at a time — use the on-image arrows or the dots to move through the photos. "Enquire about this trip" opens the contact form with that package preselected, and the enquiry stores the package ID/name in Firestore.
 
 ## Destination images
 

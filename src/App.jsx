@@ -425,6 +425,9 @@ function PackageDetailPage() {
 
   const { destination, ...trip } = packageData;
   const activePhoto = destination.photos[activePhotoIndex] || destination.photos[0];
+  const goToPhoto = (index) => {
+    setActivePhotoIndex((index + destination.photos.length) % destination.photos.length);
+  };
   const enquiryUrl = `/?package=${encodeURIComponent(trip.id)}#contact`;
 
   return (
@@ -450,13 +453,26 @@ function PackageDetailPage() {
 
         <div className="package-detail-gallery-layout">
           <div className="package-detail-gallery">
-            <img className="package-detail-main-image" src={activePhoto.src} alt={activePhoto.alt} />
-            <div className="package-detail-thumbnails" aria-label={`${trip.name} photos`}>
-              {destination.photos.map((photo, index) => (
-                <button className={`detail-thumbnail${index === activePhotoIndex ? " is-active" : ""}`} type="button" key={photo.src} aria-label={`Show package photo ${index + 1}`} aria-pressed={index === activePhotoIndex} onClick={() => setActivePhotoIndex(index)}>
-                  <img src={photo.src} alt="" loading="lazy" />
-                </button>
-              ))}
+            <div className="package-gallery-stage">
+              <img className="package-detail-main-image" src={activePhoto.src} alt={activePhoto.alt} />
+              <button className="carousel-arrow carousel-prev" type="button" aria-label="Previous photo" onClick={() => goToPhoto(activePhotoIndex - 1)}>←</button>
+              <button className="carousel-arrow carousel-next" type="button" aria-label="Next photo" onClick={() => goToPhoto(activePhotoIndex + 1)}>→</button>
+            </div>
+            <div className="package-gallery-caption">
+              <span>{activePhotoIndex + 1} of {destination.photos.length} photos</span>
+              <div className="carousel-dots" role="tablist" aria-label={`${trip.name} photos`}>
+                {destination.photos.map((photo, index) => (
+                  <button
+                    key={photo.src}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === activePhotoIndex}
+                    aria-label={`Show package photo ${index + 1}`}
+                    className={`carousel-dot${index === activePhotoIndex ? " is-active" : ""}`}
+                    onClick={() => goToPhoto(index)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <div className="package-info-panel">

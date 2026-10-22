@@ -264,11 +264,6 @@ h1 em, h2 em { font-weight: 500; }
 .carousel-dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(22, 52, 47, .22); cursor: pointer; transition: background .2s, transform .2s; }
 .carousel-dot.is-active { background: var(--coral); transform: scale(1.25); }
 .detail-main-image { width: 100%; height: 390px; display: block; object-fit: cover; background: var(--paper-deep); }
-.detail-thumbnails { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-.detail-thumbnail { height: 90px; overflow: hidden; padding: 0; border: 2px solid transparent; background: var(--paper-deep); cursor: pointer; }
-.detail-thumbnail.is-active { border-color: var(--coral); }
-.detail-thumbnail img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .3s; }
-.detail-thumbnail:hover img { transform: scale(1.04); }
 .detail-copy { padding: 15px 0; }
 .detail-copy .eyebrow { color: var(--coral); }
 .detail-description { margin: 0 0 30px; color: var(--ink-soft); font-size: 13px; line-height: 1.9; }
@@ -312,7 +307,6 @@ h1 em, h2 em { font-weight: 500; }
 @media (max-width: 900px) {
   .detail-layout { gap: 28px; }
   .detail-main-image { height: 330px; }
-  .detail-thumbnail { height: 75px; }
   .package-image-button { height: 190px; }
   .package-card-copy { padding-inline: 15px; }
   .package-card h3 { font-size: 21px; }
@@ -331,7 +325,6 @@ h1 em, h2 em { font-weight: 500; }
   .place-carousel-caption { flex-direction: column; gap: 4px; }
   .place-carousel-caption h3 { font-size: 21px; }
   .detail-main-image { height: 270px; }
-  .detail-thumbnail { height: 72px; }
   .detail-copy { padding-top: 8px; }
   .detail-packages { margin-top: 35px; }
   .detail-subheading h3 { font-size: 32px; }
@@ -409,9 +402,10 @@ h1 em, h2 em { font-weight: 500; }
 .package-price-card button span { color: var(--coral); font-size: 14px; }
 .package-detail-gallery-layout { display: grid; grid-template-columns: 1.1fr .9fr; gap: 30px; align-items: start; }
 .package-detail-gallery { min-width: 0; }
+.package-gallery-stage { position: relative; overflow: hidden; background: var(--paper-deep); }
 .package-detail-main-image { width: 100%; height: 420px; display: block; object-fit: cover; background: var(--paper-deep); }
-.package-detail-thumbnails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
-.package-detail-thumbnails .detail-thumbnail { height: 86px; }
+.package-gallery-caption { margin-top: 13px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.package-gallery-caption > span { color: var(--ink-soft); font-size: 10px; }
 .package-info-panel { display: grid; gap: 18px; }
 .package-info-panel > section, .stay-transport-card { padding: 24px; background: #fff; }
 .package-info-panel .eyebrow { margin-bottom: 10px; color: var(--coral); }
@@ -460,7 +454,6 @@ h1 em, h2 em { font-weight: 500; }
   .package-price-card { width: 100%; }
   .package-detail-gallery-layout { grid-template-columns: 1fr; gap: 18px; }
   .package-detail-main-image { height: 280px; }
-  .package-detail-thumbnails .detail-thumbnail { height: 72px; }
   .stay-transport-grid { grid-template-columns: 1fr; }
   .package-itinerary { padding: 55px 0 40px; }
   .package-day-list { grid-template-columns: 1fr; }

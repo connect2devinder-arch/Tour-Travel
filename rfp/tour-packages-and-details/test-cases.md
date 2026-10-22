@@ -57,9 +57,10 @@
 - **Type:** Positive / Accessibility
 - **Preconditions:** A package detail page with photos and FAQs is open.
 - **Steps:**
-  1. Select the second package photo thumbnail.
-  2. Expand an FAQ, then use Space on the focused summary to toggle it closed and open again.
-- **Expected result:** Main photo updates and has meaningful alt text; FAQ answers expand/collapse by pointer and keyboard.
+  1. Click the next arrow on the package photo and check the counter.
+  2. Click the previous arrow on the first photo (wrap-around).
+  3. Expand an FAQ, then use Space on the focused summary to toggle it closed and open again.
+- **Expected result:** Only one large photo is shown at a time — no thumbnail grid — the next/previous arrows change the photo, the counter and dots follow, and the photo has meaningful alt text; FAQ answers expand/collapse by pointer and keyboard.
 - **Requirement coverage:** REQ-005, AC-005
 
 ## TC-006 — Package enquiry preselects package and saves its reference
