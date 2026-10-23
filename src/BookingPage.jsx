@@ -5,28 +5,20 @@ import { useAuth } from "./AuthContext.jsx";
 import { usePackages } from "./PackagesContext.jsx";
 import { findPackageById } from "./packages.js";
 import { useSeo } from "./seo.js";
+import { createRazorpayOrder, openRazorpayCheckout } from "./razorpay.js";
 import {
   BOOKING_STATUS_LABELS,
-  confirmBookingPayment,
-  createBooking,
   formatAmount,
   formatDate,
   getBookingById,
   listBookingsForGuest,
-  recordBookingNotifications,
 } from "./bookings.js";
 
-const DEMO_SUCCESS_CARD = "4000000000000001";
-const DEMO_DECLINE_CARD = "4000000000000002";
 const MAX_TRAVELERS = 20;
 
 function todayISO() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-}
-
-function digitsOnly(value) {
-  return String(value ?? "").replace(/\D/g, "");
 }
 
 function validateDetails(details) {
@@ -57,59 +49,29 @@ function validateDetails(details) {
 }
 
 function PaymentStep({ booking, amount, onPaid }) {
-  const [method, setMethod] = useState("card");
-  const [card, setCard] = useState({ number: "", holder: "", expiry: "", cvv: "" });
-  const [upiId, setUpiId] = useState("");
-  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [processing, setProcessing] = useState(false);
 
-  function validate() {
-    const next = {};
-    if (method === "card") {
-      if (digitsOnly(card.number).length !== 16) next.number = "Enter the 16-digit demo card number.";
-      if (!card.holder.trim()) next.holder = "Enter the name on the card.";
-      if (!/^\d{2}\/\d{2}$/.test(card.expiry.trim())) next.expiry = "Use MM/YY.";
-      if (!/^\d{3,4}$/.test(card.cvv.trim())) next.cvv = "CVV is 3 or 4 digits.";
-    } else if (!/^[\w.-]{2,}@[\w-]{2,}$/.test(upiId.trim())) {
-      next.upiId = "Enter a demo UPI id, for example name@bank.";
-    }
-    return next;
-  }
-
   async function handlePay(event) {
     event.preventDefault();
-    const next = validate();
-    setErrors(next);
     setMessage("");
-    if (Object.keys(next).length) return;
-
     setProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1100));
-
-    const declined = method === "card"
-      ? digitsOnly(card.number) === DEMO_DECLINE_CARD
-      : upiId.trim().toLowerCase().includes("fail");
-
-    if (declined) {
-      setProcessing(false);
-      setMessage("The demo gateway declined that payment. Nothing was charged — try another card or UPI id.");
-      return;
-    }
-
-    const paymentReference = `PAY-${digitsOnly(String(Date.now())).slice(0, 8)}`;
     try {
-      await confirmBookingPayment(booking.id, {
-        method: method === "card" ? "card" : "upi",
-        reference: paymentReference,
-        history: booking.history,
+      await openRazorpayCheckout({
+        order: booking.razorpayOrder,
+        onSuccess: async (result) => {
+          setProcessing(false);
+          onPaid(result.paymentId, [{ channel: "email", ok: true }, { channel: "sms", ok: true }]);
+        },
+        onFailure: (error) => {
+          setProcessing(false);
+          setMessage(error?.message || "Payment was not completed. Please try again.");
+        },
+        onDismiss: () => setProcessing(false),
       });
-      const results = await recordBookingNotifications({ ...booking, status: "confirmed" }, "payment_received");
-      setProcessing(false);
-      onPaid(paymentReference, results);
     } catch (error) {
       setProcessing(false);
-      setMessage(error?.message || "We couldn’t record the payment. Please try again.");
+      setMessage(error?.message || "We couldn’t open Razorpay checkout. Please try again.");
     }
   }
 
@@ -119,56 +81,17 @@ function PaymentStep({ booking, amount, onPaid }) {
         <p className="eyebrow">STEP 2 OF 2 · PAYMENT</p>
         <h2>Pay <em>{formatAmount(amount)}</em></h2>
         <p className="booking-step-note">
-          Demo gateway — no real money moves. Use card <code>4000 0000 0000 0001</code> to succeed or
-          <code> 4000 0000 0000 0002</code> to see a decline.
+          Secure Razorpay checkout · Test mode is active, so no real money will be charged.
         </p>
       </div>
 
       <form className="booking-form" onSubmit={handlePay} noValidate>
-        <div className="booking-methods" role="group" aria-label="Payment method">
-          <button type="button" className={`booking-method${method === "card" ? " is-active" : ""}`} onClick={() => setMethod("card")}>Card</button>
-          <button type="button" className={`booking-method${method === "upi" ? " is-active" : ""}`} onClick={() => setMethod("upi")}>UPI</button>
-        </div>
-
-        {method === "card" ? (
-          <>
-            <label className="booking-field">
-              <span>Card number</span>
-              <input value={card.number} onChange={(event) => setCard({ ...card, number: event.target.value })} placeholder="4000 0000 0000 0001" inputMode="numeric" autoComplete="off" />
-              {errors.number && <small className="booking-error">{errors.number}</small>}
-            </label>
-            <label className="booking-field">
-              <span>Name on card</span>
-              <input value={card.holder} onChange={(event) => setCard({ ...card, holder: event.target.value })} placeholder="Guest name" autoComplete="off" />
-              {errors.holder && <small className="booking-error">{errors.holder}</small>}
-            </label>
-            <div className="booking-field-row">
-              <label className="booking-field">
-                <span>Expiry</span>
-                <input value={card.expiry} onChange={(event) => setCard({ ...card, expiry: event.target.value })} placeholder="MM/YY" autoComplete="off" />
-                {errors.expiry && <small className="booking-error">{errors.expiry}</small>}
-              </label>
-              <label className="booking-field">
-                <span>CVV</span>
-                <input value={card.cvv} onChange={(event) => setCard({ ...card, cvv: event.target.value })} placeholder="123" inputMode="numeric" autoComplete="off" />
-                {errors.cvv && <small className="booking-error">{errors.cvv}</small>}
-              </label>
-            </div>
-          </>
-        ) : (
-          <label className="booking-field">
-            <span>UPI id</span>
-            <input value={upiId} onChange={(event) => setUpiId(event.target.value)} placeholder="guest@bank" autoComplete="off" />
-            {errors.upiId && <small className="booking-error">{errors.upiId}</small>}
-          </label>
-        )}
-
         {message && <p className="booking-message is-error" role="alert">{message}</p>}
 
         <div className="booking-submit-row">
-          <p className="booking-demo-note">Demo payment only. No gateway keys are configured, so nothing is charged.</p>
+          <p className="booking-demo-note">You’ll complete payment securely in Razorpay. Test mode does not charge a real card or bank account.</p>
           <button className="booking-submit" type="submit" disabled={processing}>
-            {processing ? "Processing…" : `Pay ${formatAmount(amount)}`} <span aria-hidden="true">↗</span>
+            {processing ? "Opening secure checkout…" : `Continue to Razorpay · ${formatAmount(amount)}`} <span aria-hidden="true">↗</span>
           </button>
         </div>
       </form>
@@ -226,25 +149,21 @@ export function BookingPage() {
 
     setSaving(true);
     try {
-      const { id, reference } = await createBooking({
+      const razorpayOrder = await createRazorpayOrder({
         packageId,
-        packageName: packageData.name,
-        destinationId: destination.id,
-        destinationName: destination.name,
         guestName: details.guestName,
         email: details.email,
         phone: details.phone,
         travelDate: details.travelDate,
         travelers: travellers,
         notes: details.notes,
-        amount,
       });
 
       const created = {
-        id,
-        reference,
+        id: razorpayOrder.reference,
+        reference: razorpayOrder.reference,
         packageId,
-        packageName: packageData.name,
+        packageName: razorpayOrder.packageName,
         destinationId: destination.id,
         destinationName: destination.name,
         guestName: details.guestName.trim(),
@@ -253,15 +172,14 @@ export function BookingPage() {
         travelDate: details.travelDate,
         travelers: travellers,
         notes: details.notes.trim(),
-        amount,
+        amount: razorpayOrder.amount,
         currency: "INR",
         status: "pending_payment",
+        razorpayOrder,
         history: [{ status: "pending_payment", at: new Date(), note: "Booking received" }],
       };
 
-      const results = await recordBookingNotifications(created, "booking_created");
       setBooking(created);
-      setNotifications(results);
       setStep("payment");
     } catch (error) {
       setMessage(`We couldn’t save your booking. Please try again.${error?.message ? ` (${error.message})` : ""}`);
@@ -393,7 +311,7 @@ export function BookingPage() {
               </form>
             </>
           ) : (
-            <PaymentStep booking={booking} amount={amount} onPaid={(reference, results) => { setPaymentReference(reference); if (results) setNotifications(results); setStep("done"); }} />
+          <PaymentStep booking={booking} amount={booking?.amount ?? amount} onPaid={(reference, results) => { setPaymentReference(reference); if (results) setNotifications(results); setStep("done"); }} />
           )}
         </div>
 

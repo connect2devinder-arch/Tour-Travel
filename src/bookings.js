@@ -18,16 +18,6 @@ async function firestore() {
   return getFirestore(firebaseApp);
 }
 
-const REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-/** Human-readable booking reference, e.g. ELW-7QK4M2. Also the document ID. */
-export function createBookingReference() {
-  const bytes = new Uint8Array(6);
-  crypto.getRandomValues(bytes);
-  const suffix = Array.from(bytes, (byte) => REFERENCE_ALPHABET[byte % REFERENCE_ALPHABET.length]).join("");
-  return `ELW-${suffix}`;
-}
-
 function normaliseBooking(booking, id) {
   return {
     id: id ?? booking.reference,
@@ -90,40 +80,6 @@ export function formatDate(value) {
   return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
-/** Creates the booking document. The document ID is the booking reference. */
-export async function createBooking(details) {
-  if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
-  const db = await firestore();
-  const { doc, serverTimestamp, setDoc } = await import("firebase/firestore");
-
-  const reference = createBookingReference();
-  const payload = {
-    reference,
-    packageId: details.packageId ?? "",
-    packageName: details.packageName ?? "",
-    destinationId: details.destinationId ?? "",
-    destinationName: details.destinationName ?? "",
-    guestName: String(details.guestName ?? "").trim(),
-    email: String(details.email ?? "").trim(),
-    phone: String(details.phone ?? "").trim(),
-    travelDate: details.travelDate ?? "",
-    travelers: Number(details.travelers ?? 1),
-    notes: String(details.notes ?? "").trim(),
-    amount: Math.max(0, Math.round(Number(details.amount ?? 0))),
-    currency: "INR",
-    status: "pending_payment",
-    payment: { status: "pending", method: "", reference: "", paidAt: null },
-    // serverTimestamp() is not supported inside arrays, so the history entry
-    // carries a client timestamp.
-    history: [{ status: "pending_payment", at: new Date(), note: "Booking received" }],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  };
-
-  await setDoc(doc(db, "bookings", reference), payload);
-  return { id: reference, reference };
-}
-
 export async function getBookingById(id) {
   if (!firebaseApp || !id) return null;
   const db = await firestore();
@@ -161,30 +117,6 @@ export async function listBookingsForAdmin() {
   return snapshot.docs
     .map((doc) => normaliseBooking(doc.data(), doc.id))
     .sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
-}
-
-/**
- * Marks the simulated payment as paid and confirms the booking.
- * The guest is not signed in while paying, so the history is rebuilt from the
- * copy the booking flow already holds instead of reading the document back.
- */
-export async function confirmBookingPayment(id, { method, reference, history = [] }) {
-  if (!firebaseApp) throw new Error("Firebase is not configured for this build.");
-  const db = await firestore();
-  const { doc, serverTimestamp, updateDoc } = await import("firebase/firestore");
-
-  const updatedHistory = [
-    ...history,
-    { status: "confirmed", at: new Date(), note: `Payment received via ${method}` },
-  ];
-
-  await updateDoc(doc(db, "bookings", id), {
-    status: "confirmed",
-    payment: { status: "paid", method, reference, paidAt: serverTimestamp() },
-    history: updatedHistory,
-    updatedAt: serverTimestamp(),
-  });
-  return { status: "confirmed", history: updatedHistory };
 }
 
 /** Admin status change. Writes the history entry and returns the new state. */
