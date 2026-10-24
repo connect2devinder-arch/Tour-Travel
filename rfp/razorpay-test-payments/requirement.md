@@ -3,7 +3,7 @@
 ## Overview
 Replace the browser-only simulated card/UPI form with Razorpay Checkout in Test Mode. A Firebase Cloud Function calculates the booking amount from trusted package data, creates the Razorpay order, and verifies the payment signature and gateway payment status before the booking can be confirmed.
 
-**Deployment gate:** integration code is prepared, but it is not live until the account owner sets the Razorpay Test Mode secrets and deploys Cloud Functions. No Razorpay secret belongs in the frontend, `.env` committed to Git, or chat.
+**Deployment status:** Test Mode secrets are in Firebase Secret Manager; Cloud Functions, Firestore rules and Hosting are deployed; the `payment.captured` Razorpay webhook is configured. Live order creation and Checkout launch have been verified. Automated payment completion was stopped by Razorpay's CAPTCHA, so a manual Test Mode capture is still needed to verify the final callback end-to-end. No Razorpay secret belongs in the frontend, `.env` committed to Git, or chat.
 
 ## Goal
 Let guests complete a real Razorpay checkout in sandbox mode, while preventing client-side amount tampering or fake payment confirmation. Test mode must not charge real money.
@@ -56,7 +56,7 @@ Let guests complete a real Razorpay checkout in sandbox mode, while preventing c
 - Razorpay Dashboard webhook must point to the deployed `razorpayWebhook` HTTPS endpoint and subscribe to `payment.captured`.
 - The public Key ID may be sent to Checkout; the Key Secret and webhook secret must remain server-side.
 - Existing sample package catalog is duplicated server-side so bundled sample packages remain bookable. Keep the server catalogue in sync with `src/mockData.js` until packages are fully managed in Firestore.
-- **Live deployment is blocked until the account owner configures the Test Mode secrets and webhook.**
+- **Live Mode is still blocked** until the owner separately approves Live keys, KYC/production readiness, refund policy and operational review.
 
 ## Open questions
 - **TBD:** What refund/cancellation policy should apply before enabling Live Mode?

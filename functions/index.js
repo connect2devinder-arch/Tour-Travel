@@ -20,6 +20,22 @@ const SAMPLE_PACKAGES = {
   "mussoorie-weekend": { name: "Mussoorie Weekend", destinationId: "mussoorie", destinationName: "Mussoorie", priceAmount: 12999 },
 };
 
+function getRazorpayCredentials() {
+  // Trim whitespace/BOM that can be introduced when secrets are copied from
+  // a dashboard or entered through a Windows PowerShell prompt.
+  const keyId = KEY_ID.value().trim();
+  const keySecret = KEY_SECRET.value().trim();
+  if (!keyId.startsWith("rzp_test_")) {
+    logger.error("Razorpay is not configured with a Test Mode Key ID", {
+      keyIdLength: keyId.length,
+      hasRazorpayPrefix: keyId.startsWith("rzp_"),
+    });
+    throw new HttpsError("failed-precondition", "Razorpay Test Mode keys need to be configured. Check the Firebase secret values.");
+  }
+  if (!keySecret) throw new HttpsError("failed-precondition", "Razorpay Key Secret is missing.");
+  return { keyId, keySecret };
+}
+
 const DESTINATION_NAMES = {
   shimla: "Shimla",
   manali: "Manali",
@@ -214,9 +230,7 @@ async function finalizeCapturedPayment({ orderId, paymentId, paymentMethod = "ra
 exports.createRazorpayOrder = onCall(
   { region: REGION, secrets: [KEY_ID, KEY_SECRET] },
   async (request) => {
-    if (!KEY_ID.value().startsWith("rzp_test_")) {
-      throw new HttpsError("failed-precondition", "Razorpay test mode is required for this integration.");
-    }
+    const { keyId, keySecret } = getRazorpayCredentials();
     const details = validateBooking(request.data);
     const pkg = await getBookablePackage(details.packageId);
     const amount = pkg.priceAmount * details.travelers;
@@ -232,7 +246,7 @@ exports.createRazorpayOrder = onCall(
         currency: "INR",
         receipt: reference,
         notes: { bookingReference: reference, packageId: details.packageId },
-      }, KEY_ID.value(), KEY_SECRET.value());
+      }, keyId, keySecret);
     } catch (error) {
       if (error instanceof HttpsError) throw error;
       logger.error("Could not create Razorpay order", error);
@@ -278,7 +292,7 @@ exports.createRazorpayOrder = onCall(
     return {
       reference,
       orderId: order.id,
-      keyId: KEY_ID.value(),
+      keyId,
       amount: amount,
       amountPaise,
       currency: "INR",
@@ -293,6 +307,7 @@ exports.createRazorpayOrder = onCall(
 exports.verifyRazorpayPayment = onCall(
   { region: REGION, secrets: [KEY_ID, KEY_SECRET] },
   async (request) => {
+    const { keyId, keySecret } = getRazorpayCredentials();
     const paymentId = String(request.data?.paymentId ?? "");
     const orderId = String(request.data?.orderId ?? "");
     const signature = String(request.data?.signature ?? "");
@@ -306,7 +321,7 @@ exports.verifyRazorpayPayment = onCall(
     const booking = bookingSnapshot.data();
     if (booking.payment?.orderId !== orderId) throw new HttpsError("failed-precondition", "Payment order does not match this booking.");
 
-    const expected = createHmac("sha256", KEY_SECRET.value()).update(`${orderId}|${paymentId}`).digest();
+    const expected = createHmac("sha256", keySecret).update(`${orderId}|${paymentId}`).digest();
     let received;
     try {
       received = Buffer.from(signature, "hex");
@@ -317,7 +332,7 @@ exports.verifyRazorpayPayment = onCall(
       throw new HttpsError("permission-denied", "Payment signature is invalid.");
     }
 
-    const payment = await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}`, "GET", null, KEY_ID.value(), KEY_SECRET.value());
+    const payment = await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}`, "GET", null, keyId, keySecret);
     if (payment.order_id !== orderId || Number(payment.amount) !== Number(booking.amount) * 100 || payment.currency !== "INR") {
       throw new HttpsError("failed-precondition", "Payment details do not match the booking.");
     }
@@ -327,7 +342,7 @@ exports.verifyRazorpayPayment = onCall(
       confirmedPayment = await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}/capture`, "POST", {
         amount: Number(booking.amount) * 100,
         currency: "INR",
-      }, KEY_ID.value(), KEY_SECRET.value());
+      }, keyId, keySecret);
     }
     if (confirmedPayment.status !== "captured") {
       throw new HttpsError("failed-precondition", "Razorpay has not captured this payment yet.");
@@ -354,7 +369,8 @@ exports.razorpayWebhook = onRequest(
     }
 
     const suppliedSignature = String(request.get("x-razorpay-signature") ?? "");
-    const expectedSignature = createHmac("sha256", WEBHOOK_SECRET.value()).update(request.rawBody).digest();
+    const webhookSecret = WEBHOOK_SECRET.value().trim();
+    const expectedSignature = createHmac("sha256", webhookSecret).update(request.rawBody).digest();
     let receivedSignature;
     try {
       receivedSignature = Buffer.from(suppliedSignature, "hex");
