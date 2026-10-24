@@ -53,6 +53,30 @@ const mussooriePlaces = [
   { name: "Company Garden", slug: "company-garden", image: placeImage("mussoorie", "company-garden"), alt: "Company Garden and greenery in Mussoorie" },
 ];
 
+const dharamshalaPlaces = [
+  { name: "McLeod Ganj", slug: "mcleod-ganj", image: placeImage("dharamshala", "mcleod-ganj"), alt: "View over McLeod Ganj and the Dhauladhar range" },
+  { name: "Namgyal Monastery", slug: "namgyal-monastery", image: placeImage("dharamshala", "namgyal-monastery"), alt: "Monks praying inside Namgyal Monastery in Dharamshala" },
+  { name: "Bhagsu Falls", slug: "bhagsu-falls", image: placeImage("dharamshala", "bhagsu-falls"), alt: "Bhagsu waterfall near McLeod Ganj" },
+  { name: "Dal Lake", slug: "dal-lake", image: placeImage("dharamshala", "dal-lake"), alt: "Dal Lake among cedar trees near Dharamshala" },
+  { name: "St. John in the Wilderness", slug: "st-john-in-wilderness", image: placeImage("dharamshala", "st-john-in-wilderness"), alt: "St. John in the Wilderness Church near McLeod Ganj" },
+];
+
+const chambaPlaces = [
+  { name: "Chaugan", slug: "chaugan", image: placeImage("chamba", "chaugan"), alt: "Historic civic building near Chaugan in Chamba" },
+  { name: "Lakshmi Narayan Temple", slug: "lakshmi-narayan-temple", image: placeImage("chamba", "lakshmi-narayan-temple"), alt: "Lakshmi Narayan Temple complex in Chamba" },
+  { name: "Khajjiar", slug: "khajjiar", image: placeImage("chamba", "khajjiar"), alt: "Green meadow and lake at Khajjiar in Chamba district" },
+  { name: "Chamera Lake", slug: "chamera-lake", image: placeImage("chamba", "chamera-lake"), alt: "Chamera Lake and the Pir Panjal range in Chamba" },
+  { name: "Hari Rai Temple", slug: "hari-rai-temple", image: placeImage("chamba", "hari-rai-temple"), alt: "Hari Rai Temple, an historic stone temple in Chamba" },
+];
+
+const palampurPlaces = [
+  { name: "Palampur Tea Gardens", slug: "tea-gardens", image: placeImage("palampur", "tea-gardens"), alt: "Tea gardens in Palampur with the Dhauladhar range behind" },
+  { name: "Baijnath Temple", slug: "baijnath-temple", image: placeImage("palampur", "baijnath-temple"), alt: "Shiva temple at Baijnath near Palampur" },
+  { name: "Neugal Khad", slug: "neugal-stream", image: placeImage("palampur", "neugal-stream"), alt: "Neugal stream and rocky river banks near Palampur" },
+  { name: "Tashi Jong Monastery", slug: "tashi-jong-monastery", image: placeImage("palampur", "tashi-jong-monastery"), alt: "Tashi Jong Buddhist monastery in the Palampur area" },
+  { name: "Andretta", slug: "andretta", image: placeImage("palampur", "andretta"), alt: "Plaque at Norah Richards' House in Andretta village near Palampur" },
+];
+
 /** Turns a place list into a package photo set. */
 const toPhotos = (places) => places.map((place) => ({ src: place.image, alt: place.alt }));
 
@@ -207,6 +231,100 @@ export const destinations = [
       transport: { mode: "Local cab transfers (sample)", details: "Pickup and sightseeing route details to be confirmed." },
       faqs: samplePackageFaqs,
       photos: toPhotos(mussooriePlaces),
+    }],
+  },
+  {
+    id: "dharamshala",
+    name: "Dharamshala",
+    country: "Himachal Pradesh, India",
+    tags: "dharamshala mcleod ganj mcleodganj kangra himachal india",
+    tagline: "Monastery mornings & mountain air",
+    description: "Explore Tibetan culture in McLeod Ganj, walk through cedar forests, and take in the Dhauladhar views.",
+    image: placeImage("dharamshala", "mcleod-ganj"),
+    imageAlt: "View over McLeod Ganj and the Dhauladhar range",
+    photos: toPhotos(dharamshalaPlaces),
+    places: dharamshalaPlaces,
+    attractions: ["McLeod Ganj", "Namgyal Monastery", "Bhagsu Falls"],
+    packages: [{
+      id: "dharamshala-retreat",
+      name: "Dharamshala & McLeod Ganj Retreat",
+      price: "₹18,999*",
+      duration: "4 days",
+      summary: "A gentle mountain break with monastery visits, cedar walks, and time in McLeod Ganj.",
+      itinerary: [
+        "Arrive in Dharamshala and settle into your hillside stay",
+        "Explore McLeod Ganj and visit Namgyal Monastery",
+        "Walk to Bhagsu Falls and enjoy a relaxed café stop",
+        "Visit St. John in the Wilderness before departure",
+      ],
+      inclusions: ["3 nights in a sample hillside hotel", "Daily breakfast", "Local sightseeing transfers"],
+      hotel: { category: "Sample 3-star hillside hotel", nights: "3 nights", details: "Property name and availability are illustrative and need confirmation." },
+      transport: { mode: "Private AC cab (sample)", details: "Dharamshala and McLeod Ganj local transfers; pickup and drop to be confirmed." },
+      faqs: samplePackageFaqs,
+      photos: toPhotos(dharamshalaPlaces),
+    }],
+  },
+  {
+    id: "chamba",
+    name: "Chamba",
+    country: "Himachal Pradesh, India",
+    tags: "chamba khajjiar dalhousie chamera himachal india",
+    tagline: "Temple trails & meadow air",
+    description: "Discover Chamba's old temples and Chaugan, then slow down among the meadows and mountain lakes.",
+    image: placeImage("chamba", "chaugan"),
+    imageAlt: "Historic civic building near Chaugan in Chamba",
+    photos: toPhotos(chambaPlaces),
+    places: chambaPlaces,
+    attractions: ["Chaugan", "Lakshmi Narayan Temple", "Khajjiar"],
+    packages: [{
+      id: "chamba-heritage-escape",
+      name: "Chamba Heritage & Khajjiar Escape",
+      price: "₹24,999*",
+      duration: "5 days",
+      summary: "A sample heritage-and-nature trip through Chamba, Khajjiar, and Chamera Lake.",
+      itinerary: [
+        "Arrive in Chamba and explore the Chaugan area",
+        "Visit Lakshmi Narayan Temple and the old town",
+        "Take a day trip to Khajjiar's meadow and lake",
+        "Enjoy the mountain scenery around Chamera Lake",
+        "Breakfast, check out, and departure",
+      ],
+      inclusions: ["4 nights in a sample heritage hotel", "Daily breakfast", "Listed sightseeing transfers"],
+      hotel: { category: "Sample 3-star heritage hotel", nights: "4 nights", details: "Property name and availability are illustrative and need confirmation." },
+      transport: { mode: "Private AC cab (sample)", details: "Chamba, Khajjiar, and Chamera Lake transfers; route timing depends on road conditions." },
+      faqs: samplePackageFaqs,
+      photos: toPhotos(chambaPlaces),
+    }],
+  },
+  {
+    id: "palampur",
+    name: "Palampur",
+    country: "Himachal Pradesh, India",
+    tags: "palampur kangra tea gardens baijnath himachal india",
+    tagline: "Tea gardens & Dhauladhar views",
+    description: "Take in Kangra tea country, a quiet river walk, and the old stone temple at nearby Baijnath.",
+    image: placeImage("palampur", "tea-gardens"),
+    imageAlt: "Tea gardens in Palampur with the Dhauladhar range behind",
+    photos: toPhotos(palampurPlaces),
+    places: palampurPlaces,
+    attractions: ["Palampur Tea Gardens", "Neugal Khad", "Baijnath Temple"],
+    packages: [{
+      id: "palampur-tea-trail",
+      name: "Palampur Tea Trail",
+      price: "₹17,999*",
+      duration: "4 days",
+      summary: "A relaxed Kangra Valley break among tea gardens, riverside paths, and mountain monasteries.",
+      itinerary: [
+        "Arrive in Palampur and settle into your tea-country stay",
+        "Walk through the tea gardens and visit a local estate",
+        "Explore Neugal Khad and visit Baijnath Temple",
+        "Visit Tashi Jong before breakfast and departure",
+      ],
+      inclusions: ["3 nights in a sample tea-country stay", "Daily breakfast", "Local sightseeing transfers"],
+      hotel: { category: "Sample 3-star tea-country stay", nights: "3 nights", details: "Property name and availability are illustrative and need confirmation." },
+      transport: { mode: "Private AC cab (sample)", details: "Palampur, Neugal Khad, and Baijnath local transfers; details to be confirmed." },
+      faqs: samplePackageFaqs,
+      photos: toPhotos(palampurPlaces),
     }],
   },
 ];

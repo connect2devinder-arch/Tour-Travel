@@ -145,7 +145,7 @@ service cloud.firestore {
           && data.phone.size() >= 7
           && data.phone.size() <= 30
           && data.phone.matches('^[+0-9() -]+$')
-          && data.destination in ['shimla', 'manali', 'lahaul-spiti', 'mussoorie', 'not-sure']
+          && data.destination in ['shimla', 'manali', 'lahaul-spiti', 'mussoorie', 'dharamshala', 'chamba', 'palampur', 'not-sure']
           && data.packageId is string
           && data.packageId.size() <= 100
           && data.packageName is string

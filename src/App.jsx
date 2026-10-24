@@ -20,6 +20,7 @@ const AdminPackageEditor = lazy(() => import("./AdminPackages.jsx").then((module
 const AdminBookings = lazy(() => import("./AdminBookings.jsx").then((module) => ({ default: module.AdminBookings })));
 const WriteHome = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteHome })));
 const WriteEditor = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteEditor })));
+const ImageCreditsPage = lazy(() => import("./ImageCreditsPage.jsx").then((module) => ({ default: module.ImageCreditsPage })));
 const BookingPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingPage })));
 const MyBookingsPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.MyBookingsPage })));
 const BookingStatusPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingStatusPage })));
@@ -830,6 +831,7 @@ function Footer() {
         <a href={sectionHref("about")}>About</a>
         <a href={sectionHref("our-way")}>Our way</a>
         <a href={sectionHref("contact")}>Contact</a>
+        <Link to="/image-credits">Image credits</Link>
         <Link to="/write">Write</Link>
         {isAdmin && <Link to="/admin">Admin</Link>}
       </nav>
@@ -949,6 +951,7 @@ export default function App() {
           <Route path="/write" element={<WriteHome />} />
           <Route path="/write/new" element={<WriteEditor />} />
           <Route path="/write/:id" element={<WriteEditor />} />
+          <Route path="/image-credits" element={<ImageCreditsPage />} />
           <Route path="*" element={<PackageDetailPage />} />
         </Routes>
       </Suspense>

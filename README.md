@@ -1,6 +1,6 @@
 # Elsewhere Travel
 
-A responsive India-focused travel discovery website built with React and Vite. Sample destinations include Shimla, Manali, Lahaul & Spiti, and Mussoorie. Edit `src/mockData.js` to change the mock destinations and packages.
+A responsive India-focused travel discovery website built with React and Vite. Sample destinations include Shimla, Manali, Lahaul & Spiti, Mussoorie, Dharamshala, Chamba, and Palampur. Edit `src/mockData.js` to change the sample destinations and packages.
 
 ## Run locally
 
@@ -36,6 +36,11 @@ Each destination detail section shows a carousel of its famous tourist places wi
 - Manali: Mall Road, Hadimba Temple, Solang Valley, Old Manali, Vashisht Hot Springs
 - Lahaul & Spiti: Key Monastery, Dhankar Monastery, Chandratal Lake, Kibber Village, Tabo Monastery
 - Mussoorie: Mall Road, Gun Hill, Kempty Falls, Lal Tibba, Company Garden
+- Dharamshala: McLeod Ganj, Namgyal Monastery, Bhagsu Falls, Dal Lake, St. John in the Wilderness
+- Chamba: Chaugan, Lakshmi Narayan Temple, Khajjiar, Chamera Lake, Hari Rai Temple
+- Palampur: Tea Gardens, Baijnath Temple, Neugal Khad, Tashi Jong Monastery, Andretta
+
+Third-party photo credits and license links are listed on the public [`/image-credits`](https://tour-83b6c.web.app/image-credits) page. These 15 new images are stored in Firebase Storage under `destinations/dharamshala/`, `destinations/chamba/` and `destinations/palampur/`.
 
 ## Destination cards open the package
 

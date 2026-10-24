@@ -118,10 +118,11 @@ export function AdminPackageEditor() {
   const destinationImages = useMemo(() => {
     const destination = sampleDestinations.find((item) => item.id === pkg.destinationId);
     if (!destination) return [];
-    return [
+    const images = [
       ...destination.photos.map((photo) => ({ src: photo.src, alt: photo.alt })),
       ...destination.places.map((place) => ({ src: place.image, alt: place.alt })),
     ];
+    return [...new Map(images.map((image) => [image.src, image])).values()];
   }, [pkg.destinationId]);
 
   function update(field, value) {

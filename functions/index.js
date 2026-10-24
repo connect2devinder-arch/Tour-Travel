@@ -18,6 +18,9 @@ const SAMPLE_PACKAGES = {
   "manali-valley": { name: "Manali Valley Break", destinationId: "manali", destinationName: "Manali", priceAmount: 21999 },
   "spiti-road-trip": { name: "Spiti Slow Road Trip", destinationId: "lahaul-spiti", destinationName: "Lahaul & Spiti", priceAmount: 36999 },
   "mussoorie-weekend": { name: "Mussoorie Weekend", destinationId: "mussoorie", destinationName: "Mussoorie", priceAmount: 12999 },
+  "dharamshala-retreat": { name: "Dharamshala & McLeod Ganj Retreat", destinationId: "dharamshala", destinationName: "Dharamshala", priceAmount: 18999 },
+  "chamba-heritage-escape": { name: "Chamba Heritage & Khajjiar Escape", destinationId: "chamba", destinationName: "Chamba", priceAmount: 24999 },
+  "palampur-tea-trail": { name: "Palampur Tea Trail", destinationId: "palampur", destinationName: "Palampur", priceAmount: 17999 },
 };
 
 function getRazorpayCredentials() {
@@ -41,6 +44,9 @@ const DESTINATION_NAMES = {
   manali: "Manali",
   "lahaul-spiti": "Lahaul & Spiti",
   mussoorie: "Mussoorie",
+  dharamshala: "Dharamshala",
+  chamba: "Chamba",
+  palampur: "Palampur",
 };
 
 function bookingReference() {
