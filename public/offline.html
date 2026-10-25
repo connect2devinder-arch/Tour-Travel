@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#16342f" />
+    <title>You're offline · Elsewhere Travel</title>
+    <style>
+      :root { color-scheme: light; --ink: #16342f; --paper: #f6f4ee; --coral: #d8785c; }
+      * { box-sizing: border-box; }
+      body { min-height: 100vh; margin: 0; padding: 32px; display: grid; place-items: center; background: var(--paper); color: var(--ink); font: 16px/1.7 Arial, sans-serif; }
+      main { width: min(520px, 100%); padding: 36px; background: #fff; }
+      .brand { margin: 0 0 28px; font-weight: 700; letter-spacing: -.05em; }
+      .mark { display: inline-grid; width: 30px; height: 30px; margin-right: 8px; place-items: center; border-radius: 50%; background: var(--ink); color: var(--paper); font: italic 22px Georgia, serif; }
+      h1 { margin: 0 0 12px; font: 500 38px/1.05 Georgia, serif; }
+      h1 em { color: var(--coral); }
+      p { color: #52635c; }
+      button { min-height: 44px; padding: 0 18px; border: 0; background: var(--ink); color: white; font: inherit; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="brand"><span class="mark">e</span>elsewhere.</p>
+      <h1>A little pause <em>in the journey.</em></h1>
+      <p>You’re offline right now. Reconnect to browse destinations, check packages, or complete a booking.</p>
+      <button type="button" onclick="location.reload()">Try again</button>
+    </main>
+  </body>
+</html>

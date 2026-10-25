@@ -1,0 +1,27 @@
+{
+  "packageId": "com.elsewheretravel.app",
+  "host": "tour-83b6c.web.app",
+  "name": "Elsewhere Travel",
+  "launcherName": "Elsewhere",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#16342f",
+  "navigationColor": "#f6f4ee",
+  "navigationDividerColor": "#ebe8df",
+  "backgroundColor": "#f6f4ee",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://tour-83b6c.web.app/icons/icon-512.png",
+  "maskableIconUrl": "https://tour-83b6c.web.app/icons/icon-maskable-512.png",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    { "name": "Destinations", "short_name": "Destinations", "url": "/#destinations" },
+    { "name": "Tour packages", "short_name": "Packages", "url": "/#packages" },
+    { "name": "My bookings", "short_name": "Bookings", "url": "/bookings" }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://tour-83b6c.web.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {}
+}

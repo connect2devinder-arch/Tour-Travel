@@ -11,7 +11,13 @@ npm run dev
 
 Open the local URL printed by Vite. Use `npm run build` to create a production build.
 
-Destination/package details, INR prices, and the newsletter are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection and queue an email notification for the team; actual email delivery, live availability, and newsletter delivery are not configured. Newsletter signups themselves are stored (see the footer). Tour packages can be managed from the admin panel, and guests can place a booking through a simulated payment step — see [Online booking](#online-booking-and-booking-status) for what is real and what is simulated.
+## Android app / Google Play Store
+
+The React site is being prepared as a **Trusted Web Activity (TWA)** so it can be published as an Android app without rewriting the UI. The PWA manifest, app icons, service worker/offline fallback and Bubblewrap configuration are in place. Android package ID: `com.elsewheretravel.app`.
+
+The signed Play Store AAB is **not built yet**: the build machine needs JDK 17+, Android SDK/Bubblewrap, an upload keystore and the Play App Signing SHA-256 certificate. That certificate is required for `public/.well-known/assetlinks.json` and full-screen TWA verification. See [`docs/play-store-twa.md`](docs/play-store-twa.md) for remaining release steps and the Razorpay Live Mode gate.
+
+Destination/package details and INR prices are sample/demo content. Trip enquiries are saved to the `contactEnquiries` Firestore collection and queue an email notification for the team; actual email delivery, live availability, and newsletter delivery are not configured. Newsletter signups themselves are stored (see the footer). Tour packages can be managed from the admin panel, and guests can book through Razorpay **Test Mode** — see [Online booking](#online-booking-and-booking-status) for the current status and limitations.
 
 ## Tour packages
 
