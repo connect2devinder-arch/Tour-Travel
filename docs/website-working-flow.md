@@ -1,69 +1,87 @@
 # Elsewhere Travel — Website Working Flow
 
-> **Current architecture:** React/Vite app on Firebase Hosting → Firebase Auth + Firestore + Firebase Storage. **SQL is not connected yet.**
+> **Current architecture:** React/Vite app on Firebase Hosting → Firebase Auth + Cloud Firestore + Firebase Storage + Cloud Functions (`asia-south1`). **Cloud Firestore is the only database — there is no SQL in this system, by design.**
 >
-> **POC limitations:** payment is simulated in the browser; email/SMS notifications are saved as `queued` records in Firestore, but no delivery provider is connected.
+> **Payments:** Razorpay **Test Mode** is integrated end to end. A Cloud Function computes the amount server-side, creates the order, and verifies the payment signature before a booking can be confirmed. Test Mode moves no real money.
+>
+> **Still simulated:** email and SMS. Notification records are written to Firestore as `queued`, but no delivery provider is connected — nothing is actually sent.
 
 ## 1. Overall system
 
 ```mermaid
 flowchart LR
-    Visitor[Visitor / Traveller]
-    Admin[Site Admin\nconnect2devinder@gmail.com]
-    Writer[Signed-in Community Writer]
+    Visitor["Visitor / Traveller"]
+    Admin["Site Admin<br/>connect2devinder@gmail.com"]
+    Writer["Signed-in Community Writer"]
 
-    subgraph Hosting[Firebase Hosting — tour-83b6c.web.app]
-        SPA[React + Vite website\nHome · Destinations · Packages · Journal · Forms]
-        AdminUI[Admin area\nPackages · Bookings · Journal review · Subscribers]
-        WriteUI[Writer area\n/write · My posts · Post editor]
+    subgraph Hosting["Firebase Hosting — tour-83b6c.web.app"]
+        SPA["React + Vite website<br/>Home · Destinations · Packages · Journal · Forms"]
+        AdminUI["Admin area<br/>Packages · Bookings · Journal review · Subscribers"]
+        WriteUI["Writer area<br/>/write · My posts · Post editor"]
     end
 
-    subgraph Firebase[Firebase Project — tour-83b6c]
-        Auth[Firebase Authentication\nGoogle sign-in]
-        Rules[Firestore Security Rules\nAdmin / author / guest access]
-        DB[(Cloud Firestore)]
-        Storage[(Firebase Storage\nImages and blog covers)]
+    subgraph Firebase["Firebase Project — tour-83b6c"]
+        Auth["Firebase Authentication<br/>Google sign-in"]
+        Rules["Firestore Security Rules<br/>Admin / author / guest access"]
+        DB[("Cloud Firestore<br/>6 collections — the only database")]
+        Storage["Firebase Storage<br/>Images and blog covers"]
+        Functions["Cloud Functions · asia-south1<br/>createRazorpayOrder · verifyRazorpayPayment · razorpayWebhook"]
     end
 
-    EmailSMS[Email / SMS provider\nNOT CONNECTED]
-    Payment[Payment gateway\nNOT CONNECTED — demo only]
-    SQL[(SQL database\nNOT CONNECTED)]
+    EmailSMS["Email / SMS provider<br/>NOT CONNECTED"]
+    Razorpay["Razorpay API + Checkout<br/>Test Mode — rzp_test_ keys"]
 
     Visitor --> SPA
     Admin --> SPA
     Writer --> SPA
-    SPA -->|Read published content / submit forms| Rules
-    AdminUI -->|Admin CRUD / moderation| Rules
-    WriteUI -->|Own drafts / submit for review| Rules
-    SPA -->|Google sign-in| Auth
-    AdminUI -->|Google sign-in + admin check| Auth
-    WriteUI -->|Google sign-in + author UID| Auth
+    SPA -->|"Read published content / submit forms"| Rules
+    AdminUI -->|"Admin CRUD / moderation"| Rules
+    WriteUI -->|"Own drafts / submit for review"| Rules
+    SPA -->|"Google sign-in"| Auth
+    AdminUI -->|"Google sign-in + admin check"| Auth
+    WriteUI -->|"Google sign-in + author UID"| Auth
     Rules --> DB
-    SPA -->|Load image URLs| Storage
-    AdminUI -->|Admin cover / package photo upload| Storage
-    DB -.->|Queued records only; no delivery| EmailSMS
-    SPA -.->|Simulated card / UPI flow; no charge| Payment
-    SPA -.->|No connection yet| SQL
+    SPA -->|"Load image URLs"| Storage
+    AdminUI -->|"Admin cover / package photo upload"| Storage
+    SPA -->|"Callable: start and verify payment"| Functions
+    Functions -->|"Admin SDK — bypasses rules"| DB
+    Functions -->|"Create order, capture, fetch payment"| Razorpay
+    Visitor -->|"Razorpay Checkout modal<br/>public Key ID only"| Razorpay
+    DB -.->|"Queued records only, no delivery"| EmailSMS
 ```
+
+### The database
+
+**Cloud Firestore** (NoSQL document store), Firebase project `tour-83b6c`. It is the single system of record. No SQL database, ORM, or external datastore is connected, and none is planned — Firestore's security rules and offline support are what the app is built around.
+
+Firestore is reached two ways:
+
+- **Browser → `firebase/firestore` (client SDK)** — every read and write is gated by `firestore.rules`.
+- **Cloud Functions → `firebase-admin/firestore` (Admin SDK)** — bypasses rules entirely. Only trusted server code may create bookings or confirm payments.
+
+Firebase Storage holds all files (images), not records. Razorpay holds all payment instrument data — card and UPI details never enter Firestore.
 
 ## 2. What data is stored where
 
 ```mermaid
 flowchart TB
-    App[React website]
-    App --> Auth[(Firebase Auth\nGoogle user + UID + email)]
-    App --> Posts[(Firestore: posts\nPublished posts, drafts, review status, author UID)]
-    App --> Packages[(Firestore: packages\nAdmin-managed packages + per-package photo URLs)]
-    App --> Bookings[(Firestore: bookings\nGuest details, amount, payment/status history)]
-    App --> Enquiries[(Firestore: contactEnquiries\nContact form submissions)]
-    App --> Notifications[(Firestore: notifications\nQueued email/SMS/enquiry message records)]
-    App --> Newsletter[(Firestore: newsletter\nSubscriber email, source, status)]
-    App --> Admins[(Firestore: config/admins\nAdmin email allowlist)]
-    App --> Media[(Firebase Storage\ndestinations/* · site/* · packages/* · journal/covers/*)]
+    App["React website"]
+    App --> Auth[("Firebase Auth<br/>Google user + UID + email")]
+    App --> Posts[("Firestore: posts<br/>Published posts, drafts, review status, author UID")]
+    App --> Packages[("Firestore: packages<br/>Admin-managed packages + per-package photo URLs")]
+    App --> Bookings[("Firestore: bookings<br/>Guest details, amount, payment/status history")]
+    App --> Enquiries[("Firestore: contactEnquiries<br/>Contact form submissions")]
+    App --> Notifications[("Firestore: notifications<br/>Queued email/SMS/enquiry message records")]
+    App --> Newsletter[("Firestore: newsletter<br/>Subscriber email, source, status")]
+    App --> Admins[("Firestore: config/admins<br/>Admin email allowlist")]
+    App --> Media["Firebase Storage<br/>destinations/* · site/* · packages/* · journal/covers/*"]
 
-    Static[Bundled sample data\nsrc/mockData.js] -.->|Fallback if no published Firestore package| App
-    Config[Bundled site config\nsrc/siteConfig.js] -.->|Phone, enquiry email, address, admin email| App
+    Static["Bundled sample data<br/>src/mockData.js"] -.->|"Fallback if no published Firestore package"| App
+    Config["Bundled site config<br/>src/siteConfig.js"] -.->|"Phone, enquiry email, address, admin email"| App
+    ServerCatalogue["Server-side sample price catalogue<br/>functions/index.js SAMPLE_PACKAGES"] -.->|"Authoritative price when no Firestore package exists"| App
 ```
+
+`functions/index.js` keeps its own copy of the sample package prices. If a bundled sample package has no Firestore document, the Cloud Function falls back to that catalogue so the amount is still computed on the server. **Keep it in sync with `src/mockData.js`** until every package is managed in Firestore.
 
 ## 3. Visitor: browse a destination and package
 
@@ -85,7 +103,7 @@ sequenceDiagram
     Site-->>Visitor: Open that destination's package page
     Site->>Storage: Load package photos (or destination gallery fallback)
     Storage-->>Site: Image bytes
-    Site-->>Visitor: Show one photo; arrows/dots change the photo
+    Site-->>Visitor: Show one photo — arrows/dots change the photo
 ```
 
 ## 4. Visitor: submit a trip enquiry
@@ -101,7 +119,7 @@ sequenceDiagram
     Visitor->>Site: Submit name, email, phone, destination, trip details
     Site->>DB: Create contactEnquiries document
     DB-->>Site: Enquiry ID
-    Site->>DB: Create notifications record\nrecipient = connect2devinder@gmail.com\ntrigger = enquiry_received, status = queued
+    Site->>DB: Create notifications record<br/>recipient = connect2devinder@gmail.com<br/>trigger = enquiry_received, status = queued
     DB-->>Site: Notification saved
     Site-->>Visitor: Show enquiry submitted confirmation
     Admin->>DB: Read notifications (admin only)
@@ -109,39 +127,57 @@ sequenceDiagram
     Note over DB,Mail: A queued notification is not an actual email. No email provider is connected.
 ```
 
-## 5. Visitor: booking and demo payment
+## 5. Visitor: booking and Razorpay Test Mode payment
 
 ```mermaid
 sequenceDiagram
     actor Visitor
     participant Site as Booking pages
+    participant Fn as Cloud Functions (asia-south1)
     participant DB as Firestore
+    participant Rzp as Razorpay
     participant Admin as Admin bookings panel
-    participant Gateway as Payment gateway (not connected)
     participant Notify as Email/SMS provider (not connected)
 
     Visitor->>Site: Open /book/:packageId and fill booking form
-    Site->>Site: Validate fields; calculate price × travellers in browser
-    Site->>DB: Create booking (pending_payment) + initial history
-    Site->>DB: Queue booking_created email + SMS notification records
-    DB-->>Site: Booking reference ELW-XXXXXX
-    Visitor->>Site: Complete demo card/UPI payment
-    Site->>Site: Simulate payment result (no money moves)
-    Site->>DB: Mark booking confirmed + payment paid + add history
-    Site->>DB: Queue payment_received email + SMS records
+    Site->>Site: Validate fields in browser
+    Site->>Fn: Call createRazorpayOrder (packageId, guest, travellers)
+    Fn->>DB: Read package — Firestore packages, else server-side sample catalogue
+    DB-->>Fn: Published package price (authoritative)
+    Fn->>Rzp: POST /v1/orders — amount = price × travellers, in paise
+    Rzp-->>Fn: orderId, amount, currency INR
+    Fn->>DB: Create booking (pending_payment, ELW-XXXXXX) via Admin SDK
+    Fn->>DB: Queue booking_created email + SMS notification records
+    Fn-->>Site: reference, orderId, public keyId, amount
+    Site->>Rzp: Open Checkout modal with the public Key ID only
+    Visitor->>Rzp: Pay by card / UPI inside Razorpay's PCI-compliant modal
+    Rzp-->>Site: paymentId, orderId, signature
+    Site->>Fn: Call verifyRazorpayPayment (reference, orderId, paymentId, signature)
+    Fn->>Fn: Verify HMAC-SHA256 signature with a timing-safe compare
+    Fn->>Rzp: GET /v1/payments/:id — fetch the payment
+    Fn->>Fn: Match order ID, amount in paise and INR, then capture if authorized
+    Fn->>DB: Booking → confirmed, payment → paid, append history
+    Fn->>DB: Queue payment_received email + SMS records
+    Fn-->>Site: Confirmed
     Site-->>Visitor: Show confirmation and booking reference
+    alt Guest closes the browser before the callback finishes
+        Rzp->>Fn: Signed payment.captured webhook
+        Fn->>DB: Confirm booking idempotently — no duplicate notifications
+    end
     Admin->>DB: Read/update booking status
     Admin->>DB: Add status history + queue status_changed notifications
-    DB-->>Admin: Booking and notification records
-    Note over Site,Gateway: No real gateway, server-side payment verification, refund, or charge exists yet.
-    Note over DB,Notify: Notification records are queued only; no real email/SMS is sent.
+    Note over DB,Notify: Notification records are queued only, so no real email/SMS is sent.
 ```
+
+### Why the server, not the browser
+
+The amount is calculated **server-side** from trusted package data and converted to integer paise. Any `amount` the browser sends is ignored. A forged signature, a wrong order ID, a wrong amount, a non-INR currency, or an uncaptured payment all leave the booking at `pending_payment` and queue no payment notification. The Razorpay Key Secret and webhook secret live only in Firebase Secret Manager — they never reach the frontend bundle.
 
 ### Booking access
 
-- Guest bookings can be read by the matching signed-in email or by an admin.
-- Admin can search/filter bookings and update their status.
-- Payment amount is currently computed client-side; production needs server-side calculation and gateway verification.
+- **Bookings cannot be created from the browser.** `firestore.rules` sets `allow create: if false` on `/bookings`; only the Cloud Functions (Admin SDK) write them.
+- A guest can read their own booking when the signed-in email matches the booking email; an admin can read and update all bookings.
+- Status history and notification records are appended by trusted code for payment events, and by the admin panel for status changes.
 
 ## 6. Community writer: submit a blog post for approval
 
@@ -159,7 +195,7 @@ sequenceDiagram
     Writer->>Site: Create or edit own post
     Site->>DB: Save post with authorUid and status=draft or pending
     DB-->>Site: Save success
-    Note over Writer,DB: Writer can only read/edit/delete their own posts; writer cannot publish.
+    Note over Writer,DB: Writer can only read/edit/delete their own posts and cannot publish.
     Admin->>DB: Open /admin/journal review queue
     DB-->>Admin: Pending posts
     alt Approve
@@ -177,21 +213,21 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    Admin[Admin signs in with Google] --> Auth[Firebase Auth returns UID/email]
-    Auth --> Check{Email in config/admins?}
-    Check -->|Yes| AdminUI[Show Write / Admin tools]
-    Check -->|No| GuestUI[Admin gate: show access denied]
-    AdminUI --> Packages[Create/edit/publish packages]
-    AdminUI --> Review[Approve or request changes on community posts]
-    AdminUI --> Bookings[Search bookings / update status]
-    AdminUI --> Notifications[Review queued notification records]
-    AdminUI --> Subscribers[View newsletter subscribers]
-    Packages --> DB[(Firestore)]
+    Admin["Admin signs in with Google"] --> Auth["Firebase Auth returns UID/email"]
+    Auth --> Check{"Email in config/admins?"}
+    Check -->|Yes| AdminUI["Show Write / Admin tools"]
+    Check -->|No| GuestUI["Admin gate: show access denied"]
+    AdminUI --> Packages["Create/edit/publish packages"]
+    AdminUI --> Review["Approve or request changes on community posts"]
+    AdminUI --> Bookings["Search bookings / update status"]
+    AdminUI --> Notifications["Review queued notification records"]
+    AdminUI --> Subscribers["View newsletter subscribers"]
+    Packages --> DB[("Firestore")]
     Review --> DB
     Bookings --> DB
     Notifications --> DB
     Subscribers --> DB
-    AdminUI --> Storage[(Firebase Storage)]
+    AdminUI --> Storage[("Firebase Storage")]
 ```
 
 ## 8. Real vs. simulated — important
@@ -203,10 +239,19 @@ flowchart LR
 | Images | Real Firebase Storage URLs |
 | Contact enquiry | Saved in Firestore; notification record queued for the team |
 | Newsletter signup | Saved in Firestore; admin can view subscribers |
-| Booking | Saved in Firestore; guest/admin access rules apply |
-| Payment | **Simulated**; no card/UPI charge or payment gateway |
-| Email / SMS | **Simulated**; records are queued in Firestore, no message delivered |
-| SQL | **Not connected**; current system of record is Firestore |
+| Booking | Created and confirmed **only** by Cloud Functions; guest and admin reads are rule-gated |
+| Payment | **Razorpay Test Mode** — real sandbox orders, captures and signature checks; no real money moves |
+| Payment — Live Mode | **Blocked.** Needs owner approval of Live keys, KYC/production readiness, a refund policy, and an operational review |
+| Email / SMS | **Simulated.** Records are queued in Firestore; no message is delivered |
+| Database | **Cloud Firestore only.** No SQL is used, and none is planned |
+
+### What is still open
+
+- **One manual Test Mode payment capture.** Razorpay's CAPTCHA stops automated completion, so the final checkout callback has been verified up to order creation and Checkout launch, but not through a completed capture. This is the single highest-value test left to run by hand.
+- **Email / SMS delivery.** No provider is connected; notification records are the only output.
+- **Razorpay Live Mode.** Blocked on owner approval (see the open questions in `rfp/razorpay-test-payments/requirement.md`).
+- **Refund / cancellation policy.** Not defined — required before Live Mode.
+- **Authorized vs. captured payments.** The current code requests capture immediately after authorization; a manual-capture flow is an open question.
 
 ## 9. Access rules at a glance
 
@@ -217,6 +262,7 @@ flowchart LR
 | Own draft/pending blog posts | No | Read/write own only | Read/write all |
 | Other user's draft/pending post | No | No | Read/write |
 | Own booking | Matching email only | Matching email only | Read/update all |
+| Bookings — create | No | No | **No** — Cloud Functions only |
 | Contact enquiries | Submit only | Submit only | Notification record visible; enquiry collection itself is not readable from client |
 | Newsletter subscribers | Subscribe only | Subscribe only | Read list |
 | Storage images | Public read | Public read | Admin upload under allowed paths |
