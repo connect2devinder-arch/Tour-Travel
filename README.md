@@ -138,3 +138,25 @@ Bookings live in the Firestore `bookings` collection with a status history (`pen
 - **Webhook:** Razorpay Test Mode webhook is configured for `payment.captured` at `https://razorpaywebhook-busc3lxoda-el.a.run.app`. Secrets live in Firebase Functions Secret Manager. **Never paste the Key Secret into chat or commit it to Git.**
 
 Live payments still need a separately approved switch to live keys, plus cancellation/refund policy, deposit rules and booking expiry. Actual email/SMS delivery still needs a delivery provider. See `rfp/razorpay-test-payments/requirement.md` for details.
+
+## Travel assistant chatbot
+
+A floating **Ask us anything** button sits on every page and opens a chat panel. Visitors can ask about destinations, packages, prices, durations, itineraries and travel advice, and get an answer grounded in the site's own published content.
+
+- **Where the answer comes from:** the Cloud Function `askTravelAssistant` reads **published `packages`** and **published `posts`** from Firestore using the Admin SDK, ranks them against the question by keyword overlap, and sends the top documents to **Gemini** (`gemini-2.5-flash`, region `asia-south1`) with a system instruction that restricts it to that content and to travel topics.
+- **What it can never see:** the function reads *only* those two collections. `bookings`, `notifications`, `newsletter`, `contactEnquiries` and `config/admins` are never queried, so guest names, emails and phone numbers cannot leak no matter how the question is phrased. Draft and pending content is excluded by the `status == "published"` filter.
+- **Sources:** each answer lists the packages and articles it drew on, linked to `/packages/:id` and `/journal/:slug`.
+- **Keys:** the Gemini key is a Firebase Functions secret. It never reaches the browser — `generativelanguage.googleapis.com` does not appear anywhere in the production bundle.
+- **Limits:** questions are capped at 500 characters, history at the last 6 turns, context at 8 documents, and output at 600 tokens.
+
+**Setup** (owner only — the key is never committed or pasted into chat):
+
+```powershell
+firebase functions:secrets:set GEMINI_API_KEY
+firebase deploy --only functions:askTravelAssistant
+```
+
+Get a key from <https://aistudio.google.com/apikey>. Until the secret is set, the widget shows a friendly "not available" message and suggests the contact form; nothing else on the site is affected.
+
+Code lives in `functions/index.js` (`askTravelAssistant`), `src/travelAssistant.js` (client wrapper) and `src/TravelChat.jsx` (widget). Requirements and test cases are in `rfp/travel-assistant-chatbot/`.
+

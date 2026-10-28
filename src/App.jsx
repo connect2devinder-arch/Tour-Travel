@@ -21,6 +21,7 @@ const AdminBookings = lazy(() => import("./AdminBookings.jsx").then((module) => 
 const WriteHome = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteHome })));
 const WriteEditor = lazy(() => import("./WriteArea.jsx").then((module) => ({ default: module.WriteEditor })));
 const ImageCreditsPage = lazy(() => import("./ImageCreditsPage.jsx").then((module) => ({ default: module.ImageCreditsPage })));
+const TravelChat = lazy(() => import("./TravelChat.jsx").then((module) => ({ default: module.TravelChat })));
 const BookingPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingPage })));
 const MyBookingsPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.MyBookingsPage })));
 const BookingStatusPage = lazy(() => import("./BookingPage.jsx").then((module) => ({ default: module.BookingStatusPage })));
@@ -956,6 +957,9 @@ export default function App() {
         </Routes>
       </Suspense>
       <Footer />
+      <Suspense fallback={null}>
+        <TravelChat />
+      </Suspense>
     </>
   );
 }

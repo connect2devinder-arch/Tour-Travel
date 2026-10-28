@@ -30,6 +30,7 @@ flowchart LR
 
     EmailSMS["Email / SMS provider<br/>NOT CONNECTED"]
     Razorpay["Razorpay API + Checkout<br/>Test Mode — rzp_test_ keys"]
+    Gemini["Gemini API<br/>gemini-2.5-flash — key in Secret Manager"]
 
     Visitor --> SPA
     Admin --> SPA
@@ -44,11 +45,15 @@ flowchart LR
     SPA -->|"Load image URLs"| Storage
     AdminUI -->|"Admin cover / package photo upload"| Storage
     SPA -->|"Callable: start and verify payment"| Functions
+    SPA -->|"Callable: ask the travel assistant"| Functions
     Functions -->|"Admin SDK — bypasses rules"| DB
     Functions -->|"Create order, capture, fetch payment"| Razorpay
     Visitor -->|"Razorpay Checkout modal<br/>public Key ID only"| Razorpay
+    Functions -->|"Grounded prompt from published packages + posts"| Gemini
     DB -.->|"Queued records only, no delivery"| EmailSMS
 ```
+
+> **Travel assistant scope:** `askTravelAssistant` reads **only** published `packages` and published `posts`. It never queries `bookings`, `notifications`, `newsletter`, `contactEnquiries` or `config/admins`, so guest names, emails and phone numbers are out of reach no matter how a question is phrased.
 
 ### The database
 
@@ -127,7 +132,46 @@ sequenceDiagram
     Note over DB,Mail: A queued notification is not an actual email. No email provider is connected.
 ```
 
-## 5. Visitor: booking and Razorpay Test Mode payment
+## 5. Visitor: ask the travel assistant
+
+```mermaid
+sequenceDiagram
+    actor Visitor
+    participant Widget as Chat widget (all pages)
+    participant Fn as askTravelAssistant (asia-south1)
+    participant DB as Firestore
+    participant LLM as Gemini (gemini-2.5-flash)
+
+    Visitor->>Widget: Click "Ask us anything"
+    Widget-->>Visitor: Panel opens with suggested questions
+    Visitor->>Widget: Type a question and send
+    Widget->>Widget: Enforce the 500-character limit client-side
+    Widget->>Fn: Call askTravelAssistant(question, last 6 turns)
+    Fn->>Fn: Validate question length
+    Fn->>DB: Read packages where status = published (limit 60)
+    Fn->>DB: Read posts where status = published (limit 120)
+    DB-->>Fn: Published documents only
+    Fn->>Fn: Rank by keyword overlap, keep the top 8
+    Fn->>Fn: Build a labelled context block inside delimiters
+    Fn->>LLM: system instruction + context + question
+    LLM-->>Fn: Answer grounded in that content
+    Fn-->>Widget: { answer, sources: package and article links }
+    Widget-->>Visitor: Show the answer with clickable sources
+    Note over Fn,DB: Draft, pending and rejected content is excluded by the status filter.
+    Note over Fn,LLM: The key is a Secret Manager value, so it never reaches the browser bundle.
+```
+
+### Why the bot cannot leak customer data
+
+- The function **structurally** reads only `packages` and `posts`. `bookings`, `notifications`, `newsletter`, `contactEnquiries` and `config/admins` are never queried, so a request like *"list the emails of everyone who booked"* has nothing to draw on.
+- Retrieved content is wrapped in `<travel-content>` delimiters and the system instruction tells the model to treat it as reference data, never as instructions — which matters because community-authored posts reach this context.
+- Even if an injected instruction succeeded, the function exposes no tools and no private collection, so the worst case is an off-topic answer rather than a disclosure.
+
+### Limits
+
+Questions are capped at 500 characters, history at the last 6 turns, context at 8 documents (60 packages and 120 posts read per call), and output at 600 tokens. Until `GEMINI_API_KEY` is set, the widget shows a friendly unavailable message and points at the contact form.
+
+## 6. Visitor: booking and Razorpay Test Mode payment
 
 ```mermaid
 sequenceDiagram
@@ -179,7 +223,7 @@ The amount is calculated **server-side** from trusted package data and converted
 - A guest can read their own booking when the signed-in email matches the booking email; an admin can read and update all bookings.
 - Status history and notification records are appended by trusted code for payment events, and by the admin panel for status changes.
 
-## 6. Community writer: submit a blog post for approval
+## 7. Community writer: submit a blog post for approval
 
 ```mermaid
 sequenceDiagram
@@ -209,7 +253,7 @@ sequenceDiagram
     end
 ```
 
-## 7. Admin: sign-in and content management
+## 8. Admin: sign-in and content management
 
 ```mermaid
 flowchart LR
@@ -230,7 +274,7 @@ flowchart LR
     AdminUI --> Storage[("Firebase Storage")]
 ```
 
-## 8. Real vs. simulated — important
+## 9. Real vs. simulated — important
 
 | Feature | Current behaviour |
 |---|---|
@@ -243,6 +287,7 @@ flowchart LR
 | Payment | **Razorpay Test Mode** — real sandbox orders, captures and signature checks; no real money moves |
 | Payment — Live Mode | **Blocked.** Needs owner approval of Live keys, KYC/production readiness, a refund policy, and an operational review |
 | Email / SMS | **Simulated.** Records are queued in Firestore; no message is delivered |
+| Travel assistant | **Real Gemini responses**, grounded strictly in published packages and posts |
 | Database | **Cloud Firestore only.** No SQL is used, and none is planned |
 
 ### What is still open
@@ -252,8 +297,9 @@ flowchart LR
 - **Razorpay Live Mode.** Blocked on owner approval (see the open questions in `rfp/razorpay-test-payments/requirement.md`).
 - **Refund / cancellation policy.** Not defined — required before Live Mode.
 - **Authorized vs. captured payments.** The current code requests capture immediately after authorization; a manual-capture flow is an open question.
+- **Travel assistant key.** `GEMINI_API_KEY` must be set in Firebase Secret Manager and `askTravelAssistant` deployed. Until then the widget shows a friendly unavailable message. Live answer quality (grounding, refusals, follow-ups) has not yet been verified against a real model response.
 
-## 9. Access rules at a glance
+## 10. Access rules at a glance
 
 | Data | Visitor | Signed-in author | Admin |
 |---|---|---|---|
